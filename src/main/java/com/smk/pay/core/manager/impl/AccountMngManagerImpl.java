@@ -1,0 +1,372 @@
+package com.smk.pay.core.manager.impl;
+
+import com.smk.pay.account.core.enums.*;
+import com.smk.pay.account.core.request.MigrateAccountRequest;
+import com.smk.pay.account.core.request.OpenAccountRequest;
+import com.smk.pay.account.core.request.RequestHeader;
+import com.smk.pay.core.constant.AccountBizConstant;
+import com.smk.pay.core.constant.ResultCodeConstant;
+import com.smk.pay.core.dto.AccountInfoDto;
+import com.smk.pay.core.dto.TransDetailDto;
+import com.smk.pay.core.dto.UserInfoDto;
+import com.smk.pay.core.entity.AccSystemEntity;
+import com.smk.pay.core.entity.PrepaidCardGroupEntity;
+import com.smk.pay.core.entity.PrepaidCardInfoEntity;
+import com.smk.pay.core.entity.UserMappingEntity;
+import com.smk.pay.core.enums.AccountTransTypeEnum;
+import com.smk.pay.core.exception.ServiceException;
+import com.smk.pay.core.manager.IAccountMngManager;
+import com.smk.pay.core.manager.base.IAccountInfoManager;
+import com.smk.pay.core.manager.base.IInternalAccountManager;
+import com.smk.pay.core.manager.base.ITransDetailManager;
+import com.smk.pay.core.manager.base.IUserInfoManager;
+import com.smk.pay.core.mapper.AccSystemEntityMapper;
+import com.smk.pay.core.mapper.PrepaidCardGroupEntityMapper;
+import com.smk.pay.core.mapper.PrepaidCardInfoEntityMapper;
+import com.smk.pay.core.mapper.UserMappingEntityMapper;
+import com.smk.pay.core.utils.StringUtil;
+import com.smk.pay.core.validator.base.AccountValidator;
+import com.smk.pay.dal.condtion.Criteria;
+import com.smk.pay.dal.condtion.EntityCondition;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
+
+import java.math.BigDecimal;
+import java.util.*;
+
+/**
+ * Project plouto
+ * Created by chuanzhi.macz
+ * Date 2016/11/25 14:43
+ */
+@Service(value = "accountMngManager")
+public class AccountMngManagerImpl implements IAccountMngManager {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(AccountMngManagerImpl.class);
+
+    @Autowired
+    private IAccountInfoManager accountInfoManager;
+    @Autowired
+    private IUserInfoManager userInfoManager;
+    @Autowired
+    private IInternalAccountManager internalAccountManager;
+    @Autowired
+    private AccSystemEntityMapper accSystemEntityMapper;
+    @Autowired
+    private PrepaidCardInfoEntityMapper prepaidCardInfoEntityMapper;
+    @Autowired
+    private PrepaidCardGroupEntityMapper prepaidCardGroupEntityMapper;
+    @Autowired
+    private ITransDetailManager transDetailManager;
+    @Autowired
+    private AccountValidator accountValidator;
+    @Autowired
+    private UserMappingEntityMapper userMappingEntityMapper;
+
+    @Transactional
+    public Map<Boolean, String> openAccount(OpenAccountRequest openAccountRequest) {
+        Map<Boolean, String> resultMap = new HashMap<>();
+        String type = openAccountRequest.getCustCredentialType();
+        String no = openAccountRequest.getCustCredentialNo();
+        String custId = openAccountRequest.getCustId();
+        String custName = openAccountRequest.getCustName();
+        String accountId = StringUtil.EMPTY;
+
+        String createSeqNo = StringUtil.randomSequence();
+        if (OpenAccountRequest.OPEN_ACCOUNT_PERSONAL.equals(openAccountRequest.getUserCls())) {
+            UserInfoDto userInfoDto = userInfoManager.getUserByTypeAndNo(type, no);
+            if (userInfoDto == null) {
+                userInfoDto = new UserInfoDto(openAccountRequest.getCustId(),
+                        custName, type, no, AccountBizConstant.USER_INFO_STATUS_NORMAL);
+                userInfoManager.addUser(userInfoDto);
+                UserMappingEntity userMappingEntity = new UserMappingEntity(custId, custName, no, custId);
+                userMappingEntityMapper.insertSelective(userMappingEntity);
+            } else {
+                userMappingEntityMapper.updateByIdNo(custId, custName, no);
+            }
+            AccountInfoDto accountInfoDto = accountInfoManager.queryMainAccountByCustId
+                    (openAccountRequest.getCustId());
+            if (null == accountInfoDto) {
+                Date createDate = new Date();
+                accountInfoDto = new AccountInfoDto.Builder().userId
+                        (custId).accountClass(AccountLevelEnum.FIRST.value()).
+                        productId(AccountCardTypeEnum.HZSMK.name()).status
+                        (AccountInfoStatusEnum.UNACTIVATED.value()).accountType(AccountTypeEnum
+                        .ONLINE.value()).createSerialNo
+                        (createSeqNo).createDate(createDate).lastUpdateDate(createDate)
+                        .partyMarkNo(AccountBizConstant.PARTY_MARK_NO_0001).build();
+
+                accountId = accountInfoManager.addAccount(accountInfoDto);
+                TransDetailDto transDetailDto = new TransDetailDto.Builder().serialNo(StringUtil
+                        .randomSequence()).transId(AccountBizConstant.TRANS_DETAIL_TRANS_ID_1)
+                        .transType(AccountTransTypeEnum.ONLINE_USER_OPEN_ACCOUNT.key()).userId
+                                (custId).userName(custName).transDate(new Date()).status(AccountBizConstant
+                                .TRANS_DETAIL_STATUS_1).partyMarkNo(AccountBizConstant
+                                .PARTY_MARK_NO_0001).accountingTrans(AccountBizConstant
+                                .TRANS_DETAIL_ACCOUNT_TRANS_0).accountId(accountId).accountClass
+                                (AccountLevelEnum.FIRST.value()).build();
+                transDetailManager.addTransDetail(transDetailDto);
+            } else {
+                accountId = String.valueOf(accountInfoDto.getAccountId());
+            }
+        }
+        resultMap.put(Boolean.TRUE, accountId);
+        return resultMap;
+    }
+
+    @Transactional
+    public String alterAccountLevel(String custId, AccountLevelEnum levelEnum) {
+
+        Map<Boolean, List<String>> checkResult = accountValidator.isValidAccountByCustId(custId, null, Arrays.asList
+                (AccountInfoStatusEnum.NORMAL.value()));
+        if (checkResult.containsKey(Boolean.FALSE))
+            return checkResult.get(Boolean.FALSE).get(0);
+        String accountId = checkResult.get(Boolean.TRUE).get(0);
+        String oldLevel = checkResult.get(Boolean.TRUE).get(2);
+        // 如果当前账户等级不低于请求账户等级，不做处理
+        if (Integer.valueOf(levelEnum.value()) <= Integer.valueOf(oldLevel))
+            return ResultCodeConstant.ACCOUNT_LEVEL_NOCHANGE;
+        accountInfoManager.updateAccountLevel(accountId, oldLevel, levelEnum.value());
+        return ResultCodeConstant.SUCCESS;
+
+    }
+
+    @Transactional
+    public void migrateAccount(RequestHeader header, AccountChannelEnum channelEnum,
+                               String merchantId, MigrateAccountRequest accountRequest) {
+
+        PrepaidCardInfoEntity prepaidCardInfoEntity = prepaidCardInfoEntityMapper.selectByCardNo(accountRequest
+                .getCardNumber());
+        if (prepaidCardInfoEntity !=  null && !prepaidCardInfoEntity.getStatus().equals(AccountBizConstant
+                .PREPAID_CARD_INFO_STATUS_CANCEL)) {
+            LOGGER.warn("migrateAccount -> repeat add card, cardNumber =" + accountRequest.getCardNumber());
+            throw new ServiceException(ResultCodeConstant.REPEAT_ADD_CARD);
+        }
+
+        List<AccSystemEntity> list = accSystemEntityMapper.selectList(new EntityCondition());
+        if (CollectionUtils.isEmpty(list)) {
+            throw new ServiceException(ResultCodeConstant.ACC_SYSTEM_NO_DATA);
+        }
+        BigDecimal cardLimit = list.get(0).getCardLimite();
+        String accDate = list.get(0).getAccDate();
+
+        BigDecimal moreAmount = new BigDecimal(0);
+        BigDecimal xjAmount = accountRequest.getXjAmount();
+        BigDecimal cgAmount = accountRequest.getCgAmount();
+        BigDecimal zxzjAmount = accountRequest.getZxzjAmount();
+        BigDecimal ggkAmount = accountRequest.getGgkAmount();
+
+        if (xjAmount.compareTo(cardLimit) > 0) {
+            moreAmount = xjAmount.subtract(cardLimit);
+            xjAmount = cardLimit;
+        }
+
+        String createSeqNo = StringUtil.randomSequence();
+        Date createDate = new Date();
+        AccountInfoDto accountInfoDto = new AccountInfoDto.Builder().accountType(AccountTypeEnum
+                .OFFLINE.value()).accountTypeItem(AccountBizConstant
+                .ACCOUNT_INFO_ACCOUNT_TYPE_ITEM_1).status(AccountInfoStatusEnum.NORMAL.value())
+                .createSerialNo(createSeqNo).createDate(createDate).lastUpdateDate(createDate)
+                .partyMarkNo(AccountBizConstant.PARTY_MARK_NO_0001).amount1(cgAmount.add(moreAmount)
+                ).amount2(xjAmount).amount3(zxzjAmount).amount4(ggkAmount).productId
+                        (accountRequest.getCardType().name()).build();
+        String accountId = accountInfoManager.addAccount(accountInfoDto);
+
+        internalAccountManager.updateAmountByTypeIdAndBankId(accountRequest.getGuaranteeAmount(),
+                AccountBizConstant.ACCOUNT_TYPE_KEY_XJZH, AccountBizConstant.BANK_INFO_ABC);
+
+        PrepaidCardInfoEntity cardInfoEntity = new PrepaidCardInfoEntity(null, accountRequest
+                .getCardNumber(), accountRequest.getCardType().name(), null, AccountBizConstant
+                .PREPAID_CARD_INFO_STATUS_NORMAL, accountRequest.getCustCredentialType(),
+                accountRequest.getCustCredentialNo(), new Date());
+        prepaidCardInfoEntityMapper.insertSelective(cardInfoEntity);
+
+        PrepaidCardGroupEntity cardGroupEntity = new PrepaidCardGroupEntity(String.valueOf
+                (cardInfoEntity.getPrepaidCardId()), StringUtil.WHITESPACE, accountId, AccountBizConstant
+                .PREPAID_CARD_GROUP_STATUS_NORMAL);
+        prepaidCardGroupEntityMapper.insertSelective(cardGroupEntity);
+
+        Date transDate = new Date();
+        TransDetailDto transDetailDto = new TransDetailDto.Builder().serialNo(StringUtil.randomSequence())
+                .transId(AccountBizConstant.TRANS_DETAIL_TRANS_ID_1).transType
+                        (AccountTransTypeEnum.PREPAID_CARD_MOVE.key()).accountId(accountId).reqSerialNo(header.getReqSeq()).reqTransDate
+                        (header.getTxDate()).reqTransTime(header.getTxTime()).amount1(cgAmount
+                        .add(moreAmount)).amount2(xjAmount).transDate(transDate).status
+                        (AccountBizConstant.TRANS_DETAIL_STATUS_1).channel(channelEnum.name())
+                .partyMarkNo(AccountBizConstant.PARTY_MARK_NO_0001).guaranteeDeposit(accountRequest
+                        .getGuaranteeAmount()).amount3(zxzjAmount).amount4(ggkAmount).accDate
+                        (accDate).build();
+        transDetailManager.addTransDetail(transDetailDto);
+    }
+
+    @Transactional
+    public void bindAccount(RequestHeader header, String custId, String cardNo, String merchantId,
+                            AccountChannelEnum channelEnum) {
+
+        List<AccSystemEntity> list = accSystemEntityMapper.selectList(new EntityCondition());
+        if (CollectionUtils.isEmpty(list)) {
+            throw new ServiceException(ResultCodeConstant.ACC_SYSTEM_NO_DATA);
+        }
+        String accDate = list.get(0).getAccDate();
+        AccountInfoDto cardAccountInfo = accountInfoManager.queryCardAccountByCardNo(cardNo);
+        if (cardAccountInfo.getAccountId() == null) {
+            LOGGER.warn("bindAccount -> card account no exist, cardNo = " + cardNo);
+            throw new ServiceException(ResultCodeConstant.ACCOUNT_NOT_EXIST);
+        }
+
+        PrepaidCardInfoEntity cardInfoEntity = prepaidCardInfoEntityMapper.selectByCardNo(cardNo);
+        if (cardInfoEntity == null || cardInfoEntity.getStatus().equals(AccountBizConstant
+                .PREPAID_CARD_INFO_STATUS_CANCEL)) {
+            LOGGER.warn("bindAccount -> card no exist, cardNo =" + cardNo);
+            throw new ServiceException(ResultCodeConstant.CARD_NOT_EXIST);
+        }
+        if (!StringUtil.isEmpty(cardInfoEntity.getUserId()) && AccountBizConstant
+                .PREPAID_CARD_INFO_BIND_FLAG_YES.equals(cardInfoEntity.getBindingFlag())) {
+            LOGGER.info("bindAccount -> card has binded, cardNo =" + cardNo);
+            return;
+        }
+        String cardAccountId = cardAccountInfo.getAccountId().toString();
+        UserMappingEntity userMappingEntity = userMappingEntityMapper.getByCustId(custId);
+        if (null == userMappingEntity)
+            throw new ServiceException(ResultCodeConstant.USER_MAPPING_NOT_EXIST);
+
+        if (!userMappingEntity.getIdNo().equals(cardInfoEntity.getPapersNo())) {
+            LOGGER.warn("bindAccount -> user idno differ with card idno, user idno={}, card " +
+                    "idno={}",userMappingEntity.getIdNo(), cardInfoEntity.getPapersNo());
+            throw new ServiceException(ResultCodeConstant.ID_NO_DIFFERENT_WITH_CARD);
+        }
+        String userId = userMappingEntity.getUserId();
+        accountInfoManager.updateUserId(cardAccountId, userId);
+        cardInfoEntity.setUserId(userId);
+        cardInfoEntity.setBindingFlag(AccountBizConstant.PREPAID_CARD_INFO_BIND_FLAG_YES);
+        prepaidCardInfoEntityMapper.updateByPrimaryKey(cardInfoEntity);
+
+        Date transDate = new Date();
+        String sequence = StringUtil.randomSequence();
+        TransDetailDto transDetailDto = new TransDetailDto.Builder().serialNo(sequence)
+                .transId(AccountBizConstant.TRANS_DETAIL_TRANS_ID_1).transType
+                        (AccountTransTypeEnum.PREPAID_CARD_BIND.key()).userId(userId).accountId
+                        (cardAccountId).reqSerialNo(header.getReqSeq()).reqTransDate(header.getTxDate
+                        ()).reqTransTime(header.getTxTime()).transDate(transDate).status
+                        (AccountBizConstant.TRANS_DETAIL_STATUS_1).partyMarkNo(AccountBizConstant
+                        .PARTY_MARK_NO_0001).accDate(accDate).accountingTrans(AccountBizConstant
+                        .TRANS_DETAIL_ACCOUNT_TRANS_0).channel(channelEnum.name()).build();
+        transDetailManager.addTransDetail(transDetailDto);
+
+        if (AccountCardTypeEnum.HZSMK.name().equals(cardInfoEntity.getPrepaidCardType())) {
+            relateAccount(header, userId, cardAccountInfo, cardInfoEntity.getPrepaidCardId(), merchantId,
+                    channelEnum);
+        }
+    }
+
+    private void relateAccount(RequestHeader header, String userId, AccountInfoDto cardAccountInfo, Long
+            prepaidCardId, String merchantId, AccountChannelEnum channelEnum) {
+        // TODO repeat transaction, card, validate, card relate and so on, refer to account_relation
+
+        List<AccSystemEntity> list = accSystemEntityMapper.selectList(new EntityCondition());
+        if (CollectionUtils.isEmpty(list)) {
+            throw new ServiceException(ResultCodeConstant.ACC_SYSTEM_NO_DATA);
+        }
+        BigDecimal cardLimite = list.get(0).getCardLimite();
+        String accDate = list.get(0).getAccDate();
+
+        String cardAccountId = String.valueOf(cardAccountInfo.getAccountId());
+
+        BigDecimal cardCGAmount = cardAccountInfo.getAmount1();
+        BigDecimal cardXJAmount = cardAccountInfo.getAmount2();
+        BigDecimal cardZXZJAmount = cardAccountInfo.getAmount3();
+        BigDecimal cardGGKAmount = cardAccountInfo.getAmount4();
+        BigDecimal cardLNAmount = cardAccountInfo.getAmount5();
+
+        AccountInfoDto userAccountInfo = accountInfoManager.queryMainAccountByCustId(userId);
+        if (userAccountInfo.getAccountId() == null)
+            throw new ServiceException(ResultCodeConstant.ACCOUNT_NOT_EXIST);
+        String userAccountId = String.valueOf(userAccountInfo.getAccountId());
+
+        BigDecimal userCGAmount = userAccountInfo.getAmount1();
+        BigDecimal userXJAmount = userAccountInfo.getAmount2();
+        BigDecimal userZXZJAmount = userAccountInfo.getAmount3();
+        BigDecimal userGGKAmount = userAccountInfo.getAmount4();
+        BigDecimal userLNAmount = userAccountInfo.getAmount5();
+
+        BigDecimal updateCGAmount = new BigDecimal(0);
+        BigDecimal updateXJAmount = new BigDecimal(0);
+        BigDecimal updateZXZJAmount = new BigDecimal(0);
+        BigDecimal updateGGKAmount = new BigDecimal(0);
+        BigDecimal updateLNAmount = new BigDecimal(0);
+
+        // 现金资金转移
+        if (userXJAmount.add(userGGKAmount).add(cardXJAmount).compareTo(cardLimite) < 0) {
+            updateXJAmount = userXJAmount.add(cardXJAmount);
+        } else {
+            updateXJAmount = cardLimite;
+            updateCGAmount = userCGAmount.add(cardXJAmount.add(userXJAmount).subtract(cardLimite));
+            updateGGKAmount = new BigDecimal(0);
+        }
+        // 刮刮卡转移
+        if (updateXJAmount.add(updateGGKAmount).add(cardGGKAmount).compareTo(cardLimite) < 0) {
+            updateGGKAmount = updateGGKAmount.add(cardGGKAmount);
+        } else {
+            updateGGKAmount = cardLimite.subtract(updateXJAmount);
+            updateZXZJAmount = updateZXZJAmount.add(updateGGKAmount.add(cardGGKAmount).add
+                    (updateXJAmount).subtract(cardLimite));
+        }
+        // 常规转移
+        updateCGAmount = userCGAmount.add(cardCGAmount);
+        // 专项资金转移
+        updateZXZJAmount = userZXZJAmount.add(cardZXZJAmount);
+        // 老年账户转移
+        updateLNAmount = userLNAmount.add(cardLNAmount);
+
+        accountInfoManager.updateAccountAmount(userAccountId, userAccountInfo, new AccountInfoDto
+                .Builder()
+                .amount1(updateCGAmount).amount2(updateXJAmount).amount3(updateZXZJAmount)
+                .amount4(updateGGKAmount).amount5(updateLNAmount).build());
+
+        accountInfoManager.updateAccountAmountAndStatus(cardAccountId, AccountInfoStatusEnum.BINDED.value(),
+                new AccountInfoDto.Builder().amount1(new BigDecimal(0)).amount2(new BigDecimal(0))
+                        .amount3(new BigDecimal(0)).amount4(new BigDecimal(0)).amount5(new BigDecimal(0))
+                        .build());
+
+        prepaidCardGroupEntityMapper.updateStatusByCardIdStatus(String.valueOf(prepaidCardId),
+                AccountBizConstant
+                        .PREPAID_CARD_GROUP_STATUS_NORMAL, AccountBizConstant
+                        .PREPAID_CARD_GROUP_STATUS_BINDED);
+        int count = prepaidCardGroupEntityMapper.count(new EntityCondition().addCriteria(new
+                Criteria()
+                .addCriterion("PREPAID_ACCOUNT_ID=", userAccountId, "PREPAID_ACCOUNT_ID")
+                .addCriterion("STATUS=", AccountBizConstant.PREPAID_CARD_GROUP_STATUS_NORMAL,
+                        "STATUS")));
+        if (count == 0) {
+            PrepaidCardGroupEntity groupEntity = new PrepaidCardGroupEntity(String.valueOf(prepaidCardId),
+                    StringUtil.WHITESPACE, userAccountId, AccountBizConstant
+                    .PREPAID_CARD_GROUP_STATUS_NORMAL);
+            prepaidCardGroupEntityMapper.insertSelective(groupEntity);
+        }
+        accountInfoManager.updateAccountStatus(cardAccountId, AccountInfoStatusEnum.NORMAL.value(),
+                AccountInfoStatusEnum.BINDED.value());
+        if (AccountInfoStatusEnum.UNACTIVATED.value().equals(userAccountInfo.getStatus())) {
+            accountInfoManager.updateAccountStatus(userAccountId, AccountInfoStatusEnum.UNACTIVATED.value(),
+                    AccountInfoStatusEnum.NORMAL.value());
+        }
+        TransDetailDto transDetailDto = new TransDetailDto.Builder().serialNo(StringUtil.randomSequence())
+                .transId(AccountBizConstant.TRANS_DETAIL_TRANS_ID_1).transType
+                        (AccountTransTypeEnum.PREPAID_CARD_RELATE.key()).accountId
+                        (userAccountId).accountClass(AccountLevelEnum.FIRST.value()).rivalAccount
+                        (cardAccountId).rivalAccountClass(AccountLevelEnum.SECOND.value()).reqSerialNo
+                        (header.getReqSeq()).reqTransDate(header.getTxDate()).reqTransTime(header
+                        .getTxTime()).transDate(new Date()).status(AccountBizConstant.TRANS_DETAIL_STATUS_1).accDate(accDate)
+                .replacementFlag(AccountBizConstant.TRANS_DETAIL_REPLACEMENT_FLAG_0).amount1
+                        (cardCGAmount).amount2(cardXJAmount).amount3(cardZXZJAmount).amount4
+                        (cardGGKAmount).amount5(cardLNAmount).amount11(updateCGAmount).amount12
+                        (updateXJAmount).amount13(updateZXZJAmount).amount14(updateGGKAmount)
+                .amount15(updateLNAmount).channel(channelEnum.name()).userDefindMark
+                        (AccountBizConstant.TRANS_DETAIL_USER_DEFIND_MARK_0).merchantId
+                        (merchantId).build();
+        transDetailManager.addTransDetail(transDetailDto);
+    }
+}

@@ -1,0 +1,188 @@
+package com.smk.pay.core.manager.impl;
+
+import com.smk.pay.account.core.enums.AccountBizEnum;
+import com.smk.pay.account.core.enums.AccountChannelEnum;
+import com.smk.pay.account.core.enums.AccountLevelEnum;
+import com.smk.pay.account.core.enums.AccountTypeEnum;
+import com.smk.pay.account.core.response.AccountDetail;
+import com.smk.pay.account.core.response.AccountDetailResp;
+import com.smk.pay.core.constant.AccountBizConstant;
+import com.smk.pay.core.constant.ResultCodeConstant;
+import com.smk.pay.core.dto.AccountInfoDto;
+import com.smk.pay.core.dto.TransDetailDto;
+import com.smk.pay.core.entity.AccSystemEntity;
+import com.smk.pay.core.entity.LimitsEntity;
+import com.smk.pay.core.enums.AccountTransTypeEnum;
+import com.smk.pay.core.exception.ServiceException;
+import com.smk.pay.core.manager.IAccountQueryManager;
+import com.smk.pay.core.manager.base.IAccountInfoManager;
+import com.smk.pay.core.manager.base.ITransDetailManager;
+import com.smk.pay.core.mapper.AccSystemEntityMapper;
+import com.smk.pay.core.mapper.LimitsEntityMapper;
+import com.smk.pay.core.mapper.O2oAmountDetailEntityMapper;
+import com.smk.pay.core.utils.DateUtil;
+import com.smk.pay.dal.condtion.Criteria;
+import com.smk.pay.dal.condtion.EntityCondition;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
+
+import javax.annotation.Resource;
+import java.math.BigDecimal;
+import java.util.*;
+
+/**
+ * Project plouto
+ * Created by chuanzhi.macz
+ * Date 2016/10/24 9:49
+ */
+@Service("accountQueryManager")
+public class AccountQueryManagerImpl implements IAccountQueryManager {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(AccountQueryManagerImpl.class);
+    @Resource(name = "accountInfoManager")
+    private IAccountInfoManager accountInfoManager;
+    @Autowired
+    private LimitsEntityMapper limitsEntityMapper;
+    @Autowired
+    private ITransDetailManager transDetailManager;
+    @Autowired
+    private AccSystemEntityMapper accSystemEntityMapper;
+    @Autowired
+    private O2oAmountDetailEntityMapper o2oAmountDetailEntityMapper;
+
+
+    @Override
+    public Map<String, BigDecimal> queryAvailableAmount(String value, AccountTypeEnum typeEnum) {
+
+        Map<String, BigDecimal> availableAmountMap = new HashMap<String, BigDecimal>();
+
+        AccountInfoDto accountInfoDto;
+        if (AccountTypeEnum.ONLINE == typeEnum) {
+            accountInfoDto = accountInfoManager.queryMainAccountByCustId(value);
+        } else {
+            accountInfoDto = accountInfoManager.queryCardAccountByCardNo(value);
+        }
+        if (accountInfoDto == null)
+            throw new ServiceException(ResultCodeConstant.ACCOUNT_NOT_EXIST);
+
+        String accountId = String.valueOf(accountInfoDto.getAccountId());
+        String accountLevel = accountInfoDto.getAccountClass();
+        BigDecimal ggkAmount = accountInfoDto.getAmount4();
+        BigDecimal xjAmount = accountInfoDto.getAmount2();
+
+        availableAmountMap.put("consumealbeAmount", this.queryConsumeableAmount(accountId, accountLevel));
+        availableAmountMap.put("rechargeableGGKAmount", this.queryRechargealbeGGKAmount
+                (accountId, xjAmount, ggkAmount));
+
+        return availableAmountMap;
+    }
+
+    @Override
+    public AccountDetailResp queryAccountDetail(String value, AccountTypeEnum typeEnum, String transType,
+                                                AccountChannelEnum channelEnum, String merchantId,
+                                                AccountBizEnum bizEnum, Date fromDate, Date toDate,
+                                                int pageNum, int pageSize) {
+
+        AccountInfoDto accountInfoDto;
+        if (typeEnum == AccountTypeEnum.ONLINE) {
+            accountInfoDto = accountInfoManager.queryMainAccountByCustId(value);
+        } else {
+            accountInfoDto = accountInfoManager.queryCardAccountByCardNo(value);
+        }
+        String accountId = String.valueOf(accountInfoDto.getAccountId());
+        int count = transDetailManager.queryTransDetailCount(accountId, transType, merchantId, null,
+                fromDate, toDate);
+        if (count == 0) {
+            return new AccountDetailResp();
+        }
+        int pageCount = count % pageSize == 0 ? count / pageSize : count / pageSize + 1;
+
+        List<TransDetailDto> transDetailDtoList = transDetailManager.queryTransDetail
+                (accountId, transType, merchantId, fromDate, toDate, pageNum, pageSize);
+        if (CollectionUtils.isEmpty(transDetailDtoList)) {
+            return new AccountDetailResp();
+        }
+        List<AccountDetail> details = new ArrayList<>();
+        for (TransDetailDto detailDto : transDetailDtoList) {
+            BigDecimal decimalAmount = detailDto.getAmount1().add(detailDto.getAmount2()).add
+                    (detailDto.getAmount3()).add(detailDto.getAmount4());
+            BigDecimal accountAmount = detailDto.getAmount11().add(detailDto.getAmount12()).add
+                    (detailDto.getAmount13()).add(detailDto.getAmount14());
+            AccountDetail detail = new AccountDetail(detailDto.getMerchantId(), detailDto
+                    .getTransDate(), detailDto.getTransType(), null, detailDto.getUserDefindMark()
+                    , null, decimalAmount, accountAmount, detailDto.getStatus());
+            details.add(detail);
+        }
+        return new AccountDetailResp(details, pageCount, count, count);
+    }
+
+    private BigDecimal queryRechargealbeGGKAmount(String accountId, BigDecimal xjAmount,
+                                                  BigDecimal ggkAmount) {
+
+        List<AccSystemEntity> list = accSystemEntityMapper.selectList(new EntityCondition());
+        if (CollectionUtils.isEmpty(list)) {
+            throw new ServiceException(ResultCodeConstant.ACC_SYSTEM_NO_DATA);
+        }
+        String totalType = list.get(0).getTotalType();
+        BigDecimal o2oAmountLimit = list.get(0).getO2oAmountLimite();
+        BigDecimal cardLimit = list.get(0).getCardLimite();
+        Date toDate = new Date();
+        Date fromDate;
+        if (AccountBizConstant.ACC_SYSTEM_TOTAL_TYPE_1.equals(totalType)) {
+            fromDate = DateUtil.thisYear();
+        } else {
+            fromDate = DateUtil.addMonth(toDate, -12);
+        }
+        int sumAmount = o2oAmountDetailEntityMapper.querySumAmount(new EntityCondition()
+                .addCriteria(new
+                        Criteria().addCriterion("ACCOUNT_ID=", accountId, "ACCOUNT_ID").addCriterion
+                        ("STATUS=", AccountBizConstant.O2O_AMOUNT_DETAIL_STATUS_1, "STATUS")
+                        .addCriterion("DIRECTION=", AccountBizConstant.O2O_AMOUNT_DETAIL_DIRECTION_1,
+                                "DIRECTION").addCriterion("TRANS_DATE BETWEEN", fromDate, toDate,
+                                "TRANS_DATE")));
+        BigDecimal sumAmt = new BigDecimal(sumAmount);
+
+        return cardLimit.subtract(xjAmount).subtract(ggkAmount).add(o2oAmountLimit.subtract(sumAmt));
+    }
+
+    private BigDecimal queryConsumeableAmount(String accountId, String accountLevel) {
+
+        LimitsEntity entity = limitsEntityMapper.selectOne();
+        BigDecimal firstLevelLimit = entity.getYlzhLimit();
+        BigDecimal secondLevelLimit = entity.getElzhLimit();
+        BigDecimal thirdLevelLimit = entity.getSlzhLimit();
+        String totalType = entity.getTotalType();
+
+        Date toDate = new Date();
+        Date fromDate;
+        if (AccountBizConstant.LIMITS_TOTAL_TYPE_1.equals(totalType)) {
+            fromDate = DateUtil.thisYear();
+        } else {
+            fromDate = DateUtil.addMonth(toDate, -12);
+        }
+        if (AccountLevelEnum.FIRST.value().equals(accountLevel)) {
+            fromDate = toDate = null;
+        }
+        TransDetailDto transDetailDto = transDetailManager.querySumAccount(Arrays.asList
+                        (AccountTransTypeEnum.CONSUME.key(), AccountTransTypeEnum.WITHDRAW.key(),
+                                AccountTransTypeEnum
+                                        .PRIVATE_2_PUBLIC_TRANSFER.key()), accountId, fromDate, toDate,
+                AccountBizConstant.TRANS_DETAIL_STATUS_1);
+        BigDecimal hisAmount = transDetailDto.getAmount1().add(transDetailDto.getAmount2()).add
+                (transDetailDto.getAmount3()).add(transDetailDto.getAmount4()).add(transDetailDto
+                .getAmount5()).add(transDetailDto.getAmount6());
+        if (AccountLevelEnum.FIRST.value().equals(accountLevel)) {
+            return firstLevelLimit.subtract(hisAmount);
+        } else if (AccountLevelEnum.SECOND.value().equals(accountLevel)) {
+            return secondLevelLimit.subtract(hisAmount);
+        } else if (AccountLevelEnum.THIRD.value().equals(accountLevel)) {
+            return thirdLevelLimit.subtract(hisAmount);
+        } else {
+            return new BigDecimal(0);
+        }
+    }
+
+}

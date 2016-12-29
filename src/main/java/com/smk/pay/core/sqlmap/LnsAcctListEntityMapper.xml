@@ -1,0 +1,1052 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.smk.pay.core.mapper.LnsAcctListEntityMapper">
+    <resultMap id="BaseResultMap" type="com.smk.pay.core.entity.LnsAcctListEntity">
+        <id column="TRANSNO" property="transno" jdbcType="VARCHAR"/>
+        <result column="BRC" property="brc" jdbcType="VARCHAR"/>
+        <result column="ACCTNO" property="acctno" jdbcType="VARCHAR"/>
+        <result column="ACCTSTAT" property="acctstat" jdbcType="VARCHAR"/>
+        <result column="TRANS_TYPE" property="transType" jdbcType="VARCHAR"/>
+        <result column="ORIGINAL_SERIAL_NO" property="originalSerialNo" jdbcType="VARCHAR"/>
+        <result column="ORIGINAL_TRANS_DATE" property="originalTransDate" jdbcType="VARCHAR"/>
+        <result column="ORIGINAL_TRANS_TIME" property="originalTransTime" jdbcType="VARCHAR"/>
+        <result column="SOURCE_OF_FUNDS" property="sourceOfFunds" jdbcType="VARCHAR"/>
+        <result column="ACCOUNT_ID" property="accountId" jdbcType="VARCHAR"/>
+        <result column="ACCOUNT_CLASS" property="accountClass" jdbcType="VARCHAR"/>
+        <result column="ACCOUNT_CL" property="accountCl" jdbcType="VARCHAR"/>
+        <result column="REQ_SERIAL_NO" property="reqSerialNo" jdbcType="VARCHAR"/>
+        <result column="REQ_TRANS_DATE" property="reqTransDate" jdbcType="VARCHAR"/>
+        <result column="REQ_TRANS_TIME" property="reqTransTime" jdbcType="VARCHAR"/>
+        <result column="ACC_DATE" property="accDate" jdbcType="VARCHAR"/>
+        <result column="MERCHANT_ID" property="merchantId" jdbcType="VARCHAR"/>
+        <result column="USER_DEFIND_MARK" property="userDefindMark" jdbcType="VARCHAR"/>
+        <result column="TRANS_DATE" property="transDate" jdbcType="TIMESTAMP"/>
+        <result column="STATUS" property="status" jdbcType="VARCHAR"/>
+        <result column="CHANNEL" property="channel" jdbcType="VARCHAR"/>
+        <result column="BUSINESS_TYPE" property="businessType" jdbcType="VARCHAR"/>
+        <result column="ORDNU" property="ordnu" jdbcType="VARCHAR"/>
+        <result column="INACCTNO" property="inacctno" jdbcType="VARCHAR"/>
+        <result column="SUBCTRLCODE" property="subctrlcode" jdbcType="VARCHAR"/>
+        <result column="ACCTYPE" property="acctype" jdbcType="VARCHAR"/>
+        <result column="CCY" property="ccy" jdbcType="VARCHAR"/>
+        <result column="CDFLAG" property="cdflag" jdbcType="VARCHAR"/>
+        <result column="TRANAMT" property="tranamt" jdbcType="DECIMAL"/>
+        <result column="BAL" property="bal" jdbcType="DECIMAL"/>
+        <result column="DAYS" property="days" jdbcType="VARCHAR"/>
+        <result column="FLAG" property="flag" jdbcType="VARCHAR"/>
+        <result column="NORETAMT" property="noretamt" jdbcType="DECIMAL"/>
+        <result column="NORETINT" property="noretint" jdbcType="DECIMAL"/>
+        <result column="VOUCHERNO" property="voucherno" jdbcType="VARCHAR"/>
+        <result column="MEMOCODE" property="memocode" jdbcType="VARCHAR"/>
+        <result column="MEMONAME" property="memoname" jdbcType="VARCHAR"/>
+        <result column="OPPACCTNO" property="oppacctno" jdbcType="VARCHAR"/>
+        <result column="CANACCTNO" property="canacctno" jdbcType="VARCHAR"/>
+        <result column="TRANTIME" property="trantime" jdbcType="VARCHAR"/>
+        <result column="SERSEQNO" property="serseqno" jdbcType="VARCHAR"/>
+        <result column="SUBSERSEQNO" property="subserseqno" jdbcType="VARCHAR"/>
+        <result column="TRANCODE" property="trancode" jdbcType="VARCHAR"/>
+        <result column="SUBTRANCODE" property="subtrancode" jdbcType="VARCHAR"/>
+        <result column="TRANBRC" property="tranbrc" jdbcType="VARCHAR"/>
+        <result column="TELLERCODE" property="tellercode" jdbcType="VARCHAR"/>
+        <result column="AUTHCODE" property="authcode" jdbcType="VARCHAR"/>
+        <result column="CHECKCODE" property="checkcode" jdbcType="VARCHAR"/>
+        <result column="PGM" property="pgm" jdbcType="VARCHAR"/>
+        <result column="PRINTFLAG" property="printflag" jdbcType="VARCHAR"/>
+        <result column="TRANSOURCE" property="transource" jdbcType="VARCHAR"/>
+        <result column="RECORDTYPE" property="recordtype" jdbcType="VARCHAR"/>
+        <result column="FLAG1" property="flag1" jdbcType="VARCHAR"/>
+        <result column="FLAG2" property="flag2" jdbcType="VARCHAR"/>
+        <result column="FLAG3" property="flag3" jdbcType="VARCHAR"/>
+        <result column="SEQ" property="seq" jdbcType="VARCHAR"/>
+        <result column="SEQ1" property="seq1" jdbcType="VARCHAR"/>
+        <result column="RIVAL_MERCHANT_ID" property="rivalMerchantId" jdbcType="VARCHAR"/>
+    </resultMap>
+    <sql id="Query_Where_Clause">
+        <where>
+            <foreach collection="oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" suffix=")" prefixOverrides="and">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach collection="criterion.value" item="listItem" open="(" close=")"
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+    <sql id="Update_Where_Clause">
+        <where>
+            <foreach collection="condition.oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" suffix=")" prefixOverrides="and">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach collection="criterion.value" item="listItem" open="(" close=")"
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+    <sql id="Base_Column_List">
+        TRANSNO, BRC, ACCTNO, ACCTSTAT, TRANS_TYPE, ORIGINAL_SERIAL_NO, ORIGINAL_TRANS_DATE,
+        ORIGINAL_TRANS_TIME, SOURCE_OF_FUNDS, ACCOUNT_ID, ACCOUNT_CLASS, ACCOUNT_CL, REQ_SERIAL_NO,
+        REQ_TRANS_DATE, REQ_TRANS_TIME, ACC_DATE, MERCHANT_ID, USER_DEFIND_MARK, TRANS_DATE,
+        STATUS, CHANNEL, BUSINESS_TYPE, ORDNU, INACCTNO, SUBCTRLCODE, ACCTYPE, CCY, CDFLAG,
+        TRANAMT, BAL, DAYS, FLAG, NORETAMT, NORETINT, VOUCHERNO, MEMOCODE, MEMONAME, OPPACCTNO,
+        CANACCTNO, TRANTIME, SERSEQNO, SUBSERSEQNO, TRANCODE, SUBTRANCODE, TRANBRC, TELLERCODE,
+        AUTHCODE, CHECKCODE, PGM, PRINTFLAG, TRANSOURCE, RECORDTYPE, FLAG1, FLAG2, FLAG3,
+        SEQ, SEQ1, RIVAL_MERCHANT_ID
+    </sql>
+    <select id="selectList" resultMap="BaseResultMap" parameterType="com.smk.pay.dal.condtion.EntityCondition">
+        select
+        <if test="distinct">
+            distinct
+        </if>
+        <include refid="Base_Column_List"/>
+        from LNSACCTLIST
+        <if test="_parameter != null">
+            <include refid="Query_Where_Clause"/>
+        </if>
+        <if test="orderByClause != null">
+            order by ${orderByClause}
+        </if>
+    </select>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List"/>
+        from LNSACCTLIST
+        where TRANSNO = #{transno,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+        delete from LNSACCTLIST
+        where TRANSNO = #{transno,jdbcType=VARCHAR}
+    </delete>
+    <delete id="delete" parameterType="com.smk.pay.dal.condtion.EntityCondition">
+        delete from LNSACCTLIST
+        <if test="_parameter != null">
+            <include refid="Query_Where_Clause"/>
+        </if>
+    </delete>
+    <insert id="insert" parameterType="com.smk.pay.core.entity.LnsAcctListEntity">
+        insert into LNSACCTLIST (TRANSNO, BRC, ACCTNO,
+        ACCTSTAT, TRANS_TYPE, ORIGINAL_SERIAL_NO,
+        ORIGINAL_TRANS_DATE, ORIGINAL_TRANS_TIME, SOURCE_OF_FUNDS,
+        ACCOUNT_ID, ACCOUNT_CLASS, ACCOUNT_CL,
+        REQ_SERIAL_NO, REQ_TRANS_DATE, REQ_TRANS_TIME,
+        ACC_DATE, MERCHANT_ID, USER_DEFIND_MARK,
+        TRANS_DATE, STATUS, CHANNEL,
+        BUSINESS_TYPE, ORDNU, INACCTNO,
+        SUBCTRLCODE, ACCTYPE, CCY,
+        CDFLAG, TRANAMT, BAL,
+        DAYS, FLAG, NORETAMT,
+        NORETINT, VOUCHERNO, MEMOCODE,
+        MEMONAME, OPPACCTNO, CANACCTNO,
+        TRANTIME, SERSEQNO, SUBSERSEQNO,
+        TRANCODE, SUBTRANCODE, TRANBRC,
+        TELLERCODE, AUTHCODE, CHECKCODE,
+        PGM, PRINTFLAG, TRANSOURCE,
+        RECORDTYPE, FLAG1, FLAG2,
+        FLAG3, SEQ, SEQ1, RIVAL_MERCHANT_ID
+        )
+        values (#{transno,jdbcType=VARCHAR}, #{brc,jdbcType=VARCHAR}, #{acctno,jdbcType=VARCHAR},
+        #{acctstat,jdbcType=VARCHAR}, #{transType,jdbcType=VARCHAR}, #{originalSerialNo,jdbcType=VARCHAR},
+        #{originalTransDate,jdbcType=VARCHAR}, #{originalTransTime,jdbcType=VARCHAR}, #{sourceOfFunds,jdbcType=VARCHAR},
+        #{accountId,jdbcType=VARCHAR}, #{accountClass,jdbcType=VARCHAR}, #{accountCl,jdbcType=VARCHAR},
+        #{reqSerialNo,jdbcType=VARCHAR}, #{reqTransDate,jdbcType=VARCHAR}, #{reqTransTime,jdbcType=VARCHAR},
+        #{accDate,jdbcType=VARCHAR}, #{merchantId,jdbcType=VARCHAR}, #{userDefindMark,jdbcType=VARCHAR},
+        #{transDate,jdbcType=TIMESTAMP}, #{status,jdbcType=VARCHAR}, #{channel,jdbcType=VARCHAR},
+        #{businessType,jdbcType=VARCHAR}, #{ordnu,jdbcType=VARCHAR}, #{inacctno,jdbcType=VARCHAR},
+        #{subctrlcode,jdbcType=VARCHAR}, #{acctype,jdbcType=VARCHAR}, #{ccy,jdbcType=VARCHAR},
+        #{cdflag,jdbcType=VARCHAR}, #{tranamt,jdbcType=DECIMAL}, #{bal,jdbcType=DECIMAL},
+        #{days,jdbcType=VARCHAR}, #{flag,jdbcType=VARCHAR}, #{noretamt,jdbcType=DECIMAL},
+        #{noretint,jdbcType=DECIMAL}, #{voucherno,jdbcType=VARCHAR}, #{memocode,jdbcType=VARCHAR},
+        #{memoname,jdbcType=VARCHAR}, #{oppacctno,jdbcType=VARCHAR}, #{canacctno,jdbcType=VARCHAR},
+        #{trantime,jdbcType=VARCHAR}, #{serseqno,jdbcType=VARCHAR}, #{subserseqno,jdbcType=VARCHAR},
+        #{trancode,jdbcType=VARCHAR}, #{subtrancode,jdbcType=VARCHAR}, #{tranbrc,jdbcType=VARCHAR},
+        #{tellercode,jdbcType=VARCHAR}, #{authcode,jdbcType=VARCHAR}, #{checkcode,jdbcType=VARCHAR},
+        #{pgm,jdbcType=VARCHAR}, #{printflag,jdbcType=VARCHAR}, #{transource,jdbcType=VARCHAR},
+        #{recordtype,jdbcType=VARCHAR}, #{flag1,jdbcType=VARCHAR}, #{flag2,jdbcType=VARCHAR},
+        #{flag3,jdbcType=VARCHAR}, #{seq,jdbcType=VARCHAR}, #{seq1,jdbcType=VARCHAR},
+        #{rivalMerchantId,jdbcType=VARCHAR}
+        )
+    </insert>
+    <insert id="insertSelective" parameterType="com.smk.pay.core.entity.LnsAcctListEntity">
+        insert into LNSACCTLIST
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="transno != null">
+                TRANSNO,
+            </if>
+            <if test="brc != null">
+                BRC,
+            </if>
+            <if test="acctno != null">
+                ACCTNO,
+            </if>
+            <if test="acctstat != null">
+                ACCTSTAT,
+            </if>
+            <if test="transType != null">
+                TRANS_TYPE,
+            </if>
+            <if test="originalSerialNo != null">
+                ORIGINAL_SERIAL_NO,
+            </if>
+            <if test="originalTransDate != null">
+                ORIGINAL_TRANS_DATE,
+            </if>
+            <if test="originalTransTime != null">
+                ORIGINAL_TRANS_TIME,
+            </if>
+            <if test="sourceOfFunds != null">
+                SOURCE_OF_FUNDS,
+            </if>
+            <if test="accountId != null">
+                ACCOUNT_ID,
+            </if>
+            <if test="accountClass != null">
+                ACCOUNT_CLASS,
+            </if>
+            <if test="accountCl != null">
+                ACCOUNT_CL,
+            </if>
+            <if test="reqSerialNo != null">
+                REQ_SERIAL_NO,
+            </if>
+            <if test="reqTransDate != null">
+                REQ_TRANS_DATE,
+            </if>
+            <if test="reqTransTime != null">
+                REQ_TRANS_TIME,
+            </if>
+            <if test="accDate != null">
+                ACC_DATE,
+            </if>
+            <if test="merchantId != null">
+                MERCHANT_ID,
+            </if>
+            <if test="userDefindMark != null">
+                USER_DEFIND_MARK,
+            </if>
+            <if test="transDate != null">
+                TRANS_DATE,
+            </if>
+            <if test="status != null">
+                STATUS,
+            </if>
+            <if test="channel != null">
+                CHANNEL,
+            </if>
+            <if test="businessType != null">
+                BUSINESS_TYPE,
+            </if>
+            <if test="ordnu != null">
+                ORDNU,
+            </if>
+            <if test="inacctno != null">
+                INACCTNO,
+            </if>
+            <if test="subctrlcode != null">
+                SUBCTRLCODE,
+            </if>
+            <if test="acctype != null">
+                ACCTYPE,
+            </if>
+            <if test="ccy != null">
+                CCY,
+            </if>
+            <if test="cdflag != null">
+                CDFLAG,
+            </if>
+            <if test="tranamt != null">
+                TRANAMT,
+            </if>
+            <if test="bal != null">
+                BAL,
+            </if>
+            <if test="days != null">
+                DAYS,
+            </if>
+            <if test="flag != null">
+                FLAG,
+            </if>
+            <if test="noretamt != null">
+                NORETAMT,
+            </if>
+            <if test="noretint != null">
+                NORETINT,
+            </if>
+            <if test="voucherno != null">
+                VOUCHERNO,
+            </if>
+            <if test="memocode != null">
+                MEMOCODE,
+            </if>
+            <if test="memoname != null">
+                MEMONAME,
+            </if>
+            <if test="oppacctno != null">
+                OPPACCTNO,
+            </if>
+            <if test="canacctno != null">
+                CANACCTNO,
+            </if>
+            <if test="trantime != null">
+                TRANTIME,
+            </if>
+            <if test="serseqno != null">
+                SERSEQNO,
+            </if>
+            <if test="subserseqno != null">
+                SUBSERSEQNO,
+            </if>
+            <if test="trancode != null">
+                TRANCODE,
+            </if>
+            <if test="subtrancode != null">
+                SUBTRANCODE,
+            </if>
+            <if test="tranbrc != null">
+                TRANBRC,
+            </if>
+            <if test="tellercode != null">
+                TELLERCODE,
+            </if>
+            <if test="authcode != null">
+                AUTHCODE,
+            </if>
+            <if test="checkcode != null">
+                CHECKCODE,
+            </if>
+            <if test="pgm != null">
+                PGM,
+            </if>
+            <if test="printflag != null">
+                PRINTFLAG,
+            </if>
+            <if test="transource != null">
+                TRANSOURCE,
+            </if>
+            <if test="recordtype != null">
+                RECORDTYPE,
+            </if>
+            <if test="flag1 != null">
+                FLAG1,
+            </if>
+            <if test="flag2 != null">
+                FLAG2,
+            </if>
+            <if test="flag3 != null">
+                FLAG3,
+            </if>
+            <if test="seq != null">
+                SEQ,
+            </if>
+            <if test="seq1 != null">
+                SEQ1,
+            </if>
+            <if test="rivalMerchantId != null">
+                RIVAL_MERCHANT_ID,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="transno != null">
+                #{transno,jdbcType=VARCHAR},
+            </if>
+            <if test="brc != null">
+                #{brc,jdbcType=VARCHAR},
+            </if>
+            <if test="acctno != null">
+                #{acctno,jdbcType=VARCHAR},
+            </if>
+            <if test="acctstat != null">
+                #{acctstat,jdbcType=VARCHAR},
+            </if>
+            <if test="transType != null">
+                #{transType,jdbcType=VARCHAR},
+            </if>
+            <if test="originalSerialNo != null">
+                #{originalSerialNo,jdbcType=VARCHAR},
+            </if>
+            <if test="originalTransDate != null">
+                #{originalTransDate,jdbcType=VARCHAR},
+            </if>
+            <if test="originalTransTime != null">
+                #{originalTransTime,jdbcType=VARCHAR},
+            </if>
+            <if test="sourceOfFunds != null">
+                #{sourceOfFunds,jdbcType=VARCHAR},
+            </if>
+            <if test="accountId != null">
+                #{accountId,jdbcType=VARCHAR},
+            </if>
+            <if test="accountClass != null">
+                #{accountClass,jdbcType=VARCHAR},
+            </if>
+            <if test="accountCl != null">
+                #{accountCl,jdbcType=VARCHAR},
+            </if>
+            <if test="reqSerialNo != null">
+                #{reqSerialNo,jdbcType=VARCHAR},
+            </if>
+            <if test="reqTransDate != null">
+                #{reqTransDate,jdbcType=VARCHAR},
+            </if>
+            <if test="reqTransTime != null">
+                #{reqTransTime,jdbcType=VARCHAR},
+            </if>
+            <if test="accDate != null">
+                #{accDate,jdbcType=VARCHAR},
+            </if>
+            <if test="merchantId != null">
+                #{merchantId,jdbcType=VARCHAR},
+            </if>
+            <if test="userDefindMark != null">
+                #{userDefindMark,jdbcType=VARCHAR},
+            </if>
+            <if test="transDate != null">
+                #{transDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=VARCHAR},
+            </if>
+            <if test="channel != null">
+                #{channel,jdbcType=VARCHAR},
+            </if>
+            <if test="businessType != null">
+                #{businessType,jdbcType=VARCHAR},
+            </if>
+            <if test="ordnu != null">
+                #{ordnu,jdbcType=VARCHAR},
+            </if>
+            <if test="inacctno != null">
+                #{inacctno,jdbcType=VARCHAR},
+            </if>
+            <if test="subctrlcode != null">
+                #{subctrlcode,jdbcType=VARCHAR},
+            </if>
+            <if test="acctype != null">
+                #{acctype,jdbcType=VARCHAR},
+            </if>
+            <if test="ccy != null">
+                #{ccy,jdbcType=VARCHAR},
+            </if>
+            <if test="cdflag != null">
+                #{cdflag,jdbcType=VARCHAR},
+            </if>
+            <if test="tranamt != null">
+                #{tranamt,jdbcType=DECIMAL},
+            </if>
+            <if test="bal != null">
+                #{bal,jdbcType=DECIMAL},
+            </if>
+            <if test="days != null">
+                #{days,jdbcType=VARCHAR},
+            </if>
+            <if test="flag != null">
+                #{flag,jdbcType=VARCHAR},
+            </if>
+            <if test="noretamt != null">
+                #{noretamt,jdbcType=DECIMAL},
+            </if>
+            <if test="noretint != null">
+                #{noretint,jdbcType=DECIMAL},
+            </if>
+            <if test="voucherno != null">
+                #{voucherno,jdbcType=VARCHAR},
+            </if>
+            <if test="memocode != null">
+                #{memocode,jdbcType=VARCHAR},
+            </if>
+            <if test="memoname != null">
+                #{memoname,jdbcType=VARCHAR},
+            </if>
+            <if test="oppacctno != null">
+                #{oppacctno,jdbcType=VARCHAR},
+            </if>
+            <if test="canacctno != null">
+                #{canacctno,jdbcType=VARCHAR},
+            </if>
+            <if test="trantime != null">
+                #{trantime,jdbcType=VARCHAR},
+            </if>
+            <if test="serseqno != null">
+                #{serseqno,jdbcType=VARCHAR},
+            </if>
+            <if test="subserseqno != null">
+                #{subserseqno,jdbcType=VARCHAR},
+            </if>
+            <if test="trancode != null">
+                #{trancode,jdbcType=VARCHAR},
+            </if>
+            <if test="subtrancode != null">
+                #{subtrancode,jdbcType=VARCHAR},
+            </if>
+            <if test="tranbrc != null">
+                #{tranbrc,jdbcType=VARCHAR},
+            </if>
+            <if test="tellercode != null">
+                #{tellercode,jdbcType=VARCHAR},
+            </if>
+            <if test="authcode != null">
+                #{authcode,jdbcType=VARCHAR},
+            </if>
+            <if test="checkcode != null">
+                #{checkcode,jdbcType=VARCHAR},
+            </if>
+            <if test="pgm != null">
+                #{pgm,jdbcType=VARCHAR},
+            </if>
+            <if test="printflag != null">
+                #{printflag,jdbcType=VARCHAR},
+            </if>
+            <if test="transource != null">
+                #{transource,jdbcType=VARCHAR},
+            </if>
+            <if test="recordtype != null">
+                #{recordtype,jdbcType=VARCHAR},
+            </if>
+            <if test="flag1 != null">
+                #{flag1,jdbcType=VARCHAR},
+            </if>
+            <if test="flag2 != null">
+                #{flag2,jdbcType=VARCHAR},
+            </if>
+            <if test="flag3 != null">
+                #{flag3,jdbcType=VARCHAR},
+            </if>
+            <if test="seq != null">
+                #{seq,jdbcType=VARCHAR},
+            </if>
+            <if test="seq1 != null">
+                #{seq1,jdbcType=VARCHAR},
+            </if>
+            <if test="rivalMerchantId != null">
+                #{rivalMerchantId,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <select id="count" parameterType="com.smk.pay.dal.condtion.EntityCondition" resultType="java.lang.Integer">
+        select count(*) from LNSACCTLIST
+        <if test="_parameter != null">
+            <include refid="Query_Where_Clause"/>
+        </if>
+    </select>
+    <update id="updateSelective" parameterType="map">
+        update LNSACCTLIST
+        <set>
+            <if test="record.transno != null">
+                TRANSNO = #{record.transno,jdbcType=VARCHAR},
+            </if>
+            <if test="record.brc != null">
+                BRC = #{record.brc,jdbcType=VARCHAR},
+            </if>
+            <if test="record.acctno != null">
+                ACCTNO = #{record.acctno,jdbcType=VARCHAR},
+            </if>
+            <if test="record.acctstat != null">
+                ACCTSTAT = #{record.acctstat,jdbcType=VARCHAR},
+            </if>
+            <if test="record.transType != null">
+                TRANS_TYPE = #{record.transType,jdbcType=VARCHAR},
+            </if>
+            <if test="record.originalSerialNo != null">
+                ORIGINAL_SERIAL_NO = #{record.originalSerialNo,jdbcType=VARCHAR},
+            </if>
+            <if test="record.originalTransDate != null">
+                ORIGINAL_TRANS_DATE = #{record.originalTransDate,jdbcType=VARCHAR},
+            </if>
+            <if test="record.originalTransTime != null">
+                ORIGINAL_TRANS_TIME = #{record.originalTransTime,jdbcType=VARCHAR},
+            </if>
+            <if test="record.sourceOfFunds != null">
+                SOURCE_OF_FUNDS = #{record.sourceOfFunds,jdbcType=VARCHAR},
+            </if>
+            <if test="record.accountId != null">
+                ACCOUNT_ID = #{record.accountId,jdbcType=VARCHAR},
+            </if>
+            <if test="record.accountClass != null">
+                ACCOUNT_CLASS = #{record.accountClass,jdbcType=VARCHAR},
+            </if>
+            <if test="record.accountCl != null">
+                ACCOUNT_CL = #{record.accountCl,jdbcType=VARCHAR},
+            </if>
+            <if test="record.reqSerialNo != null">
+                REQ_SERIAL_NO = #{record.reqSerialNo,jdbcType=VARCHAR},
+            </if>
+            <if test="record.reqTransDate != null">
+                REQ_TRANS_DATE = #{record.reqTransDate,jdbcType=VARCHAR},
+            </if>
+            <if test="record.reqTransTime != null">
+                REQ_TRANS_TIME = #{record.reqTransTime,jdbcType=VARCHAR},
+            </if>
+            <if test="record.accDate != null">
+                ACC_DATE = #{record.accDate,jdbcType=VARCHAR},
+            </if>
+            <if test="record.merchantId != null">
+                MERCHANT_ID = #{record.merchantId,jdbcType=VARCHAR},
+            </if>
+            <if test="record.userDefindMark != null">
+                USER_DEFIND_MARK = #{record.userDefindMark,jdbcType=VARCHAR},
+            </if>
+            <if test="record.transDate != null">
+                TRANS_DATE = #{record.transDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="record.status != null">
+                STATUS = #{record.status,jdbcType=VARCHAR},
+            </if>
+            <if test="record.channel != null">
+                CHANNEL = #{record.channel,jdbcType=VARCHAR},
+            </if>
+            <if test="record.businessType != null">
+                BUSINESS_TYPE = #{record.businessType,jdbcType=VARCHAR},
+            </if>
+            <if test="record.ordnu != null">
+                ORDNU = #{record.ordnu,jdbcType=VARCHAR},
+            </if>
+            <if test="record.inacctno != null">
+                INACCTNO = #{record.inacctno,jdbcType=VARCHAR},
+            </if>
+            <if test="record.subctrlcode != null">
+                SUBCTRLCODE = #{record.subctrlcode,jdbcType=VARCHAR},
+            </if>
+            <if test="record.acctype != null">
+                ACCTYPE = #{record.acctype,jdbcType=VARCHAR},
+            </if>
+            <if test="record.ccy != null">
+                CCY = #{record.ccy,jdbcType=VARCHAR},
+            </if>
+            <if test="record.cdflag != null">
+                CDFLAG = #{record.cdflag,jdbcType=VARCHAR},
+            </if>
+            <if test="record.tranamt != null">
+                TRANAMT = #{record.tranamt,jdbcType=DECIMAL},
+            </if>
+            <if test="record.bal != null">
+                BAL = #{record.bal,jdbcType=DECIMAL},
+            </if>
+            <if test="record.days != null">
+                DAYS = #{record.days,jdbcType=VARCHAR},
+            </if>
+            <if test="record.flag != null">
+                FLAG = #{record.flag,jdbcType=VARCHAR},
+            </if>
+            <if test="record.noretamt != null">
+                NORETAMT = #{record.noretamt,jdbcType=DECIMAL},
+            </if>
+            <if test="record.noretint != null">
+                NORETINT = #{record.noretint,jdbcType=DECIMAL},
+            </if>
+            <if test="record.voucherno != null">
+                VOUCHERNO = #{record.voucherno,jdbcType=VARCHAR},
+            </if>
+            <if test="record.memocode != null">
+                MEMOCODE = #{record.memocode,jdbcType=VARCHAR},
+            </if>
+            <if test="record.memoname != null">
+                MEMONAME = #{record.memoname,jdbcType=VARCHAR},
+            </if>
+            <if test="record.oppacctno != null">
+                OPPACCTNO = #{record.oppacctno,jdbcType=VARCHAR},
+            </if>
+            <if test="record.canacctno != null">
+                CANACCTNO = #{record.canacctno,jdbcType=VARCHAR},
+            </if>
+            <if test="record.trantime != null">
+                TRANTIME = #{record.trantime,jdbcType=VARCHAR},
+            </if>
+            <if test="record.serseqno != null">
+                SERSEQNO = #{record.serseqno,jdbcType=VARCHAR},
+            </if>
+            <if test="record.subserseqno != null">
+                SUBSERSEQNO = #{record.subserseqno,jdbcType=VARCHAR},
+            </if>
+            <if test="record.trancode != null">
+                TRANCODE = #{record.trancode,jdbcType=VARCHAR},
+            </if>
+            <if test="record.subtrancode != null">
+                SUBTRANCODE = #{record.subtrancode,jdbcType=VARCHAR},
+            </if>
+            <if test="record.tranbrc != null">
+                TRANBRC = #{record.tranbrc,jdbcType=VARCHAR},
+            </if>
+            <if test="record.tellercode != null">
+                TELLERCODE = #{record.tellercode,jdbcType=VARCHAR},
+            </if>
+            <if test="record.authcode != null">
+                AUTHCODE = #{record.authcode,jdbcType=VARCHAR},
+            </if>
+            <if test="record.checkcode != null">
+                CHECKCODE = #{record.checkcode,jdbcType=VARCHAR},
+            </if>
+            <if test="record.pgm != null">
+                PGM = #{record.pgm,jdbcType=VARCHAR},
+            </if>
+            <if test="record.printflag != null">
+                PRINTFLAG = #{record.printflag,jdbcType=VARCHAR},
+            </if>
+            <if test="record.transource != null">
+                TRANSOURCE = #{record.transource,jdbcType=VARCHAR},
+            </if>
+            <if test="record.recordtype != null">
+                RECORDTYPE = #{record.recordtype,jdbcType=VARCHAR},
+            </if>
+            <if test="record.flag1 != null">
+                FLAG1 = #{record.flag1,jdbcType=VARCHAR},
+            </if>
+            <if test="record.flag2 != null">
+                FLAG2 = #{record.flag2,jdbcType=VARCHAR},
+            </if>
+            <if test="record.flag3 != null">
+                FLAG3 = #{record.flag3,jdbcType=VARCHAR},
+            </if>
+            <if test="record.seq != null">
+                SEQ = #{record.seq,jdbcType=VARCHAR},
+            </if>
+            <if test="record.seq1 != null">
+                SEQ1 = #{record.seq1,jdbcType=VARCHAR},
+            </if>
+            <if test="record.rivalMerchantId != null">
+                RIVAL_MERCHANT_ID = #{record.rivalMerchantId,jdbcType=VARCHAR},
+            </if>
+        </set>
+        <if test="_parameter != null">
+            <include refid="Update_Where_Clause"/>
+        </if>
+    </update>
+    <update id="update" parameterType="map">
+        update LNSACCTLIST
+        set TRANSNO = #{record.transno,jdbcType=VARCHAR},
+        BRC = #{record.brc,jdbcType=VARCHAR},
+        ACCTNO = #{record.acctno,jdbcType=VARCHAR},
+        ACCTSTAT = #{record.acctstat,jdbcType=VARCHAR},
+        TRANS_TYPE = #{record.transType,jdbcType=VARCHAR},
+        ORIGINAL_SERIAL_NO = #{record.originalSerialNo,jdbcType=VARCHAR},
+        ORIGINAL_TRANS_DATE = #{record.originalTransDate,jdbcType=VARCHAR},
+        ORIGINAL_TRANS_TIME = #{record.originalTransTime,jdbcType=VARCHAR},
+        SOURCE_OF_FUNDS = #{record.sourceOfFunds,jdbcType=VARCHAR},
+        ACCOUNT_ID = #{record.accountId,jdbcType=VARCHAR},
+        ACCOUNT_CLASS = #{record.accountClass,jdbcType=VARCHAR},
+        ACCOUNT_CL = #{record.accountCl,jdbcType=VARCHAR},
+        REQ_SERIAL_NO = #{record.reqSerialNo,jdbcType=VARCHAR},
+        REQ_TRANS_DATE = #{record.reqTransDate,jdbcType=VARCHAR},
+        REQ_TRANS_TIME = #{record.reqTransTime,jdbcType=VARCHAR},
+        ACC_DATE = #{record.accDate,jdbcType=VARCHAR},
+        MERCHANT_ID = #{record.merchantId,jdbcType=VARCHAR},
+        USER_DEFIND_MARK = #{record.userDefindMark,jdbcType=VARCHAR},
+        TRANS_DATE = #{record.transDate,jdbcType=TIMESTAMP},
+        STATUS = #{record.status,jdbcType=VARCHAR},
+        CHANNEL = #{record.channel,jdbcType=VARCHAR},
+        BUSINESS_TYPE = #{record.businessType,jdbcType=VARCHAR},
+        ORDNU = #{record.ordnu,jdbcType=VARCHAR},
+        INACCTNO = #{record.inacctno,jdbcType=VARCHAR},
+        SUBCTRLCODE = #{record.subctrlcode,jdbcType=VARCHAR},
+        ACCTYPE = #{record.acctype,jdbcType=VARCHAR},
+        CCY = #{record.ccy,jdbcType=VARCHAR},
+        CDFLAG = #{record.cdflag,jdbcType=VARCHAR},
+        TRANAMT = #{record.tranamt,jdbcType=DECIMAL},
+        BAL = #{record.bal,jdbcType=DECIMAL},
+        DAYS = #{record.days,jdbcType=VARCHAR},
+        FLAG = #{record.flag,jdbcType=VARCHAR},
+        NORETAMT = #{record.noretamt,jdbcType=DECIMAL},
+        NORETINT = #{record.noretint,jdbcType=DECIMAL},
+        VOUCHERNO = #{record.voucherno,jdbcType=VARCHAR},
+        MEMOCODE = #{record.memocode,jdbcType=VARCHAR},
+        MEMONAME = #{record.memoname,jdbcType=VARCHAR},
+        OPPACCTNO = #{record.oppacctno,jdbcType=VARCHAR},
+        CANACCTNO = #{record.canacctno,jdbcType=VARCHAR},
+        TRANTIME = #{record.trantime,jdbcType=VARCHAR},
+        SERSEQNO = #{record.serseqno,jdbcType=VARCHAR},
+        SUBSERSEQNO = #{record.subserseqno,jdbcType=VARCHAR},
+        TRANCODE = #{record.trancode,jdbcType=VARCHAR},
+        SUBTRANCODE = #{record.subtrancode,jdbcType=VARCHAR},
+        TRANBRC = #{record.tranbrc,jdbcType=VARCHAR},
+        TELLERCODE = #{record.tellercode,jdbcType=VARCHAR},
+        AUTHCODE = #{record.authcode,jdbcType=VARCHAR},
+        CHECKCODE = #{record.checkcode,jdbcType=VARCHAR},
+        PGM = #{record.pgm,jdbcType=VARCHAR},
+        PRINTFLAG = #{record.printflag,jdbcType=VARCHAR},
+        TRANSOURCE = #{record.transource,jdbcType=VARCHAR},
+        RECORDTYPE = #{record.recordtype,jdbcType=VARCHAR},
+        FLAG1 = #{record.flag1,jdbcType=VARCHAR},
+        FLAG2 = #{record.flag2,jdbcType=VARCHAR},
+        FLAG3 = #{record.flag3,jdbcType=VARCHAR},
+        SEQ = #{record.seq,jdbcType=VARCHAR},
+        SEQ1 = #{record.seq1,jdbcType=VARCHAR},
+        RIVAL_MERCHANT_ID = #{record.rivalMerchantId,jdbcType=VARCHAR}
+        <if test="_parameter != null">
+            <include refid="Update_Where_Clause"/>
+        </if>
+    </update>
+    <update id="updateByPrimaryKeySelective" parameterType="com.smk.pay.core.entity.LnsAcctListEntity">
+        update LNSACCTLIST
+        <set>
+            <if test="brc != null">
+                BRC = #{brc,jdbcType=VARCHAR},
+            </if>
+            <if test="acctno != null">
+                ACCTNO = #{acctno,jdbcType=VARCHAR},
+            </if>
+            <if test="acctstat != null">
+                ACCTSTAT = #{acctstat,jdbcType=VARCHAR},
+            </if>
+            <if test="transType != null">
+                TRANS_TYPE = #{transType,jdbcType=VARCHAR},
+            </if>
+            <if test="originalSerialNo != null">
+                ORIGINAL_SERIAL_NO = #{originalSerialNo,jdbcType=VARCHAR},
+            </if>
+            <if test="originalTransDate != null">
+                ORIGINAL_TRANS_DATE = #{originalTransDate,jdbcType=VARCHAR},
+            </if>
+            <if test="originalTransTime != null">
+                ORIGINAL_TRANS_TIME = #{originalTransTime,jdbcType=VARCHAR},
+            </if>
+            <if test="sourceOfFunds != null">
+                SOURCE_OF_FUNDS = #{sourceOfFunds,jdbcType=VARCHAR},
+            </if>
+            <if test="accountId != null">
+                ACCOUNT_ID = #{accountId,jdbcType=VARCHAR},
+            </if>
+            <if test="accountClass != null">
+                ACCOUNT_CLASS = #{accountClass,jdbcType=VARCHAR},
+            </if>
+            <if test="accountCl != null">
+                ACCOUNT_CL = #{accountCl,jdbcType=VARCHAR},
+            </if>
+            <if test="reqSerialNo != null">
+                REQ_SERIAL_NO = #{reqSerialNo,jdbcType=VARCHAR},
+            </if>
+            <if test="reqTransDate != null">
+                REQ_TRANS_DATE = #{reqTransDate,jdbcType=VARCHAR},
+            </if>
+            <if test="reqTransTime != null">
+                REQ_TRANS_TIME = #{reqTransTime,jdbcType=VARCHAR},
+            </if>
+            <if test="accDate != null">
+                ACC_DATE = #{accDate,jdbcType=VARCHAR},
+            </if>
+            <if test="merchantId != null">
+                MERCHANT_ID = #{merchantId,jdbcType=VARCHAR},
+            </if>
+            <if test="userDefindMark != null">
+                USER_DEFIND_MARK = #{userDefindMark,jdbcType=VARCHAR},
+            </if>
+            <if test="transDate != null">
+                TRANS_DATE = #{transDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="status != null">
+                STATUS = #{status,jdbcType=VARCHAR},
+            </if>
+            <if test="channel != null">
+                CHANNEL = #{channel,jdbcType=VARCHAR},
+            </if>
+            <if test="businessType != null">
+                BUSINESS_TYPE = #{businessType,jdbcType=VARCHAR},
+            </if>
+            <if test="ordnu != null">
+                ORDNU = #{ordnu,jdbcType=VARCHAR},
+            </if>
+            <if test="inacctno != null">
+                INACCTNO = #{inacctno,jdbcType=VARCHAR},
+            </if>
+            <if test="subctrlcode != null">
+                SUBCTRLCODE = #{subctrlcode,jdbcType=VARCHAR},
+            </if>
+            <if test="acctype != null">
+                ACCTYPE = #{acctype,jdbcType=VARCHAR},
+            </if>
+            <if test="ccy != null">
+                CCY = #{ccy,jdbcType=VARCHAR},
+            </if>
+            <if test="cdflag != null">
+                CDFLAG = #{cdflag,jdbcType=VARCHAR},
+            </if>
+            <if test="tranamt != null">
+                TRANAMT = #{tranamt,jdbcType=DECIMAL},
+            </if>
+            <if test="bal != null">
+                BAL = #{bal,jdbcType=DECIMAL},
+            </if>
+            <if test="days != null">
+                DAYS = #{days,jdbcType=VARCHAR},
+            </if>
+            <if test="flag != null">
+                FLAG = #{flag,jdbcType=VARCHAR},
+            </if>
+            <if test="noretamt != null">
+                NORETAMT = #{noretamt,jdbcType=DECIMAL},
+            </if>
+            <if test="noretint != null">
+                NORETINT = #{noretint,jdbcType=DECIMAL},
+            </if>
+            <if test="voucherno != null">
+                VOUCHERNO = #{voucherno,jdbcType=VARCHAR},
+            </if>
+            <if test="memocode != null">
+                MEMOCODE = #{memocode,jdbcType=VARCHAR},
+            </if>
+            <if test="memoname != null">
+                MEMONAME = #{memoname,jdbcType=VARCHAR},
+            </if>
+            <if test="oppacctno != null">
+                OPPACCTNO = #{oppacctno,jdbcType=VARCHAR},
+            </if>
+            <if test="canacctno != null">
+                CANACCTNO = #{canacctno,jdbcType=VARCHAR},
+            </if>
+            <if test="trantime != null">
+                TRANTIME = #{trantime,jdbcType=VARCHAR},
+            </if>
+            <if test="serseqno != null">
+                SERSEQNO = #{serseqno,jdbcType=VARCHAR},
+            </if>
+            <if test="subserseqno != null">
+                SUBSERSEQNO = #{subserseqno,jdbcType=VARCHAR},
+            </if>
+            <if test="trancode != null">
+                TRANCODE = #{trancode,jdbcType=VARCHAR},
+            </if>
+            <if test="subtrancode != null">
+                SUBTRANCODE = #{subtrancode,jdbcType=VARCHAR},
+            </if>
+            <if test="tranbrc != null">
+                TRANBRC = #{tranbrc,jdbcType=VARCHAR},
+            </if>
+            <if test="tellercode != null">
+                TELLERCODE = #{tellercode,jdbcType=VARCHAR},
+            </if>
+            <if test="authcode != null">
+                AUTHCODE = #{authcode,jdbcType=VARCHAR},
+            </if>
+            <if test="checkcode != null">
+                CHECKCODE = #{checkcode,jdbcType=VARCHAR},
+            </if>
+            <if test="pgm != null">
+                PGM = #{pgm,jdbcType=VARCHAR},
+            </if>
+            <if test="printflag != null">
+                PRINTFLAG = #{printflag,jdbcType=VARCHAR},
+            </if>
+            <if test="transource != null">
+                TRANSOURCE = #{transource,jdbcType=VARCHAR},
+            </if>
+            <if test="recordtype != null">
+                RECORDTYPE = #{recordtype,jdbcType=VARCHAR},
+            </if>
+            <if test="flag1 != null">
+                FLAG1 = #{flag1,jdbcType=VARCHAR},
+            </if>
+            <if test="flag2 != null">
+                FLAG2 = #{flag2,jdbcType=VARCHAR},
+            </if>
+            <if test="flag3 != null">
+                FLAG3 = #{flag3,jdbcType=VARCHAR},
+            </if>
+            <if test="seq != null">
+                SEQ = #{seq,jdbcType=VARCHAR},
+            </if>
+            <if test="seq1 != null">
+                SEQ1 = #{seq1,jdbcType=VARCHAR},
+            </if>
+            <if test="rivalMerchantId != null">
+                RIVAL_MERCHANT_ID = #{rivalMerchantId,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where TRANSNO = #{transno,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.smk.pay.core.entity.LnsAcctListEntity">
+        update LNSACCTLIST
+        set BRC = #{brc,jdbcType=VARCHAR},
+        ACCTNO = #{acctno,jdbcType=VARCHAR},
+        ACCTSTAT = #{acctstat,jdbcType=VARCHAR},
+        TRANS_TYPE = #{transType,jdbcType=VARCHAR},
+        ORIGINAL_SERIAL_NO = #{originalSerialNo,jdbcType=VARCHAR},
+        ORIGINAL_TRANS_DATE = #{originalTransDate,jdbcType=VARCHAR},
+        ORIGINAL_TRANS_TIME = #{originalTransTime,jdbcType=VARCHAR},
+        SOURCE_OF_FUNDS = #{sourceOfFunds,jdbcType=VARCHAR},
+        ACCOUNT_ID = #{accountId,jdbcType=VARCHAR},
+        ACCOUNT_CLASS = #{accountClass,jdbcType=VARCHAR},
+        ACCOUNT_CL = #{accountCl,jdbcType=VARCHAR},
+        REQ_SERIAL_NO = #{reqSerialNo,jdbcType=VARCHAR},
+        REQ_TRANS_DATE = #{reqTransDate,jdbcType=VARCHAR},
+        REQ_TRANS_TIME = #{reqTransTime,jdbcType=VARCHAR},
+        ACC_DATE = #{accDate,jdbcType=VARCHAR},
+        MERCHANT_ID = #{merchantId,jdbcType=VARCHAR},
+        USER_DEFIND_MARK = #{userDefindMark,jdbcType=VARCHAR},
+        TRANS_DATE = #{transDate,jdbcType=TIMESTAMP},
+        STATUS = #{status,jdbcType=VARCHAR},
+        CHANNEL = #{channel,jdbcType=VARCHAR},
+        BUSINESS_TYPE = #{businessType,jdbcType=VARCHAR},
+        ORDNU = #{ordnu,jdbcType=VARCHAR},
+        INACCTNO = #{inacctno,jdbcType=VARCHAR},
+        SUBCTRLCODE = #{subctrlcode,jdbcType=VARCHAR},
+        ACCTYPE = #{acctype,jdbcType=VARCHAR},
+        CCY = #{ccy,jdbcType=VARCHAR},
+        CDFLAG = #{cdflag,jdbcType=VARCHAR},
+        TRANAMT = #{tranamt,jdbcType=DECIMAL},
+        BAL = #{bal,jdbcType=DECIMAL},
+        DAYS = #{days,jdbcType=VARCHAR},
+        FLAG = #{flag,jdbcType=VARCHAR},
+        NORETAMT = #{noretamt,jdbcType=DECIMAL},
+        NORETINT = #{noretint,jdbcType=DECIMAL},
+        VOUCHERNO = #{voucherno,jdbcType=VARCHAR},
+        MEMOCODE = #{memocode,jdbcType=VARCHAR},
+        MEMONAME = #{memoname,jdbcType=VARCHAR},
+        OPPACCTNO = #{oppacctno,jdbcType=VARCHAR},
+        CANACCTNO = #{canacctno,jdbcType=VARCHAR},
+        TRANTIME = #{trantime,jdbcType=VARCHAR},
+        SERSEQNO = #{serseqno,jdbcType=VARCHAR},
+        SUBSERSEQNO = #{subserseqno,jdbcType=VARCHAR},
+        TRANCODE = #{trancode,jdbcType=VARCHAR},
+        SUBTRANCODE = #{subtrancode,jdbcType=VARCHAR},
+        TRANBRC = #{tranbrc,jdbcType=VARCHAR},
+        TELLERCODE = #{tellercode,jdbcType=VARCHAR},
+        AUTHCODE = #{authcode,jdbcType=VARCHAR},
+        CHECKCODE = #{checkcode,jdbcType=VARCHAR},
+        PGM = #{pgm,jdbcType=VARCHAR},
+        PRINTFLAG = #{printflag,jdbcType=VARCHAR},
+        TRANSOURCE = #{transource,jdbcType=VARCHAR},
+        RECORDTYPE = #{recordtype,jdbcType=VARCHAR},
+        FLAG1 = #{flag1,jdbcType=VARCHAR},
+        FLAG2 = #{flag2,jdbcType=VARCHAR},
+        FLAG3 = #{flag3,jdbcType=VARCHAR},
+        SEQ = #{seq,jdbcType=VARCHAR},
+        SEQ1 = #{seq1,jdbcType=VARCHAR},
+        RIVAL_MERCHANT_ID = #{rivalMerchantId,jdbcType=VARCHAR}
+        where TRANSNO = #{transno,jdbcType=VARCHAR}
+    </update>
+</mapper>

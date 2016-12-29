@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.smk.pay.core.mapper.AccSystemEntityMapper">
+    <resultMap id="BaseResultMap" type="com.smk.pay.core.entity.AccSystemEntity">
+        <result column="ACC_DATE" property="accDate" jdbcType="VARCHAR"/>
+        <result column="XJ_LIMITE" property="xjLimite" jdbcType="DECIMAL"/>
+        <result column="GGK_LIMITE" property="ggkLimite" jdbcType="DECIMAL"/>
+        <result column="CARD_LIMITE" property="cardLimite" jdbcType="DECIMAL"/>
+        <result column="TOTAL_TYPE" property="totalType" jdbcType="VARCHAR"/>
+        <result column="RESET_DATE" property="resetDate" jdbcType="VARCHAR"/>
+        <result column="ENCRYPTION_FLAG" property="encryptionFlag" jdbcType="VARCHAR"/>
+        <result column="ENCRYPTION_STATUS" property="encryptionStatus" jdbcType="VARCHAR"/>
+        <result column="O2O_AMOUNT_LIMITE" property="o2oAmountLimite" jdbcType="DECIMAL"/>
+    </resultMap>
+    <sql id="Query_Where_Clause">
+        <where>
+            <foreach collection="oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" suffix=")" prefixOverrides="and">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach collection="criterion.value" item="listItem" open="(" close=")"
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+    <sql id="Update_Where_Clause">
+        <where>
+            <foreach collection="condition.oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" suffix=")" prefixOverrides="and">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach collection="criterion.value" item="listItem" open="(" close=")"
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+    <sql id="Base_Column_List">
+        ACC_DATE, XJ_LIMITE, GGK_LIMITE, CARD_LIMITE, TOTAL_TYPE, RESET_DATE, ENCRYPTION_FLAG,
+        ENCRYPTION_STATUS, O2O_AMOUNT_LIMITE
+    </sql>
+    <select id="selectList" resultMap="BaseResultMap" parameterType="com.smk.pay.dal.condtion.EntityCondition">
+        select
+        <if test="distinct">
+            distinct
+        </if>
+        <include refid="Base_Column_List"/>
+        from ACC_SYSTEM
+        <if test="_parameter != null">
+            <include refid="Query_Where_Clause"/>
+        </if>
+        <if test="orderByClause != null">
+            order by ${orderByClause}
+        </if>
+    </select>
+    <delete id="delete" parameterType="com.smk.pay.dal.condtion.EntityCondition">
+        delete from ACC_SYSTEM
+        <if test="_parameter != null">
+            <include refid="Query_Where_Clause"/>
+        </if>
+    </delete>
+    <insert id="insert" parameterType="com.smk.pay.core.entity.AccSystemEntity">
+        insert into ACC_SYSTEM (ACC_DATE, XJ_LIMITE, GGK_LIMITE,
+        CARD_LIMITE, TOTAL_TYPE, RESET_DATE,
+        ENCRYPTION_FLAG, ENCRYPTION_STATUS, O2O_AMOUNT_LIMITE
+        )
+        values (#{accDate,jdbcType=VARCHAR}, #{xjLimite,jdbcType=DECIMAL}, #{ggkLimite,jdbcType=DECIMAL},
+        #{cardLimite,jdbcType=DECIMAL}, #{totalType,jdbcType=VARCHAR}, #{resetDate,jdbcType=VARCHAR},
+        #{encryptionFlag,jdbcType=VARCHAR}, #{encryptionStatus,jdbcType=VARCHAR}, #{o2oAmountLimite,jdbcType=DECIMAL}
+        )
+    </insert>
+    <insert id="insertSelective" parameterType="com.smk.pay.core.entity.AccSystemEntity">
+        insert into ACC_SYSTEM
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="accDate != null">
+                ACC_DATE,
+            </if>
+            <if test="xjLimite != null">
+                XJ_LIMITE,
+            </if>
+            <if test="ggkLimite != null">
+                GGK_LIMITE,
+            </if>
+            <if test="cardLimite != null">
+                CARD_LIMITE,
+            </if>
+            <if test="totalType != null">
+                TOTAL_TYPE,
+            </if>
+            <if test="resetDate != null">
+                RESET_DATE,
+            </if>
+            <if test="encryptionFlag != null">
+                ENCRYPTION_FLAG,
+            </if>
+            <if test="encryptionStatus != null">
+                ENCRYPTION_STATUS,
+            </if>
+            <if test="o2oAmountLimite != null">
+                O2O_AMOUNT_LIMITE,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="accDate != null">
+                #{accDate,jdbcType=VARCHAR},
+            </if>
+            <if test="xjLimite != null">
+                #{xjLimite,jdbcType=DECIMAL},
+            </if>
+            <if test="ggkLimite != null">
+                #{ggkLimite,jdbcType=DECIMAL},
+            </if>
+            <if test="cardLimite != null">
+                #{cardLimite,jdbcType=DECIMAL},
+            </if>
+            <if test="totalType != null">
+                #{totalType,jdbcType=VARCHAR},
+            </if>
+            <if test="resetDate != null">
+                #{resetDate,jdbcType=VARCHAR},
+            </if>
+            <if test="encryptionFlag != null">
+                #{encryptionFlag,jdbcType=VARCHAR},
+            </if>
+            <if test="encryptionStatus != null">
+                #{encryptionStatus,jdbcType=VARCHAR},
+            </if>
+            <if test="o2oAmountLimite != null">
+                #{o2oAmountLimite,jdbcType=DECIMAL},
+            </if>
+        </trim>
+    </insert>
+    <select id="count" parameterType="com.smk.pay.dal.condtion.EntityCondition" resultType="java.lang.Integer">
+        select count(*) from ACC_SYSTEM
+        <if test="_parameter != null">
+            <include refid="Query_Where_Clause"/>
+        </if>
+    </select>
+    <update id="updateSelective" parameterType="map">
+        update ACC_SYSTEM
+        <set>
+            <if test="record.accDate != null">
+                ACC_DATE = #{record.accDate,jdbcType=VARCHAR},
+            </if>
+            <if test="record.xjLimite != null">
+                XJ_LIMITE = #{record.xjLimite,jdbcType=DECIMAL},
+            </if>
+            <if test="record.ggkLimite != null">
+                GGK_LIMITE = #{record.ggkLimite,jdbcType=DECIMAL},
+            </if>
+            <if test="record.cardLimite != null">
+                CARD_LIMITE = #{record.cardLimite,jdbcType=DECIMAL},
+            </if>
+            <if test="record.totalType != null">
+                TOTAL_TYPE = #{record.totalType,jdbcType=VARCHAR},
+            </if>
+            <if test="record.resetDate != null">
+                RESET_DATE = #{record.resetDate,jdbcType=VARCHAR},
+            </if>
+            <if test="record.encryptionFlag != null">
+                ENCRYPTION_FLAG = #{record.encryptionFlag,jdbcType=VARCHAR},
+            </if>
+            <if test="record.encryptionStatus != null">
+                ENCRYPTION_STATUS = #{record.encryptionStatus,jdbcType=VARCHAR},
+            </if>
+            <if test="record.o2oAmountLimite != null">
+                O2O_AMOUNT_LIMITE = #{record.o2oAmountLimite,jdbcType=DECIMAL},
+            </if>
+        </set>
+        <if test="_parameter != null">
+            <include refid="Update_Where_Clause"/>
+        </if>
+    </update>
+    <update id="update" parameterType="map">
+        update ACC_SYSTEM
+        set ACC_DATE = #{record.accDate,jdbcType=VARCHAR},
+        XJ_LIMITE = #{record.xjLimite,jdbcType=DECIMAL},
+        GGK_LIMITE = #{record.ggkLimite,jdbcType=DECIMAL},
+        CARD_LIMITE = #{record.cardLimite,jdbcType=DECIMAL},
+        TOTAL_TYPE = #{record.totalType,jdbcType=VARCHAR},
+        RESET_DATE = #{record.resetDate,jdbcType=VARCHAR},
+        ENCRYPTION_FLAG = #{record.encryptionFlag,jdbcType=VARCHAR},
+        ENCRYPTION_STATUS = #{record.encryptionStatus,jdbcType=VARCHAR},
+        O2O_AMOUNT_LIMITE = #{record.o2oAmountLimite,jdbcType=DECIMAL}
+        <if test="_parameter != null">
+            <include refid="Update_Where_Clause"/>
+        </if>
+    </update>
+</mapper>

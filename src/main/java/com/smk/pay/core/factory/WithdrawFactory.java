@@ -1,0 +1,45 @@
+package com.smk.pay.core.factory;
+
+import com.smk.pay.account.core.enums.AccountFundFlowEnum;
+import com.smk.pay.core.constant.ResultCodeConstant;
+import com.smk.pay.core.exception.ServiceException;
+import com.smk.pay.core.manager.atom.IWithdraw;
+import com.smk.pay.core.manager.atom.impl.WithdrawXJ;
+import com.smk.pay.core.manager.atom.impl.WithdrawYHK;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.stereotype.Component;
+
+import java.util.concurrent.ConcurrentHashMap;
+
+/**
+ * Project plouto
+ * Created by chuanzhi.macz
+ * Date 2016/12/1 17:26
+ */
+@Component(value = "withdrawFactory")
+public class WithdrawFactory implements InitializingBean, ApplicationContextAware {
+
+    private static ConcurrentHashMap<AccountFundFlowEnum, IWithdraw> WITHDRAW_MAP =
+            new ConcurrentHashMap<AccountFundFlowEnum, IWithdraw>();
+    private ApplicationContext context;
+
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.context = applicationContext;
+    }
+
+    public IWithdraw getWithdrawBean(AccountFundFlowEnum fundFlowEnum) {
+        IWithdraw withdraw = WITHDRAW_MAP.get(fundFlowEnum);
+        if (withdraw == null)
+            throw new ServiceException(ResultCodeConstant.TRANS_TYPE_INCORRECT);
+
+        return withdraw;
+    }
+
+    public void afterPropertiesSet() throws Exception {
+        WITHDRAW_MAP.put(AccountFundFlowEnum.YHK, context.getBean(WithdrawYHK.class));
+        WITHDRAW_MAP.put(AccountFundFlowEnum.XJ, context.getBean(WithdrawXJ.class));
+    }
+}

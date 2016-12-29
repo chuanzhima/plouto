@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.smk.pay.core.mapper.LimitsEntityMapper">
+    <resultMap id="BaseResultMap" type="com.smk.pay.core.entity.LimitsEntity">
+        <result column="ACC_DATE" property="accDate" jdbcType="VARCHAR"/>
+        <result column="YLZH_LIMIT" property="ylzhLimit" jdbcType="DECIMAL"/>
+        <result column="ELZH_LIMIT" property="elzhLimit" jdbcType="DECIMAL"/>
+        <result column="SLZH_LIMIT" property="slzhLimit" jdbcType="DECIMAL"/>
+        <result column="TOTAL_TYPE" property="totalType" jdbcType="VARCHAR"/>
+        <result column="RESERVE_TWO" property="reserveTwo" jdbcType="DECIMAL"/>
+        <result column="RESERVE_THREE" property="reserveThree" jdbcType="VARCHAR"/>
+        <result column="RESERVE_FOUR" property="reserveFour" jdbcType="VARCHAR"/>
+        <result column="RESERVE_FIVE" property="reserveFive" jdbcType="DECIMAL"/>
+    </resultMap>
+    <sql id="Query_Where_Clause">
+        <where>
+            <foreach collection="oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" suffix=")" prefixOverrides="and">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach collection="criterion.value" item="listItem" open="(" close=")"
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+
+    <sql id="Base_Column_List">
+        ACC_DATE, YLZH_LIMIT, ELZH_LIMIT, SLZH_LIMIT, TOTAL_TYPE, RESERVE_TWO, RESERVE_THREE,
+        RESERVE_FOUR, RESERVE_FIVE
+    </sql>
+
+    <select id="selectOne" resultMap="BaseResultMap"
+            parameterType="com.smk.pay.dal.condtion.EntityCondition">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM LIMITS
+    </select>
+
+
+</mapper>

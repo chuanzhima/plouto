@@ -1,0 +1,112 @@
+package com.smk.pay.core.manager.atom.impl;
+
+import com.smk.pay.account.core.request.RequestHeader;
+import com.smk.pay.core.constant.AccountBizConstant;
+import com.smk.pay.core.constant.ResultCodeConstant;
+import com.smk.pay.core.dto.AccountInfoDto;
+import com.smk.pay.core.dto.TransDetailDto;
+import com.smk.pay.core.entity.InvoiceInfoEntity;
+import com.smk.pay.core.entity.O2oAmountDetailEntity;
+import com.smk.pay.core.enums.AccountTransTypeEnum;
+import com.smk.pay.core.exception.DBException;
+import com.smk.pay.core.exception.ServiceException;
+import com.smk.pay.core.manager.atom.IReverse;
+import com.smk.pay.core.manager.base.IAccountInfoManager;
+import com.smk.pay.core.manager.base.ITransDetailManager;
+import com.smk.pay.core.mapper.InvoiceInfoEntityMapper;
+import com.smk.pay.core.mapper.O2oAmountDetailEntityMapper;
+import com.smk.pay.dal.condtion.Criteria;
+import com.smk.pay.dal.condtion.EntityCondition;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
+
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.List;
+
+/**
+ * 提现冲正
+ * <p/>
+ * Project plouto
+ * Created by chuanzhi.macz
+ * Date 2016/12/14 20:40
+ */
+@Component("reverse4Withdraw")
+public class Reverse4Withdraw implements IReverse {
+
+    @Autowired
+    private IAccountInfoManager accountInfoManager;
+    @Autowired
+    private ITransDetailManager transDetailManager;
+    @Autowired
+    private InvoiceInfoEntityMapper invoiceInfoEntityMapper;
+    @Autowired
+    private O2oAmountDetailEntityMapper o2oAmountDetailEntityMapper;
+
+    @Override
+    public void reverse(String accountId, String transDetailSeq, RequestHeader header, String sequence, String accDate) {
+        AccountInfoDto accountInfoDto = accountInfoManager.queryAccountById(accountId);
+        TransDetailDto transDetailDto = transDetailManager.queryById(transDetailSeq, AccountBizConstant
+                .TRANS_DETAIL_TRANS_ID_1);
+
+        List<InvoiceInfoEntity> infoEntityList = invoiceInfoEntityMapper.selectList(new EntityCondition().addCriteria
+                (new Criteria().addCriterion("SERIAL_NO=", transDetailSeq, "SERIAL_NO")));
+
+        BigDecimal xjAmount = accountInfoDto.getAmount2().add(transDetailDto.getAmount2());
+        BigDecimal cgAmount = accountInfoDto.getAmount1().add(transDetailDto.getAmount1());
+        if (xjAmount.compareTo(new BigDecimal(5000)) > 0) {
+            throw new ServiceException(ResultCodeConstant.YEAR_TRANS_AMOUNT_EXCEED);
+        }
+        if (xjAmount.compareTo(new BigDecimal(0)) < 0 || cgAmount.compareTo(new BigDecimal(0)) < 0) {
+            throw new ServiceException(ResultCodeConstant.AMOUNT_CAN_NOT_SUPPORT_TRANS);
+        }
+        AccountInfoDto newAccount = new AccountInfoDto.Builder().amount1(accountInfoDto.getAmount1().add
+                (transDetailDto.getAmount1())).amount2(accountInfoDto.getAmount2().add(transDetailDto.getAmount2())).build();
+        accountInfoManager.updateAccountAmount(accountInfoDto.getAccountId().toString(), new AccountInfoDto.Builder().amount1
+                (accountInfoDto.getAmount1()).build(), newAccount);
+
+        transDetailManager.updateStatusByPkId(transDetailSeq, AccountBizConstant.TRANS_DETAIL_TRANS_ID_1,
+                AccountBizConstant.TRANS_DETAIL_STATUS_4);
+
+        if (!CollectionUtils.isEmpty(infoEntityList)) {
+            for (InvoiceInfoEntity entity : infoEntityList) {
+                entity.setInvoiceId(null);
+                entity.setSerialNo(sequence);
+                entity.setAmount(entity.getAmount().multiply(new BigDecimal(-1)));
+                entity.setStatus(AccountBizConstant.INVOICE_INFO_STATUS_1);
+                entity.setAccDate(accDate);
+                try {
+                    invoiceInfoEntityMapper.insertSelective(entity);
+                } catch (Exception e) {
+                    throw new DBException(e);
+                }
+            }
+        }
+        O2oAmountDetailEntity o2oAmountDetailEntity = o2oAmountDetailEntityMapper.selectByPrimaryKey(transDetailSeq);
+        if (null != o2oAmountDetailEntity) {
+            o2oAmountDetailEntity.setStatus(AccountBizConstant.O2O_AMOUNT_DETAIL_STATUS_0);
+            o2oAmountDetailEntityMapper.updateByPrimaryKey(o2oAmountDetailEntity);
+        }
+        TransDetailDto detailDto = new TransDetailDto.Builder().serialNo(sequence)
+                .transId(AccountBizConstant.TRANS_DETAIL_TRANS_ID_1).transType
+                        (AccountTransTypeEnum.TRANS_REVERSE.key()).userId(transDetailDto.getUserId()).userName
+                        (transDetailDto.getUserName()).accountId(transDetailDto.getAccountId()).originalSerialNo
+                        (transDetailDto.getReqSerialNo()).rivalUserId(transDetailDto.getRivalUserId()).rivalUserName
+                        (transDetailDto.getRivalUserName()).rivalAccount(transDetailDto.getRivalAccount())
+                .reqSerialNo(header.getReqSeq()).cost(transDetailDto.getCost()).transDate(new Date()).channel
+                        (transDetailDto.getChannel()).partyMarkNo(transDetailDto.getPartyMarkNo()).accountTypeItem
+                        (transDetailDto.getAccountTypeItem()).userDefindMark(AccountBizConstant.
+                        TRANS_DETAIL_USER_DEFIND_MARK_0).integral(transDetailDto.getIntegral())
+                .accountType(transDetailDto.getAccountType()).time(transDetailDto.getTime()).amount1(transDetailDto
+                        .getAmount1()).amount2(transDetailDto.getAmount2()).amount3(transDetailDto.getAmount3())
+                .amount4(transDetailDto.getAmount4()).amount5(transDetailDto.getAmount5()).amount6(transDetailDto
+                        .getAmount6()).sourceOfFunds(transDetailDto.getSourceOfFunds()).reqTransDate(header.getTxDate
+                        ()).reqTransTime(header.getTxTime()).originalTransDate(transDetailDto.getReqTransDate())
+                .originalTransTime(transDetailDto.getReqTransTime()).accDate(accDate).amount11(cgAmount).amount12
+                        (xjAmount).amount13(accountInfoDto.getAmount3()).amount14(accountInfoDto.getAmount4())
+                .amount15(accountInfoDto.getAmount5()).amount16(accountInfoDto.getAmount6()).merchantId
+                        (transDetailDto.getMerchantId()).businessType(transDetailDto.getBusinessType()).build();
+        transDetailManager.addTransDetail(detailDto);
+    }
+}

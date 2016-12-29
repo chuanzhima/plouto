@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.smk.pay.core.mapper.InternalAccountModifyDetailEntityMapper">
+    <resultMap id="BaseResultMap" type="com.smk.pay.core.entity.InternalAccountModifyDetailEntity">
+        <id column="SERIAL_NO" property="serialNo" jdbcType="VARCHAR"/>
+        <result column="INTERNAL_ACCOUNT_ID" property="internalAccountId" jdbcType="VARCHAR"/>
+        <result column="AMOUNT" property="amount" jdbcType="DECIMAL"/>
+        <result column="AMOUNT_DIR" property="amountDir" jdbcType="VARCHAR"/>
+        <result column="ACC_DATE" property="accDate" jdbcType="VARCHAR"/>
+    </resultMap>
+    <sql id="Query_Where_Clause">
+        <where>
+            <foreach collection="oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" suffix=")" prefixOverrides="and">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach collection="criterion.value" item="listItem" open="(" close=")"
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+    <sql id="Update_Where_Clause">
+        <where>
+            <foreach collection="condition.oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" suffix=")" prefixOverrides="and">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach collection="criterion.value" item="listItem" open="(" close=")"
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+    <sql id="Base_Column_List">
+        SERIAL_NO, INTERNAL_ACCOUNT_ID, AMOUNT, AMOUNT_DIR, ACC_DATE
+    </sql>
+    <select id="selectList" resultMap="BaseResultMap" parameterType="com.smk.pay.dal.condtion.EntityCondition">
+        select
+        <if test="distinct">
+            distinct
+        </if>
+        <include refid="Base_Column_List"/>
+        from INTERNAL_ACCOUNT_MODIFY_DETAIL
+        <if test="_parameter != null">
+            <include refid="Query_Where_Clause"/>
+        </if>
+        <if test="orderByClause != null">
+            order by ${orderByClause}
+        </if>
+    </select>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List"/>
+        from INTERNAL_ACCOUNT_MODIFY_DETAIL
+        where SERIAL_NO = #{serialNo,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+        delete from INTERNAL_ACCOUNT_MODIFY_DETAIL
+        where SERIAL_NO = #{serialNo,jdbcType=VARCHAR}
+    </delete>
+    <delete id="delete" parameterType="com.smk.pay.dal.condtion.EntityCondition">
+        delete from INTERNAL_ACCOUNT_MODIFY_DETAIL
+        <if test="_parameter != null">
+            <include refid="Query_Where_Clause"/>
+        </if>
+    </delete>
+    <insert id="insert" parameterType="com.smk.pay.core.entity.InternalAccountModifyDetailEntity">
+        insert into INTERNAL_ACCOUNT_MODIFY_DETAIL (SERIAL_NO, INTERNAL_ACCOUNT_ID, AMOUNT,
+        AMOUNT_DIR, ACC_DATE)
+        values (#{serialNo,jdbcType=VARCHAR}, #{internalAccountId,jdbcType=VARCHAR}, #{amount,jdbcType=DECIMAL},
+        #{amountDir,jdbcType=VARCHAR}, #{accDate,jdbcType=VARCHAR})
+    </insert>
+    <insert id="insertSelective" parameterType="com.smk.pay.core.entity.InternalAccountModifyDetailEntity">
+        insert into INTERNAL_ACCOUNT_MODIFY_DETAIL
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="serialNo != null">
+                SERIAL_NO,
+            </if>
+            <if test="internalAccountId != null">
+                INTERNAL_ACCOUNT_ID,
+            </if>
+            <if test="amount != null">
+                AMOUNT,
+            </if>
+            <if test="amountDir != null">
+                AMOUNT_DIR,
+            </if>
+            <if test="accDate != null">
+                ACC_DATE,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="serialNo != null">
+                #{serialNo,jdbcType=VARCHAR},
+            </if>
+            <if test="internalAccountId != null">
+                #{internalAccountId,jdbcType=VARCHAR},
+            </if>
+            <if test="amount != null">
+                #{amount,jdbcType=DECIMAL},
+            </if>
+            <if test="amountDir != null">
+                #{amountDir,jdbcType=VARCHAR},
+            </if>
+            <if test="accDate != null">
+                #{accDate,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <select id="count" parameterType="com.smk.pay.dal.condtion.EntityCondition" resultType="java.lang.Integer">
+        select count(*) from INTERNAL_ACCOUNT_MODIFY_DETAIL
+        <if test="_parameter != null">
+            <include refid="Query_Where_Clause"/>
+        </if>
+    </select>
+    <update id="updateSelective" parameterType="map">
+        update INTERNAL_ACCOUNT_MODIFY_DETAIL
+        <set>
+            <if test="record.serialNo != null">
+                SERIAL_NO = #{record.serialNo,jdbcType=VARCHAR},
+            </if>
+            <if test="record.internalAccountId != null">
+                INTERNAL_ACCOUNT_ID = #{record.internalAccountId,jdbcType=VARCHAR},
+            </if>
+            <if test="record.amount != null">
+                AMOUNT = #{record.amount,jdbcType=DECIMAL},
+            </if>
+            <if test="record.amountDir != null">
+                AMOUNT_DIR = #{record.amountDir,jdbcType=VARCHAR},
+            </if>
+            <if test="record.accDate != null">
+                ACC_DATE = #{record.accDate,jdbcType=VARCHAR},
+            </if>
+        </set>
+        <if test="_parameter != null">
+            <include refid="Update_Where_Clause"/>
+        </if>
+    </update>
+    <update id="update" parameterType="map">
+        update INTERNAL_ACCOUNT_MODIFY_DETAIL
+        set SERIAL_NO = #{record.serialNo,jdbcType=VARCHAR},
+        INTERNAL_ACCOUNT_ID = #{record.internalAccountId,jdbcType=VARCHAR},
+        AMOUNT = #{record.amount,jdbcType=DECIMAL},
+        AMOUNT_DIR = #{record.amountDir,jdbcType=VARCHAR},
+        ACC_DATE = #{record.accDate,jdbcType=VARCHAR}
+        <if test="_parameter != null">
+            <include refid="Update_Where_Clause"/>
+        </if>
+    </update>
+    <update id="updateByPrimaryKeySelective" parameterType="com.smk.pay.core.entity.InternalAccountModifyDetailEntity">
+        update INTERNAL_ACCOUNT_MODIFY_DETAIL
+        <set>
+            <if test="internalAccountId != null">
+                INTERNAL_ACCOUNT_ID = #{internalAccountId,jdbcType=VARCHAR},
+            </if>
+            <if test="amount != null">
+                AMOUNT = #{amount,jdbcType=DECIMAL},
+            </if>
+            <if test="amountDir != null">
+                AMOUNT_DIR = #{amountDir,jdbcType=VARCHAR},
+            </if>
+            <if test="accDate != null">
+                ACC_DATE = #{accDate,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where SERIAL_NO = #{serialNo,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.smk.pay.core.entity.InternalAccountModifyDetailEntity">
+        update INTERNAL_ACCOUNT_MODIFY_DETAIL
+        set INTERNAL_ACCOUNT_ID = #{internalAccountId,jdbcType=VARCHAR},
+        AMOUNT = #{amount,jdbcType=DECIMAL},
+        AMOUNT_DIR = #{amountDir,jdbcType=VARCHAR},
+        ACC_DATE = #{accDate,jdbcType=VARCHAR}
+        where SERIAL_NO = #{serialNo,jdbcType=VARCHAR}
+    </update>
+</mapper>

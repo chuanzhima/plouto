@@ -1,0 +1,75 @@
+package com.smk.pay.core.manager.impl;
+
+import com.smk.pay.account.core.request.RequestHeader;
+import com.smk.pay.core.constant.ResultCodeConstant;
+import com.smk.pay.core.entity.AccSystemEntity;
+import com.smk.pay.core.enums.AccountTransTypeEnum;
+import com.smk.pay.core.exception.DBException;
+import com.smk.pay.core.exception.ServiceException;
+import com.smk.pay.core.factory.ReverseFactory;
+import com.smk.pay.core.manager.IAccountReverseManager;
+import com.smk.pay.core.manager.atom.IReverse;
+import com.smk.pay.core.mapper.AccSystemEntityMapper;
+import com.smk.pay.core.utils.StringUtil;
+import com.smk.pay.core.validator.ReverseValidator;
+import com.smk.pay.dal.condtion.EntityCondition;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
+
+import java.util.List;
+import java.util.Map;
+
+/**
+ * 冲正
+ * <p/>
+ * Project plouto
+ * Created by chuanzhi.macz
+ * Date 2016/12/14 15:09
+ */
+@Service(value = "accountReverseManager")
+public class AccountReverseManagerImpl implements IAccountReverseManager {
+
+    @Autowired
+    private ReverseValidator reverseValidator;
+    @Autowired
+    private ReverseFactory reverseFactory;
+    @Autowired
+    private AccSystemEntityMapper accSystemEntityMapper;
+
+    @Transactional
+    @Override
+    public void reverse(RequestHeader header, String originalSeq, String originalDate, String originalTime,
+                        Map<String, Object> extraParam) {
+
+
+        Map<Boolean, List<String>> check = reverseValidator.validate(header, originalSeq, originalDate, originalTime);
+        if (check.containsKey(Boolean.FALSE)) {
+            throw new ServiceException(check.get(Boolean.FALSE).get(0));
+        }
+        String accountId = check.get(Boolean.TRUE).get(0);
+        String tranType = check.get(Boolean.TRUE).get(1);
+        String transDetailSeq = check.get(Boolean.TRUE).get(2);
+        String accDate = this.queryAccDate();
+        String sequence = StringUtil.randomSequence();
+
+        IReverse reverse = reverseFactory.getReverseBean(AccountTransTypeEnum.get(tranType));
+        reverse.reverse(accountId, transDetailSeq, header, sequence, accDate);
+        return;
+    }
+
+    private String queryAccDate() {
+        List<AccSystemEntity> list;
+        try {
+            list = accSystemEntityMapper.selectList(new EntityCondition());
+        } catch (Exception e) {
+            throw new DBException(e);
+        }
+        if (CollectionUtils.isEmpty(list)) {
+            throw new ServiceException(ResultCodeConstant.ACC_SYSTEM_NO_DATA);
+        }
+        return list.get(0).getAccDate();
+    }
+
+}

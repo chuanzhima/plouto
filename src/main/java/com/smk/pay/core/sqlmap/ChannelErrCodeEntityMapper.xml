@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.smk.pay.core.mapper.ChannelErrCodeEntityMapper">
+    <resultMap id="BaseResultMap" type="com.smk.pay.core.entity.ChannelErrCodeEntity">
+        <id column="CHANNEL" property="channel" jdbcType="VARCHAR"/>
+        <id column="CORE_ERR_CODE" property="coreErrCode" jdbcType="VARCHAR"/>
+        <result column="ERR_CODE" property="errCode" jdbcType="VARCHAR"/>
+        <result column="DIRECTION" property="direction" jdbcType="VARCHAR"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        CHANNEL, CORE_ERR_CODE, ERR_CODE, DIRECTION
+    </sql>
+    <select id="selectByChannel" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from CHANNEL_ERR_CODE
+        WHERE channel = #{channel}
+    </select>
+
+</mapper>
