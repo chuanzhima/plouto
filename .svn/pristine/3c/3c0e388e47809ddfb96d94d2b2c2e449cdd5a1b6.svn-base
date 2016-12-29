@@ -1,0 +1,106 @@
+package com.smk.pay.core.api;
+
+import com.smk.pay.account.core.enums.AccountBizEnum;
+import com.smk.pay.account.core.enums.AccountChannelEnum;
+import com.smk.pay.account.core.enums.AccountTypeEnum;
+import com.smk.pay.account.core.response.AccountDetailResp;
+import com.smk.pay.account.core.response.AccountInfo;
+import com.smk.pay.account.core.response.RpcResponse;
+import com.smk.pay.account.core.service.IAccountQueryService;
+import com.smk.pay.core.annotations.DubboServiceLog;
+import com.smk.pay.core.constant.ResultCodeConstant;
+import com.smk.pay.core.dto.AccountInfoDto;
+import com.smk.pay.core.exception.DBException;
+import com.smk.pay.core.manager.IAccountQueryManager;
+import com.smk.pay.core.manager.base.IAccountInfoManager;
+import com.smk.pay.core.utils.BeanCopierCacheUtil;
+import com.smk.pay.core.utils.PropertiesUtil;
+import com.smk.pay.core.utils.StringUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.Map;
+
+/**
+ * Project plouto
+ * Created by chuanzhi.macz
+ * Date 2016/10/24 9:57
+ */
+@Service(value = "accountQueryService")
+public class AccountQueryService implements IAccountQueryService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(AccountQueryService.class);
+    @Autowired
+    private IAccountQueryManager accountQueryManager;
+    @Resource(name = "accountInfoManager")
+    private IAccountInfoManager accountInfoManager;
+
+    @DubboServiceLog
+    public RpcResponse<AccountInfo> queryAccountInfo(String value, AccountTypeEnum typeEnum) {
+
+        if (typeEnum == null || StringUtil.isEmpty(value))
+            return new RpcResponse<>(Boolean.FALSE, ResultCodeConstant
+                    .PARAMETER_INVALID, PropertiesUtil.LOCALE_PROPERTIES_Map.get
+                    (ResultCodeConstant.PARAMETER_INVALID));
+
+        AccountInfo accountInfo = new AccountInfo.Builder().build();
+        AccountInfoDto accountInfoDto = null;
+        try {
+            if (AccountTypeEnum.ONLINE == typeEnum) {
+                accountInfoDto = accountInfoManager.queryMainAccountByUserId(value);
+            } else if (AccountTypeEnum.OFFLINE == typeEnum) {
+                accountInfoDto = accountInfoManager.queryCardAccountByCardNo(value);
+            }
+        } catch (DBException e) {
+            LOGGER.error(String.format("queryAccountInfo exception, value=%s,typeEnum=%s",
+                    value, typeEnum.name()), e);
+            return new RpcResponse<>(Boolean.FALSE, ResultCodeConstant.SYSTEM_ERROR,
+                    PropertiesUtil.LOCALE_PROPERTIES_Map.get(ResultCodeConstant.SYSTEM_ERROR));
+        }
+        if (accountInfoDto == null)
+            return new RpcResponse<>(Boolean.FALSE, ResultCodeConstant
+                    .ACCOUNT_NOT_EXIST, PropertiesUtil.LOCALE_PROPERTIES_Map.get
+                    (ResultCodeConstant.ACCOUNT_NOT_EXIST));
+        BeanCopierCacheUtil.copy(accountInfoDto, accountInfo, null);
+        accountInfo.setWithdrawalAmount4XJ(accountInfoDto.getAmount1().add(accountInfoDto.getAmount2()));
+        accountInfo.setWithdrawalAmount4YHK(accountInfoDto.getAmount1());
+        accountInfo.setCurrentTotalAmount(accountInfoDto.getAmount1().add(accountInfoDto
+                .getAmount2()).add(accountInfoDto.getAmount3()).add(accountInfoDto.getAmount4()));
+        return new RpcResponse<>(accountInfo, Boolean.TRUE);
+    }
+
+    @DubboServiceLog
+    public RpcResponse<AccountInfo> queryAvailableAmount(String value, AccountTypeEnum typeEnum) {
+
+        if (typeEnum == null || StringUtil.isEmpty(value))
+            return new RpcResponse<>(Boolean.FALSE, ResultCodeConstant
+                    .PARAMETER_INVALID, PropertiesUtil.LOCALE_PROPERTIES_Map.get
+                    (ResultCodeConstant.PARAMETER_INVALID));
+
+        AccountInfo accountInfo = new AccountInfo.Builder().build();
+        Map<String, BigDecimal> availableAmount = accountQueryManager.queryAvailableAmount(value,
+                typeEnum);
+        accountInfo.setRechargeableGGKAmount(availableAmount.get("rechargeableGGKAmount"));
+        accountInfo.setConsumeableAmount(availableAmount.get("consumealbeAmount"));
+
+        return new RpcResponse<>(accountInfo, Boolean.TRUE);
+    }
+
+    @DubboServiceLog
+    public RpcResponse<AccountDetailResp> queryAccountDetail(String value, AccountTypeEnum typeEnum,
+                                                             String transType, AccountChannelEnum channelEnum,
+                                                             String merchantId, AccountBizEnum bizEnum,
+                                                             Date fromTransDate, Date toTransDate, int pageNum, int pageSize) {
+        return null;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(String.format("test, first=%s,second=%s", "11", "22"));
+    }
+
+}

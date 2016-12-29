@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.smk.pay.core.mapper.pubRateInfoEntityMapper" >
+  <resultMap id="BaseResultMap" type="com.smk.pay.core.entity.PubRateInfoEntity" >
+    <result column="MERCHANT_ID" property="merchantId" jdbcType="VARCHAR" />
+    <result column="BUSINESS_TYPE" property="businessType" jdbcType="VARCHAR" />
+    <result column="RATEUNIT" property="rateunit" jdbcType="VARCHAR" />
+    <result column="RATETERM" property="rateterm" jdbcType="DECIMAL" />
+    <result column="EFTDATE" property="eftdate" jdbcType="VARCHAR" />
+    <result column="RATE" property="rate" jdbcType="DECIMAL" />
+    <result column="RATE1" property="rate1" jdbcType="DECIMAL" />
+    <result column="RATETYPE" property="ratetype" jdbcType="VARCHAR" />
+    <result column="TBDESC" property="tbdesc" jdbcType="VARCHAR" />
+    <result column="FREEDAYS" property="freedays" jdbcType="DECIMAL" />
+    <result column="STATUS" property="status" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    MERCHANT_ID, BUSINESS_TYPE, RATEUNIT, RATETERM, EFTDATE, RATE, RATE1, RATETYPE, TBDESC, 
+    FREEDAYS, STATUS
+  </sql>
+  <select id="selectList" resultMap="BaseResultMap" parameterType="com.smk.pay.dal.condtion.EntityCondition" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from PUBRATEINFO
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByTypeStatus" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from PUBRATEINFO
+    where business_type=#{businessType} and status=#{status}
+  </select>
+</mapper>

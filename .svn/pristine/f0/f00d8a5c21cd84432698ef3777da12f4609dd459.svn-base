@@ -1,0 +1,81 @@
+package com.smk.pay.core.api;
+
+import com.smk.pay.account.core.enums.AccountBizEnum;
+import com.smk.pay.account.core.enums.AccountChannelEnum;
+import com.smk.pay.account.core.enums.AccountTypeEnum;
+import com.smk.pay.account.core.response.AccountDetailResp;
+import com.smk.pay.account.core.response.AccountInfo;
+import com.smk.pay.account.core.response.RpcResponse;
+import com.smk.pay.account.core.service.IAccountQueryService;
+import com.smk.pay.core.constant.ResultCodeConstant;
+import com.smk.pay.core.dto.AccountInfoDto;
+import com.smk.pay.core.manager.IAccountQueryManager;
+import com.smk.pay.core.manager.IUserInfoManager;
+import com.smk.pay.core.utils.BeanCopierCacheUtil;
+import com.smk.pay.core.utils.PropertiesUtil;
+import com.smk.pay.core.utils.StringUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+import java.util.Date;
+
+/**
+ * Project plouto
+ * Created by chuanzhi.macz
+ * Date 2016/10/24 9:57
+ */
+@Service(value = "accountQueryService")
+public class AccountQueryService implements IAccountQueryService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(AccountQueryService.class);
+    @Autowired
+    private IAccountQueryManager accountQueryManager;
+    @Autowired
+    private IUserInfoManager userInfoManager;
+
+    public RpcResponse<AccountInfo> queryAccountInfo(String value, AccountTypeEnum typeEnum) {
+        LOGGER.info("queryAccountInfo, value={},typeEnum={}", new String[]{value, typeEnum.value()});
+
+        if (typeEnum == null || StringUtil.isEmpty(value))
+            return new RpcResponse<AccountInfo>(Boolean.FALSE, ResultCodeConstant
+                    .PARAMETER_INVALID, PropertiesUtil.LOCALE_PROPERTIES_Map.get
+                    (ResultCodeConstant.PARAMETER_INVALID));
+
+        AccountInfo accountInfo = new AccountInfo.Builder().build();
+        AccountInfoDto accountInfoDto = null;
+        if (AccountTypeEnum.ONLINE == typeEnum) {
+            accountInfoDto = accountQueryManager.queryMainAccountByUserId(value);
+            if (accountInfoDto == null)
+                return new RpcResponse<AccountInfo>(Boolean.FALSE, ResultCodeConstant
+                        .ACCOUNT_NOT_EXIST, PropertiesUtil.LOCALE_PROPERTIES_Map.get
+                        (ResultCodeConstant.ACCOUNT_NOT_EXIST));
+            BeanCopierCacheUtil.copy(accountInfoDto, accountInfo, null);
+        } else if (AccountTypeEnum.OFFLINE == typeEnum){
+
+        }
+        accountInfo.setWithdrawalAmount4XJ(accountInfoDto.getAmount1().add(accountInfoDto.getAmount2()));
+        accountInfo.setWithdrawalAmount4YHK(accountInfoDto.getAmount1());
+        accountInfo.setCurrentTotalAmount(accountInfoDto.getAmount1().add(accountInfoDto
+                .getAmount2()).add(accountInfoDto.getAmount3()).add(accountInfoDto.getAmount4()));
+        return new RpcResponse<AccountInfo>(accountInfo, Boolean.TRUE);
+    }
+
+    public RpcResponse<AccountInfo> queryAvailableAmount(String value, AccountTypeEnum typeEnum) {
+        return null;
+    }
+
+
+    public RpcResponse<AccountDetailResp> queryAccountDetail(String value, AccountTypeEnum typeEnum,
+                                                             String transType, AccountChannelEnum channelEnum,
+                                                             String merchantId, AccountBizEnum bizEnum,
+                                                             Date fromTransDate, Date toTransDate, int pageNum, int pageSize) {
+        return null;
+    }
+
+    public static void main(String[] args) {
+
+    }
+}

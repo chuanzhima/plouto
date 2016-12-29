@@ -1,0 +1,222 @@
+package com.smk.pay.core.entity;
+
+import java.math.BigDecimal;
+import java.util.Date;
+
+public class PrepaidCardInfoEntity {
+    private Long prepaidCardId;
+
+    private String prepaidCardNo;
+
+    private String prepaidCardPwd;
+
+    private String prepaidCardType;
+
+    private String papersType;
+
+    private String papersNo;
+
+    private BigDecimal cost;
+
+    private Date startDate;
+
+    private Date endDate;
+
+    private String userId;
+
+    private String status;
+
+    private String rechargeFlag;
+
+    private String realNameFlag;
+
+    private String canBeBinding;
+
+    private String bindingFlag;
+
+    private String canBeRepeatedlyBinding;
+
+    private String canBeMeanwhileBinding;
+
+    private String mainCard;
+
+    private Date createDate;
+
+    private Date cancelDate;
+
+
+    public PrepaidCardInfoEntity() {
+
+    }
+
+    public PrepaidCardInfoEntity(Long prepaidCardId, String prepaidCardNo, String prepaidCardType, String userId, String status, String papersType, String papersNo, Date createDate) {
+        this.prepaidCardId = prepaidCardId;
+        this.prepaidCardNo = prepaidCardNo;
+        this.prepaidCardType = prepaidCardType;
+        this.userId = userId;
+        this.status = status;
+        this.papersType = papersType;
+        this.papersNo = papersNo;
+        this.createDate = createDate;
+    }
+
+    public Long getPrepaidCardId() {
+        return prepaidCardId;
+    }
+
+    public void setPrepaidCardId(Long prepaidCardId) {
+        this.prepaidCardId = prepaidCardId;
+    }
+
+    public String getPrepaidCardNo() {
+        return prepaidCardNo;
+    }
+
+    public void setPrepaidCardNo(String prepaidCardNo) {
+        this.prepaidCardNo = prepaidCardNo == null ? null : prepaidCardNo.trim();
+    }
+
+    public String getPrepaidCardPwd() {
+        return prepaidCardPwd;
+    }
+
+    public void setPrepaidCardPwd(String prepaidCardPwd) {
+        this.prepaidCardPwd = prepaidCardPwd == null ? null : prepaidCardPwd.trim();
+    }
+
+    public String getPrepaidCardType() {
+        return prepaidCardType;
+    }
+
+    public void setPrepaidCardType(String prepaidCardType) {
+        this.prepaidCardType = prepaidCardType == null ? null : prepaidCardType.trim();
+    }
+
+    public String getPapersType() {
+        return papersType;
+    }
+
+    public void setPapersType(String papersType) {
+        this.papersType = papersType == null ? null : papersType.trim();
+    }
+
+    public String getPapersNo() {
+        return papersNo;
+    }
+
+    public void setPapersNo(String papersNo) {
+        this.papersNo = papersNo == null ? null : papersNo.trim();
+    }
+
+    public BigDecimal getCost() {
+        return cost;
+    }
+
+    public void setCost(BigDecimal cost) {
+        this.cost = cost;
+    }
+
+    public Date getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
+    }
+
+    public Date getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId == null ? null : userId.trim();
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status == null ? null : status.trim();
+    }
+
+    public String getRechargeFlag() {
+        return rechargeFlag;
+    }
+
+    public void setRechargeFlag(String rechargeFlag) {
+        this.rechargeFlag = rechargeFlag == null ? null : rechargeFlag.trim();
+    }
+
+    public String getRealNameFlag() {
+        return realNameFlag;
+    }
+
+    public void setRealNameFlag(String realNameFlag) {
+        this.realNameFlag = realNameFlag == null ? null : realNameFlag.trim();
+    }
+
+    public String getCanBeBinding() {
+        return canBeBinding;
+    }
+
+    public void setCanBeBinding(String canBeBinding) {
+        this.canBeBinding = canBeBinding == null ? null : canBeBinding.trim();
+    }
+
+    public String getBindingFlag() {
+        return bindingFlag;
+    }
+
+    public void setBindingFlag(String bindingFlag) {
+        this.bindingFlag = bindingFlag == null ? null : bindingFlag.trim();
+    }
+
+    public String getCanBeRepeatedlyBinding() {
+        return canBeRepeatedlyBinding;
+    }
+
+    public void setCanBeRepeatedlyBinding(String canBeRepeatedlyBinding) {
+        this.canBeRepeatedlyBinding = canBeRepeatedlyBinding == null ? null : canBeRepeatedlyBinding.trim();
+    }
+
+    public String getCanBeMeanwhileBinding() {
+        return canBeMeanwhileBinding;
+    }
+
+    public void setCanBeMeanwhileBinding(String canBeMeanwhileBinding) {
+        this.canBeMeanwhileBinding = canBeMeanwhileBinding == null ? null : canBeMeanwhileBinding.trim();
+    }
+
+    public String getMainCard() {
+        return mainCard;
+    }
+
+    public void setMainCard(String mainCard) {
+        this.mainCard = mainCard == null ? null : mainCard.trim();
+    }
+
+    public Date getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(Date createDate) {
+        this.createDate = createDate;
+    }
+
+    public Date getCancelDate() {
+        return cancelDate;
+    }
+
+    public void setCancelDate(Date cancelDate) {
+        this.cancelDate = cancelDate;
+    }
+}

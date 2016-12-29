@@ -1,0 +1,56 @@
+package com.smk.pay.core.manager;
+
+import com.smk.pay.account.core.enums.AccountChannelEnum;
+import com.smk.pay.account.core.enums.AccountFundFlowEnum;
+import com.smk.pay.account.core.request.RequestHeader;
+import com.smk.pay.account.core.response.RpcResponse;
+
+import java.math.BigDecimal;
+import java.util.Map;
+
+/**
+ * Project plouto
+ * Created by chuanzhi.macz
+ * Date 2016/10/23 19:27
+ */
+public interface IAccountCommonManager {
+
+    String SOURCE_TYPE_CARD = "0";
+    String SOURCE_TYPE_USER_ID = "1";
+    String SOURCE_TYPE_IDENTITY_ID = "2";
+
+    /**
+     * @param header
+     * @param channelEnum
+     * @param merchantId
+     * @param type         refer to upper SOURCE_TYPE_*
+     * @param typeValue    when card type, value is card no, when online user, value is user_id,
+     *                     when use identity value is identity card no
+     * @param fundFlowEnum
+     * @param amount
+     * @param bankId
+     * @param companyId
+     * @return
+     */
+    RpcResponse<String> recharge(RequestHeader header, AccountChannelEnum channelEnum,
+                                 final String merchantId, final String type, final String typeValue,
+                                 AccountFundFlowEnum fundFlowEnum, BigDecimal amount,
+                                 final String bankId, final String companyId);
+
+    /**
+     * @param header
+     * @param channelEnum
+     * @param merchantId
+     * @param type        refer to upper SOURCE_TYPE_*
+     * @param typeValue   when card type, value is card no, when online user, value is user_id,
+     *                    when use identity value is identity card no
+     * @param amount
+     * @param cost
+     * @param extraParam
+     * @return
+     */
+    RpcResponse<String> consume(RequestHeader header, AccountChannelEnum channelEnum,
+                                final String merchantId, final String type, final String typeValue,
+                                BigDecimal amount, BigDecimal cost, Map<String, Object> extraParam);
+
+}

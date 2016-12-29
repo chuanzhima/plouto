@@ -1,0 +1,472 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.smk.pay.core.mapper.InvoiceInfoEntityMapper" >
+  <resultMap id="BaseResultMap" type="com.smk.pay.core.entity.InvoiceInfoEntity" >
+    <id column="INVOICE_ID" property="invoiceId" jdbcType="VARCHAR" />
+    <result column="DEBIT_ACCOUNT_TYPE" property="debitAccountType" jdbcType="VARCHAR" />
+    <result column="CREDIT_ACCOUNT_TYPE" property="creditAccountType" jdbcType="VARCHAR" />
+    <result column="TRANS_TYPE" property="transType" jdbcType="VARCHAR" />
+    <result column="SERIAL_NO" property="serialNo" jdbcType="VARCHAR" />
+    <result column="DEBIT_ACCOUNT_ID" property="debitAccountId" jdbcType="VARCHAR" />
+    <result column="CREDIT_ACCOUNT_ID" property="creditAccountId" jdbcType="VARCHAR" />
+    <result column="CREDIT_ACCOUNT_TYPE_ITEM" property="creditAccountTypeItem" jdbcType="VARCHAR" />
+    <result column="DEBIT_ACCOUNT_TYPE_ITEM2" property="debitAccountTypeItem2" jdbcType="VARCHAR" />
+    <result column="DEBIT_USER_DEFIND_MARK" property="debitUserDefindMark" jdbcType="VARCHAR" />
+    <result column="CREDIT_USER_DEFIND_MARK" property="creditUserDefindMark" jdbcType="VARCHAR" />
+    <result column="DEBIT_ORG_ID" property="debitOrgId" jdbcType="VARCHAR" />
+    <result column="CREDIT_ORG_ID" property="creditOrgId" jdbcType="VARCHAR" />
+    <result column="TRANS_DATE" property="transDate" jdbcType="TIMESTAMP" />
+    <result column="AMOUNT" property="amount" jdbcType="DECIMAL" />
+    <result column="STATUS" property="status" jdbcType="VARCHAR" />
+    <result column="PARTY_MARK_NO" property="partyMarkNo" jdbcType="VARCHAR" />
+    <result column="USER_DEFIND_MARK" property="userDefindMark" jdbcType="VARCHAR" />
+    <result column="INTEGRAL" property="integral" jdbcType="DECIMAL" />
+    <result column="SOURCE_OF_FUNDS" property="sourceOfFunds" jdbcType="VARCHAR" />
+    <result column="ACC_DATE" property="accDate" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Query_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_Where_Clause" >
+    <where >
+      <foreach collection="condition.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    INVOICE_ID, DEBIT_ACCOUNT_TYPE, CREDIT_ACCOUNT_TYPE, TRANS_TYPE, SERIAL_NO, DEBIT_ACCOUNT_ID, 
+    CREDIT_ACCOUNT_ID, CREDIT_ACCOUNT_TYPE_ITEM, DEBIT_ACCOUNT_TYPE_ITEM2, DEBIT_USER_DEFIND_MARK, 
+    CREDIT_USER_DEFIND_MARK, DEBIT_ORG_ID, CREDIT_ORG_ID, TRANS_DATE, AMOUNT, STATUS, 
+    PARTY_MARK_NO, USER_DEFIND_MARK, INTEGRAL, SOURCE_OF_FUNDS, ACC_DATE
+  </sql>
+  <select id="selectList" resultMap="BaseResultMap" parameterType="com.smk.pay.dal.condtion.EntityCondition" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from INVOICE_INFO
+    <if test="_parameter != null" >
+      <include refid="Query_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from INVOICE_INFO
+    where INVOICE_ID = #{invoiceId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from INVOICE_INFO
+    where INVOICE_ID = #{invoiceId,jdbcType=VARCHAR}
+  </delete>
+  <delete id="delete" parameterType="com.smk.pay.dal.condtion.EntityCondition" >
+    delete from INVOICE_INFO
+    <if test="_parameter != null" >
+      <include refid="Query_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.smk.pay.core.entity.InvoiceInfoEntity" >
+    <selectKey keyProperty="invoiceId" resultType="long" order="BEFORE">SELECT
+      INVOICE_SEQ.NEXTVAL FROM DUAL
+    </selectKey>
+    insert into INVOICE_INFO (INVOICE_ID, DEBIT_ACCOUNT_TYPE, CREDIT_ACCOUNT_TYPE, 
+      TRANS_TYPE, SERIAL_NO, DEBIT_ACCOUNT_ID, 
+      CREDIT_ACCOUNT_ID, CREDIT_ACCOUNT_TYPE_ITEM, 
+      DEBIT_ACCOUNT_TYPE_ITEM2, DEBIT_USER_DEFIND_MARK, 
+      CREDIT_USER_DEFIND_MARK, DEBIT_ORG_ID, CREDIT_ORG_ID, 
+      TRANS_DATE, AMOUNT, STATUS, 
+      PARTY_MARK_NO, USER_DEFIND_MARK, INTEGRAL, 
+      SOURCE_OF_FUNDS, ACC_DATE)
+    values (#{invoiceId,jdbcType=VARCHAR}, #{debitAccountType,jdbcType=VARCHAR}, #{creditAccountType,jdbcType=VARCHAR}, 
+      #{transType,jdbcType=VARCHAR}, #{serialNo,jdbcType=VARCHAR}, #{debitAccountId,jdbcType=VARCHAR}, 
+      #{creditAccountId,jdbcType=VARCHAR}, #{creditAccountTypeItem,jdbcType=VARCHAR}, 
+      #{debitAccountTypeItem2,jdbcType=VARCHAR}, #{debitUserDefindMark,jdbcType=VARCHAR}, 
+      #{creditUserDefindMark,jdbcType=VARCHAR}, #{debitOrgId,jdbcType=VARCHAR}, #{creditOrgId,jdbcType=VARCHAR}, 
+      #{transDate,jdbcType=TIMESTAMP}, #{amount,jdbcType=DECIMAL}, #{status,jdbcType=VARCHAR}, 
+      #{partyMarkNo,jdbcType=VARCHAR}, #{userDefindMark,jdbcType=VARCHAR}, #{integral,jdbcType=DECIMAL}, 
+      #{sourceOfFunds,jdbcType=VARCHAR}, #{accDate,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.smk.pay.core.entity.InvoiceInfoEntity" >
+    <selectKey keyProperty="invoiceId" resultType="long" order="BEFORE">SELECT
+      INVOICE_SEQ.NEXTVAL FROM DUAL
+    </selectKey>
+    insert into INVOICE_INFO
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="invoiceId != null" >
+        INVOICE_ID,
+      </if>
+      <if test="debitAccountType != null" >
+        DEBIT_ACCOUNT_TYPE,
+      </if>
+      <if test="creditAccountType != null" >
+        CREDIT_ACCOUNT_TYPE,
+      </if>
+      <if test="transType != null" >
+        TRANS_TYPE,
+      </if>
+      <if test="serialNo != null" >
+        SERIAL_NO,
+      </if>
+      <if test="debitAccountId != null" >
+        DEBIT_ACCOUNT_ID,
+      </if>
+      <if test="creditAccountId != null" >
+        CREDIT_ACCOUNT_ID,
+      </if>
+      <if test="creditAccountTypeItem != null" >
+        CREDIT_ACCOUNT_TYPE_ITEM,
+      </if>
+      <if test="debitAccountTypeItem2 != null" >
+        DEBIT_ACCOUNT_TYPE_ITEM2,
+      </if>
+      <if test="debitUserDefindMark != null" >
+        DEBIT_USER_DEFIND_MARK,
+      </if>
+      <if test="creditUserDefindMark != null" >
+        CREDIT_USER_DEFIND_MARK,
+      </if>
+      <if test="debitOrgId != null" >
+        DEBIT_ORG_ID,
+      </if>
+      <if test="creditOrgId != null" >
+        CREDIT_ORG_ID,
+      </if>
+      <if test="transDate != null" >
+        TRANS_DATE,
+      </if>
+      <if test="amount != null" >
+        AMOUNT,
+      </if>
+      <if test="status != null" >
+        STATUS,
+      </if>
+      <if test="partyMarkNo != null" >
+        PARTY_MARK_NO,
+      </if>
+      <if test="userDefindMark != null" >
+        USER_DEFIND_MARK,
+      </if>
+      <if test="integral != null" >
+        INTEGRAL,
+      </if>
+      <if test="sourceOfFunds != null" >
+        SOURCE_OF_FUNDS,
+      </if>
+      <if test="accDate != null" >
+        ACC_DATE,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="invoiceId != null" >
+        #{invoiceId,jdbcType=VARCHAR},
+      </if>
+      <if test="debitAccountType != null" >
+        #{debitAccountType,jdbcType=VARCHAR},
+      </if>
+      <if test="creditAccountType != null" >
+        #{creditAccountType,jdbcType=VARCHAR},
+      </if>
+      <if test="transType != null" >
+        #{transType,jdbcType=VARCHAR},
+      </if>
+      <if test="serialNo != null" >
+        #{serialNo,jdbcType=VARCHAR},
+      </if>
+      <if test="debitAccountId != null" >
+        #{debitAccountId,jdbcType=VARCHAR},
+      </if>
+      <if test="creditAccountId != null" >
+        #{creditAccountId,jdbcType=VARCHAR},
+      </if>
+      <if test="creditAccountTypeItem != null" >
+        #{creditAccountTypeItem,jdbcType=VARCHAR},
+      </if>
+      <if test="debitAccountTypeItem2 != null" >
+        #{debitAccountTypeItem2,jdbcType=VARCHAR},
+      </if>
+      <if test="debitUserDefindMark != null" >
+        #{debitUserDefindMark,jdbcType=VARCHAR},
+      </if>
+      <if test="creditUserDefindMark != null" >
+        #{creditUserDefindMark,jdbcType=VARCHAR},
+      </if>
+      <if test="debitOrgId != null" >
+        #{debitOrgId,jdbcType=VARCHAR},
+      </if>
+      <if test="creditOrgId != null" >
+        #{creditOrgId,jdbcType=VARCHAR},
+      </if>
+      <if test="transDate != null" >
+        #{transDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="amount != null" >
+        #{amount,jdbcType=DECIMAL},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="partyMarkNo != null" >
+        #{partyMarkNo,jdbcType=VARCHAR},
+      </if>
+      <if test="userDefindMark != null" >
+        #{userDefindMark,jdbcType=VARCHAR},
+      </if>
+      <if test="integral != null" >
+        #{integral,jdbcType=DECIMAL},
+      </if>
+      <if test="sourceOfFunds != null" >
+        #{sourceOfFunds,jdbcType=VARCHAR},
+      </if>
+      <if test="accDate != null" >
+        #{accDate,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="count" parameterType="com.smk.pay.dal.condtion.EntityCondition" resultType="java.lang.Integer" >
+    select count(*) from INVOICE_INFO
+    <if test="_parameter != null" >
+      <include refid="Query_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateSelective" parameterType="map" >
+    update INVOICE_INFO
+    <set >
+      <if test="record.invoiceId != null" >
+        INVOICE_ID = #{record.invoiceId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.debitAccountType != null" >
+        DEBIT_ACCOUNT_TYPE = #{record.debitAccountType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.creditAccountType != null" >
+        CREDIT_ACCOUNT_TYPE = #{record.creditAccountType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.transType != null" >
+        TRANS_TYPE = #{record.transType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.serialNo != null" >
+        SERIAL_NO = #{record.serialNo,jdbcType=VARCHAR},
+      </if>
+      <if test="record.debitAccountId != null" >
+        DEBIT_ACCOUNT_ID = #{record.debitAccountId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.creditAccountId != null" >
+        CREDIT_ACCOUNT_ID = #{record.creditAccountId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.creditAccountTypeItem != null" >
+        CREDIT_ACCOUNT_TYPE_ITEM = #{record.creditAccountTypeItem,jdbcType=VARCHAR},
+      </if>
+      <if test="record.debitAccountTypeItem2 != null" >
+        DEBIT_ACCOUNT_TYPE_ITEM2 = #{record.debitAccountTypeItem2,jdbcType=VARCHAR},
+      </if>
+      <if test="record.debitUserDefindMark != null" >
+        DEBIT_USER_DEFIND_MARK = #{record.debitUserDefindMark,jdbcType=VARCHAR},
+      </if>
+      <if test="record.creditUserDefindMark != null" >
+        CREDIT_USER_DEFIND_MARK = #{record.creditUserDefindMark,jdbcType=VARCHAR},
+      </if>
+      <if test="record.debitOrgId != null" >
+        DEBIT_ORG_ID = #{record.debitOrgId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.creditOrgId != null" >
+        CREDIT_ORG_ID = #{record.creditOrgId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.transDate != null" >
+        TRANS_DATE = #{record.transDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.amount != null" >
+        AMOUNT = #{record.amount,jdbcType=DECIMAL},
+      </if>
+      <if test="record.status != null" >
+        STATUS = #{record.status,jdbcType=VARCHAR},
+      </if>
+      <if test="record.partyMarkNo != null" >
+        PARTY_MARK_NO = #{record.partyMarkNo,jdbcType=VARCHAR},
+      </if>
+      <if test="record.userDefindMark != null" >
+        USER_DEFIND_MARK = #{record.userDefindMark,jdbcType=VARCHAR},
+      </if>
+      <if test="record.integral != null" >
+        INTEGRAL = #{record.integral,jdbcType=DECIMAL},
+      </if>
+      <if test="record.sourceOfFunds != null" >
+        SOURCE_OF_FUNDS = #{record.sourceOfFunds,jdbcType=VARCHAR},
+      </if>
+      <if test="record.accDate != null" >
+        ACC_DATE = #{record.accDate,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_Where_Clause" />
+    </if>
+  </update>
+  <update id="update" parameterType="map" >
+    update INVOICE_INFO
+    set INVOICE_ID = #{record.invoiceId,jdbcType=VARCHAR},
+      DEBIT_ACCOUNT_TYPE = #{record.debitAccountType,jdbcType=VARCHAR},
+      CREDIT_ACCOUNT_TYPE = #{record.creditAccountType,jdbcType=VARCHAR},
+      TRANS_TYPE = #{record.transType,jdbcType=VARCHAR},
+      SERIAL_NO = #{record.serialNo,jdbcType=VARCHAR},
+      DEBIT_ACCOUNT_ID = #{record.debitAccountId,jdbcType=VARCHAR},
+      CREDIT_ACCOUNT_ID = #{record.creditAccountId,jdbcType=VARCHAR},
+      CREDIT_ACCOUNT_TYPE_ITEM = #{record.creditAccountTypeItem,jdbcType=VARCHAR},
+      DEBIT_ACCOUNT_TYPE_ITEM2 = #{record.debitAccountTypeItem2,jdbcType=VARCHAR},
+      DEBIT_USER_DEFIND_MARK = #{record.debitUserDefindMark,jdbcType=VARCHAR},
+      CREDIT_USER_DEFIND_MARK = #{record.creditUserDefindMark,jdbcType=VARCHAR},
+      DEBIT_ORG_ID = #{record.debitOrgId,jdbcType=VARCHAR},
+      CREDIT_ORG_ID = #{record.creditOrgId,jdbcType=VARCHAR},
+      TRANS_DATE = #{record.transDate,jdbcType=TIMESTAMP},
+      AMOUNT = #{record.amount,jdbcType=DECIMAL},
+      STATUS = #{record.status,jdbcType=VARCHAR},
+      PARTY_MARK_NO = #{record.partyMarkNo,jdbcType=VARCHAR},
+      USER_DEFIND_MARK = #{record.userDefindMark,jdbcType=VARCHAR},
+      INTEGRAL = #{record.integral,jdbcType=DECIMAL},
+      SOURCE_OF_FUNDS = #{record.sourceOfFunds,jdbcType=VARCHAR},
+      ACC_DATE = #{record.accDate,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.smk.pay.core.entity.InvoiceInfoEntity" >
+    update INVOICE_INFO
+    <set >
+      <if test="debitAccountType != null" >
+        DEBIT_ACCOUNT_TYPE = #{debitAccountType,jdbcType=VARCHAR},
+      </if>
+      <if test="creditAccountType != null" >
+        CREDIT_ACCOUNT_TYPE = #{creditAccountType,jdbcType=VARCHAR},
+      </if>
+      <if test="transType != null" >
+        TRANS_TYPE = #{transType,jdbcType=VARCHAR},
+      </if>
+      <if test="serialNo != null" >
+        SERIAL_NO = #{serialNo,jdbcType=VARCHAR},
+      </if>
+      <if test="debitAccountId != null" >
+        DEBIT_ACCOUNT_ID = #{debitAccountId,jdbcType=VARCHAR},
+      </if>
+      <if test="creditAccountId != null" >
+        CREDIT_ACCOUNT_ID = #{creditAccountId,jdbcType=VARCHAR},
+      </if>
+      <if test="creditAccountTypeItem != null" >
+        CREDIT_ACCOUNT_TYPE_ITEM = #{creditAccountTypeItem,jdbcType=VARCHAR},
+      </if>
+      <if test="debitAccountTypeItem2 != null" >
+        DEBIT_ACCOUNT_TYPE_ITEM2 = #{debitAccountTypeItem2,jdbcType=VARCHAR},
+      </if>
+      <if test="debitUserDefindMark != null" >
+        DEBIT_USER_DEFIND_MARK = #{debitUserDefindMark,jdbcType=VARCHAR},
+      </if>
+      <if test="creditUserDefindMark != null" >
+        CREDIT_USER_DEFIND_MARK = #{creditUserDefindMark,jdbcType=VARCHAR},
+      </if>
+      <if test="debitOrgId != null" >
+        DEBIT_ORG_ID = #{debitOrgId,jdbcType=VARCHAR},
+      </if>
+      <if test="creditOrgId != null" >
+        CREDIT_ORG_ID = #{creditOrgId,jdbcType=VARCHAR},
+      </if>
+      <if test="transDate != null" >
+        TRANS_DATE = #{transDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="amount != null" >
+        AMOUNT = #{amount,jdbcType=DECIMAL},
+      </if>
+      <if test="status != null" >
+        STATUS = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="partyMarkNo != null" >
+        PARTY_MARK_NO = #{partyMarkNo,jdbcType=VARCHAR},
+      </if>
+      <if test="userDefindMark != null" >
+        USER_DEFIND_MARK = #{userDefindMark,jdbcType=VARCHAR},
+      </if>
+      <if test="integral != null" >
+        INTEGRAL = #{integral,jdbcType=DECIMAL},
+      </if>
+      <if test="sourceOfFunds != null" >
+        SOURCE_OF_FUNDS = #{sourceOfFunds,jdbcType=VARCHAR},
+      </if>
+      <if test="accDate != null" >
+        ACC_DATE = #{accDate,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where INVOICE_ID = #{invoiceId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.smk.pay.core.entity.InvoiceInfoEntity" >
+    update INVOICE_INFO
+    set DEBIT_ACCOUNT_TYPE = #{debitAccountType,jdbcType=VARCHAR},
+      CREDIT_ACCOUNT_TYPE = #{creditAccountType,jdbcType=VARCHAR},
+      TRANS_TYPE = #{transType,jdbcType=VARCHAR},
+      SERIAL_NO = #{serialNo,jdbcType=VARCHAR},
+      DEBIT_ACCOUNT_ID = #{debitAccountId,jdbcType=VARCHAR},
+      CREDIT_ACCOUNT_ID = #{creditAccountId,jdbcType=VARCHAR},
+      CREDIT_ACCOUNT_TYPE_ITEM = #{creditAccountTypeItem,jdbcType=VARCHAR},
+      DEBIT_ACCOUNT_TYPE_ITEM2 = #{debitAccountTypeItem2,jdbcType=VARCHAR},
+      DEBIT_USER_DEFIND_MARK = #{debitUserDefindMark,jdbcType=VARCHAR},
+      CREDIT_USER_DEFIND_MARK = #{creditUserDefindMark,jdbcType=VARCHAR},
+      DEBIT_ORG_ID = #{debitOrgId,jdbcType=VARCHAR},
+      CREDIT_ORG_ID = #{creditOrgId,jdbcType=VARCHAR},
+      TRANS_DATE = #{transDate,jdbcType=TIMESTAMP},
+      AMOUNT = #{amount,jdbcType=DECIMAL},
+      STATUS = #{status,jdbcType=VARCHAR},
+      PARTY_MARK_NO = #{partyMarkNo,jdbcType=VARCHAR},
+      USER_DEFIND_MARK = #{userDefindMark,jdbcType=VARCHAR},
+      INTEGRAL = #{integral,jdbcType=DECIMAL},
+      SOURCE_OF_FUNDS = #{sourceOfFunds,jdbcType=VARCHAR},
+      ACC_DATE = #{accDate,jdbcType=VARCHAR}
+    where INVOICE_ID = #{invoiceId,jdbcType=VARCHAR}
+  </update>
+</mapper>

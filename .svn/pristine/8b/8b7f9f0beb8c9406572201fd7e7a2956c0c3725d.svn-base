@@ -1,0 +1,21 @@
+package com.smk.pay.core.enums;
+
+/**
+ * Project plouto
+ * Created by chuanzhi.macz
+ * Date 2016/10/21 12:01
+ */
+public enum UserInfoStatusEnum {
+
+    NORMAL("1");
+
+    private String value;
+
+    UserInfoStatusEnum(String value) {
+        this.value = value;
+    }
+
+    public String value() {
+        return value;
+    }
+}

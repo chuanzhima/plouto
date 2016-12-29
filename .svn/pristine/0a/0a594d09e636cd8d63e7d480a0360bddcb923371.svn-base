@@ -1,0 +1,23 @@
+package com.smk.pay.core.manager.atom.impl;
+
+import com.smk.pay.account.core.enums.AccountChannelEnum;
+import com.smk.pay.account.core.request.RequestHeader;
+import com.smk.pay.core.manager.atom.IRecharge;
+import org.springframework.stereotype.Component;
+
+import java.math.BigDecimal;
+import java.util.Date;
+
+/**
+ * Project plouto
+ * Created by chuanzhi.macz
+ * Date 2016/12/15 10:32
+ */
+@Component(value = "rechargeYHK4Merchant")
+public class RechargeYHK4Merchant implements IRecharge {
+
+    @Override
+    public void recharge(String sequence, String accountId, BigDecimal amount, String bankId, String merchantId, String accDate, RequestHeader header, Date transDate, AccountChannelEnum channelEnum) {
+        // TODO
+    }
+}

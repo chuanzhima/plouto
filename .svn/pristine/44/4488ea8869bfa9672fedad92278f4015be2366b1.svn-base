@@ -1,0 +1,54 @@
+package com.smk.pay.core.utils;
+
+import org.springframework.util.StringUtils;
+
+import java.util.Date;
+import java.util.concurrent.ThreadLocalRandom;
+
+/**
+ * Project plouto
+ * Created by chuanzhi.macz
+ * Date 2016/11/10 11:15
+ */
+public final class StringUtil {
+
+    public static final String EMPTY = "";
+    public static final String WHITESPACE = " ";
+    public static final String SINGLE_QUOTES = "'";
+    public static final String COMMA = ",";
+
+    public static boolean isEmpty(String... strs) {
+
+        if (strs == null || strs.length < 1)
+            return Boolean.TRUE;
+
+        for (String str : strs) {
+            if (StringUtils.isEmpty(str)) {
+                return Boolean.TRUE;
+            }
+        }
+        return Boolean.FALSE;
+    }
+
+    public static boolean isNull(Object ... objs) {
+        if (objs == null || objs.length < 1) {
+            return Boolean.TRUE;
+        }
+        for (Object obj : objs) {
+            if (obj == null)
+                return Boolean.TRUE;
+        }
+        return Boolean.FALSE;
+    }
+
+    public static String valueOf(Object obj) {
+
+        return obj == null ? EMPTY : obj.toString();
+    }
+
+    public static String randomSequence() {
+        return DateUtil.formatDate(new Date(), DateUtil.DATE_MILLS_COMPACT) + ThreadLocalRandom.current
+                ().nextLong(100l, 1000l);
+    }
+
+}

@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.smk.pay.core.mapper.PrepaidCardGroupEntityMapper">
+  <resultMap id="BaseResultMap" type="com.smk.pay.core.entity.PrepaidCardGroupEntity">
+    <id column="PREPAID_CARD_ID" jdbcType="VARCHAR" property="prepaidCardId" />
+    <id column="USER_DEFIND_MARK" jdbcType="VARCHAR" property="userDefindMark" />
+    <id column="PREPAID_ACCOUNT_ID" jdbcType="VARCHAR" property="prepaidAccountId" />
+    <result column="STATUS" jdbcType="VARCHAR" property="status" />
+  </resultMap>
+  <sql id="Query_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_Where_Clause">
+    <where>
+      <foreach collection="condition.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    PREPAID_CARD_ID, USER_DEFIND_MARK, PREPAID_ACCOUNT_ID, STATUS
+  </sql>
+  <select id="selectList" parameterType="com.smk.pay.dal.condtion.EntityCondition" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from PREPAID_CARD_GROUP
+    <if test="_parameter != null">
+      <include refid="Query_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="com.smk.pay.core.entity.PrepaidCardGroupEntityKey" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from PREPAID_CARD_GROUP
+    where PREPAID_CARD_ID = #{prepaidCardId,jdbcType=VARCHAR}
+      and USER_DEFIND_MARK = #{userDefindMark,jdbcType=VARCHAR}
+      and PREPAID_ACCOUNT_ID = #{prepaidAccountId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="com.smk.pay.core.entity.PrepaidCardGroupEntityKey">
+    delete from PREPAID_CARD_GROUP
+    where PREPAID_CARD_ID = #{prepaidCardId,jdbcType=VARCHAR}
+      and USER_DEFIND_MARK = #{userDefindMark,jdbcType=VARCHAR}
+      and PREPAID_ACCOUNT_ID = #{prepaidAccountId,jdbcType=VARCHAR}
+  </delete>
+  <delete id="delete" parameterType="com.smk.pay.dal.condtion.EntityCondition">
+    delete from PREPAID_CARD_GROUP
+    <if test="_parameter != null">
+      <include refid="Query_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.smk.pay.core.entity.PrepaidCardGroupEntity">
+    insert into PREPAID_CARD_GROUP (PREPAID_CARD_ID, USER_DEFIND_MARK, PREPAID_ACCOUNT_ID, 
+      STATUS)
+    values (#{prepaidCardId,jdbcType=VARCHAR}, #{userDefindMark,jdbcType=VARCHAR}, #{prepaidAccountId,jdbcType=VARCHAR}, 
+      #{status,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.smk.pay.core.entity.PrepaidCardGroupEntity">
+    insert into PREPAID_CARD_GROUP
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="prepaidCardId != null">
+        PREPAID_CARD_ID,
+      </if>
+      <if test="userDefindMark != null">
+        USER_DEFIND_MARK,
+      </if>
+      <if test="prepaidAccountId != null">
+        PREPAID_ACCOUNT_ID,
+      </if>
+      <if test="status != null">
+        STATUS,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="prepaidCardId != null">
+        #{prepaidCardId,jdbcType=VARCHAR},
+      </if>
+      <if test="userDefindMark != null">
+        #{userDefindMark,jdbcType=VARCHAR},
+      </if>
+      <if test="prepaidAccountId != null">
+        #{prepaidAccountId,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="count" parameterType="com.smk.pay.dal.condtion.EntityCondition" resultType="java.lang.Integer">
+    select count(*) from PREPAID_CARD_GROUP
+    <if test="_parameter != null">
+      <include refid="Query_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateSelective" parameterType="map">
+    update PREPAID_CARD_GROUP
+    <set>
+      <if test="record.prepaidCardId != null">
+        PREPAID_CARD_ID = #{record.prepaidCardId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.userDefindMark != null">
+        USER_DEFIND_MARK = #{record.userDefindMark,jdbcType=VARCHAR},
+      </if>
+      <if test="record.prepaidAccountId != null">
+        PREPAID_ACCOUNT_ID = #{record.prepaidAccountId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.status != null">
+        STATUS = #{record.status,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_Where_Clause" />
+    </if>
+  </update>
+  <update id="update" parameterType="map">
+    update PREPAID_CARD_GROUP
+    set PREPAID_CARD_ID = #{record.prepaidCardId,jdbcType=VARCHAR},
+      USER_DEFIND_MARK = #{record.userDefindMark,jdbcType=VARCHAR},
+      PREPAID_ACCOUNT_ID = #{record.prepaidAccountId,jdbcType=VARCHAR},
+      STATUS = #{record.status,jdbcType=VARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.smk.pay.core.entity.PrepaidCardGroupEntity">
+    update PREPAID_CARD_GROUP
+    <set>
+      <if test="status != null">
+        STATUS = #{status,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where PREPAID_CARD_ID = #{prepaidCardId,jdbcType=VARCHAR}
+      and USER_DEFIND_MARK = #{userDefindMark,jdbcType=VARCHAR}
+      and PREPAID_ACCOUNT_ID = #{prepaidAccountId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.smk.pay.core.entity.PrepaidCardGroupEntity">
+    update PREPAID_CARD_GROUP
+    set STATUS = #{status,jdbcType=VARCHAR}
+    where PREPAID_CARD_ID = #{prepaidCardId,jdbcType=VARCHAR}
+      and USER_DEFIND_MARK = #{userDefindMark,jdbcType=VARCHAR}
+      and PREPAID_ACCOUNT_ID = #{prepaidAccountId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateStatusByCardIdStatus">
+    update prepaid_card_group set status = #{2} where prepaid_card_id = #{0} and status = #{1}
+  </update>
+  <select id="queryGroupByCardNo" resultMap="BaseResultMap">
+    select g.prepaid_card_id, g.prepaid_account_id, g.status
+    FROM prepaid_card_group g, prepaid_card_info i where i.prepaid_card_no = #{0} and i.prepaid_card_id = g
+    .prepaid_card_id and (i.status = '1' or i.status = '2') and g.status = '1'
+  </select>
+
+
+</mapper>

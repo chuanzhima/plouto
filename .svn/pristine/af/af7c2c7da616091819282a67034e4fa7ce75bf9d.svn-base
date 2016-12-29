@@ -1,0 +1,168 @@
+package com.smk.pay.core.api;
+
+import com.smk.pay.account.core.constant.AccountConstant;
+import com.smk.pay.account.core.enums.AccountInvokerEnum;
+import com.smk.pay.account.core.response.AntiFraudInfo;
+import com.smk.pay.account.core.response.RpcResponse;
+import com.smk.pay.account.core.service.IAccountAntiFraudService;
+import com.smk.pay.core.constant.ResultCodeConstant;
+import com.smk.pay.core.dto.UserInfoDto;
+import com.smk.pay.core.manager.IAccountMngManager;
+import com.smk.pay.core.manager.IUserInfoManager;
+import com.smk.pay.core.utils.DateUtil;
+import com.smk.pay.core.utils.PropertiesUtil;
+import com.smk.pay.core.utils.StringUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+
+import java.math.BigDecimal;
+import java.util.Date;
+
+/**
+ * Project plouto
+ * Created by chuanzhi.macz
+ * Date 2016/11/10 10:57
+ */
+public class AccountAntiFraudService implements IAccountAntiFraudService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(AccountAntiFraudService.class);
+
+    @Autowired
+    @Qualifier("accountOnlineMngManager")
+    private IAccountMngManager accountOnlineMngManager;
+
+    @Autowired
+    private IUserInfoManager userInfoManager;
+
+
+    /**
+     * stop payment
+     * all params are required
+     *
+     * @param serialNumber
+     * @param applicationId
+     * @param applicationType
+     * @param idNo            identity card no
+     * @param statTime
+     * @param expireTime
+     * @param amount
+     * @param operator        operator name
+     * @return
+     */
+    public RpcResponse<AntiFraudInfo> stopPayment(String serialNumber, String applicationId, String applicationType, String idNo, Date statTime, Date expireTime, BigDecimal amount, String operator) {
+
+        RpcResponse<AntiFraudInfo> rpcResponse;
+        String startT = DateUtil.formatDate(statTime, DateUtil.DATE_TIME);
+        String expiredT = DateUtil.formatDate(expireTime, DateUtil.DATE_TIME);
+
+        LOGGER.info("stopPayment, serialNumber={},applicationId={},applicationType={},idNo={}," +
+                "startTime={}, expiredTime={}, amount={}, operator={}", new
+                String[]{serialNumber, applicationId, applicationType, idNo, startT, expiredT,
+                StringUtil.valueOf(amount), operator});
+
+        if (StringUtil.isEmpty(serialNumber, applicationId, applicationType, idNo, startT,
+                expiredT, StringUtil.valueOf(amount), operator)) {
+
+            rpcResponse = new RpcResponse<AntiFraudInfo>(Boolean.FALSE, ResultCodeConstant
+                    .PARAMETER_INVALID, PropertiesUtil.LOCALE_PROPERTIES_Map.get(ResultCodeConstant
+                    .PARAMETER_INVALID));
+            return rpcResponse;
+        }
+
+        UserInfoDto userInfoDto = userInfoManager.getUserByTypeAndNo(AccountConstant
+                .CREDENTIAL_TYPE_ID, idNo);
+        if (userInfoDto == null) {
+            rpcResponse = new RpcResponse<AntiFraudInfo>(Boolean.FALSE, ResultCodeConstant
+                    .USER_INVALID, PropertiesUtil.LOCALE_PROPERTIES_Map.get(ResultCodeConstant
+                    .USER_INVALID));
+            return rpcResponse;
+        }
+        String resultCode = accountOnlineMngManager.stopPayment(userInfoDto.getUserId(),
+                statTime, expireTime, AccountInvokerEnum.ANTI_FRAUD, operator);
+
+
+        return null;
+    }
+
+    /**
+     * prolong stop-payment time, set stop-payment end date
+     * all params are required
+     *
+     * @param serialNumber
+     * @param applicationId
+     * @param applicationType
+     * @param idNo
+     * @param expireTime
+     * @param operator
+     * @return
+     */
+    public RpcResponse<AntiFraudInfo> stopPaymentProlong(String serialNumber, String applicationId, String applicationType, String idNo, Date expireTime, String operator) {
+        return null;
+    }
+
+    /**
+     * close stop payment
+     * all params are required
+     *
+     * @param serialNumber
+     * @param applicationId
+     * @param applicationType
+     * @param idNo
+     * @param operator
+     * @return
+     */
+    public RpcResponse<AntiFraudInfo> closeStopPayment(String serialNumber, String applicationId, String applicationType, String idNo, String operator) {
+        return null;
+    }
+
+    /**
+     * freeze account, temporary for freeze all amount, not part
+     * all params are required
+     *
+     * @param serialNumber
+     * @param applicationId
+     * @param applicationType
+     * @param idNo            identity card no
+     * @param statTime
+     * @param expireTime
+     * @param amount
+     * @param operator        operator name
+     * @return
+     */
+    public RpcResponse<AntiFraudInfo> freeze(String serialNumber, String applicationId, String applicationType, String idNo, Date statTime, Date expireTime, BigDecimal amount, String operator) {
+        return null;
+    }
+
+    /**
+     * prolong freeze time, set freeze end date
+     * all params are required
+     *
+     * @param serialNumber
+     * @param applicationId
+     * @param applicationType
+     * @param idNo
+     * @param expireTime
+     * @param operator
+     * @return
+     */
+    public RpcResponse<AntiFraudInfo> freezeProlong(String serialNumber, String applicationId, String applicationType, String idNo, Date expireTime, String operator) {
+        return null;
+    }
+
+    /**
+     * unfreeze account
+     * all params are required
+     *
+     * @param serialNumber
+     * @param applicationId
+     * @param applicationType
+     * @param idNo
+     * @param operator
+     * @return
+     */
+    public RpcResponse<AntiFraudInfo> unfreeze(String serialNumber, String applicationId, String applicationType, String idNo, String operator) {
+        return null;
+    }
+}

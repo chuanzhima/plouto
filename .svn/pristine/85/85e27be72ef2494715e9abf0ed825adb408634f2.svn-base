@@ -1,0 +1,147 @@
+package com.smk.pay.core.manager.impl;
+
+import com.smk.pay.account.core.enums.AccountBizEnum;
+import com.smk.pay.account.core.enums.AccountTypeEnum;
+import com.smk.pay.account.core.response.AccountCreditDetail;
+import com.smk.pay.account.core.response.AccountCreditDetailResp;
+import com.smk.pay.account.core.response.AccountCreditInfo;
+import com.smk.pay.core.constant.ResultCodeConstant;
+import com.smk.pay.core.dto.AccountInfoDto;
+import com.smk.pay.core.entity.LnsAcctInfoEntity;
+import com.smk.pay.core.entity.OperationDetailEntity;
+import com.smk.pay.core.entity.PrepaidCardInfoEntity;
+import com.smk.pay.core.exception.ServiceException;
+import com.smk.pay.core.manager.IAccountCreditQueryManager;
+import com.smk.pay.core.manager.base.IAccountInfoManager;
+import com.smk.pay.core.manager.base.IUserInfoManager;
+import com.smk.pay.core.mapper.LnsAcctInfoEntityMapper;
+import com.smk.pay.core.mapper.OperationDetailEntityMapper;
+import com.smk.pay.core.mapper.PrepaidCardInfoEntityMapper;
+import com.smk.pay.core.utils.DateUtil;
+import com.smk.pay.core.utils.StringUtil;
+import com.smk.pay.dal.condtion.Criteria;
+import com.smk.pay.dal.condtion.EntityCondition;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+/**
+ * Project plouto
+ * Created by chuanzhi.macz
+ * Date 2016/12/22 10:39
+ */
+@Service("accountCreditQueryManager")
+public class AccountCreditQueryManager implements IAccountCreditQueryManager {
+
+    @Autowired
+    private LnsAcctInfoEntityMapper lnsAcctInfoEntityMapper;
+    @Autowired
+    private IUserInfoManager userInfoManager;
+    @Autowired
+    private PrepaidCardInfoEntityMapper prepaidCardInfoEntityMapper;
+    @Autowired
+    private IAccountInfoManager accountInfoManager;
+    @Autowired
+    private OperationDetailEntityMapper operationDetailEntityMapper;
+
+    @Override
+    public AccountCreditInfo queryAccountCreditInfo(AccountTypeEnum typeEnum, String value) {
+
+        String userId = StringUtil.EMPTY;
+        if (StringUtil.isEmpty(userId))
+            throw new ServiceException(ResultCodeConstant.USER_MAPPING_NOT_EXIST);
+
+        // 根据卡号查
+        if (typeEnum == AccountTypeEnum.OFFLINE) {
+            PrepaidCardInfoEntity cardInfoEntity = prepaidCardInfoEntityMapper.selectByCardNo(value);
+            if (null == cardInfoEntity || StringUtil.isEmpty(cardInfoEntity.getUserId()))
+                throw new ServiceException(ResultCodeConstant.CARD_NOT_EXIST);
+            userId = cardInfoEntity.getUserId();
+        } else {
+            // ID 转换 custId转换为userId
+            userId = userInfoManager.getUserIdByCustId(value);
+        }
+        LnsAcctInfoEntity acctInfoEntity = lnsAcctInfoEntityMapper.selectByUserIdAndType(userId, AccountBizEnum.CREDIT
+                .getValue());
+        if (null == acctInfoEntity) {
+            // 未开通信用业务
+            return new AccountCreditInfo(Boolean.FALSE);
+        }
+        BigDecimal sumAmt = acctInfoEntity.getAmount1();
+        BigDecimal usedAmt = acctInfoEntity.getAmount2();
+        BigDecimal debtAmt = acctInfoEntity.getAmount3();
+        BigDecimal debtInterestAmt = acctInfoEntity.getAmount4();
+        // 子账户总和
+        AccountInfoDto accountInfoDto = accountInfoManager.queryMainAccountByUserId(userId);
+        if (null == accountInfoDto)
+            throw new ServiceException(ResultCodeConstant.ACCOUNT_NOT_EXIST);
+        BigDecimal totalAmt = accountInfoDto.getAmount1().add(accountInfoDto.getAmount2()).add(accountInfoDto
+                .getAmount3()).add(accountInfoDto.getAmount4()).add(accountInfoDto.getAmount5()).add(accountInfoDto
+                .getAmount6());
+
+        return new AccountCreditInfo(Boolean.TRUE, acctInfoEntity.getCrdno(), acctInfoEntity.getUserName(),
+                sumAmt.subtract(usedAmt), debtAmt, debtInterestAmt, totalAmt);
+    }
+
+    @Override
+    public AccountCreditDetailResp queryAccountCreditDetail(Date transFromDate, Date transToDate, String cardNumber,
+                                                              String idNo, String type, int pageNum, int pageSize) {
+
+        String fromDate = DateUtil.formatDate(transFromDate, DateUtil.DATE_TIME);
+        String toDate = DateUtil.formatDate(transToDate, DateUtil.DATE_TIME);
+        Criteria criteria = new Criteria().addCriterion("CREATETIME BETWEEN ", fromDate, toDate, "CREATETIME");
+
+        if (!StringUtil.isEmpty(cardNumber))
+            criteria.addCriterion("SMKNUM=", cardNumber, "SMKNUM");
+
+        if (!StringUtil.isEmpty(idNo))
+            criteria.addCriterion("IDNUM=", idNo, "IDNUM");
+
+        if (!StringUtil.isEmpty(type))
+            criteria.addCriterion("OPERATIONTYPE=", type, "OPERATIONTYPE");
+
+        int pageIndex = (pageNum - 1) * pageSize;
+
+        List<OperationDetailEntity> operationDetailEntityList = operationDetailEntityMapper.queryOperationDetail(
+                (new EntityCondition()
+                        .addCriteria(criteria).addOffsetOpt(pageIndex).addLimitOpt(pageSize)
+                        .addOrderByOpt("CREATETIME DESC")));
+
+        int count = this.queryAccountCreditDetailCount(transFromDate, transToDate, cardNumber,idNo, type);
+
+        int pageCount = count % pageSize == 0 ? count / pageSize : count / pageSize + 1;
+
+        List<AccountCreditDetail> detailDtos = new ArrayList<>();
+        if (CollectionUtils.isEmpty(operationDetailEntityList))
+            return new AccountCreditDetailResp(detailDtos, pageSize, pageCount, count);
+        for (OperationDetailEntity entity : operationDetailEntityList) {
+            AccountCreditDetail creditDetail = new AccountCreditDetail(entity.getCreatetime(), entity
+                    .getOperationtype(), entity.getPrincipal(), entity.getInterest(), entity.getName(), entity
+                    .getSmknum(), entity.getStatus(), entity.getIdnum(), entity.getMobile());
+            detailDtos.add(creditDetail);
+        }
+        return new AccountCreditDetailResp(detailDtos, pageSize, pageCount, count);
+    }
+
+    private int queryAccountCreditDetailCount(Date transFromDate, Date transToDate, String cardNumber, String idNo,
+                                             String type) {
+        String fromDate = DateUtil.formatDate(transFromDate, DateUtil.DATE_TIME);
+        String toDate = DateUtil.formatDate(transToDate, DateUtil.DATE_TIME);
+        Criteria criteria = new Criteria().addCriterion("CREATETIME BETWEEN ", fromDate, toDate, "CREATETIME")
+                .addCriterion("OPERATIONTYPE=", type, "OPERATIONTYPE");
+
+        if (!StringUtil.isEmpty(cardNumber))
+            criteria.addCriterion("SMKNUM=", cardNumber, "SMKNUM");
+
+        if (!StringUtil.isEmpty(idNo))
+            criteria.addCriterion("IDNUM=", idNo, "IDNUM");
+
+        int count = operationDetailEntityMapper.count(new EntityCondition().addCriteria(criteria));
+        return count;
+    }
+}

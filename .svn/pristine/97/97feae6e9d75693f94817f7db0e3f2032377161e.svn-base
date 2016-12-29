@@ -1,0 +1,58 @@
+package com.smk.pay.core.api;
+
+import com.alibaba.dubbo.config.annotation.Service;
+import com.smk.pay.account.core.enums.AccountTypeEnum;
+import com.smk.pay.account.core.response.AccountInfo;
+import com.smk.pay.account.core.response.RpcResponse;
+import com.smk.pay.account.core.service.IAccountQueryService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.math.BigDecimal;
+
+/**
+ * Project plouto
+ * Created by chuanzhi.macz
+ * Date 2016/10/24 9:57
+ */
+@Service(version="1.0.0")
+public class AccountQueryService implements IAccountQueryService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(AccountQueryService.class);
+    public RpcResponse<String> test(AccountTypeEnum typeEnum) {
+        LOGGER.info("account enum is " + typeEnum.name() + "," + typeEnum.value());
+        return new RpcResponse<String>(Boolean.TRUE, "123","测试返回内容");
+    }
+
+    /**
+     * withdrawal amount query
+     *
+     * @param value    when type is online, value is userId, otherwise value is cardNumber
+     * @param typeEnum
+     * @param type     reference to AccountConstant.TYPE_*
+     * @return
+     */
+    public RpcResponse<BigDecimal> queryWithdrawalAmount(String value, AccountTypeEnum typeEnum, String type) {
+        return null;
+    }
+
+    /**
+     * query account info by identity card
+     *
+     * @param idNo
+     * @return
+     */
+    public RpcResponse<AccountInfo> queryAccountByIdNo(String idNo) {
+        return null;
+    }
+
+    /**
+     * query account info by account id
+     *
+     * @param accountId
+     * @return
+     */
+    public RpcResponse<AccountInfo> queryAccountByAccount(String accountId) {
+        return null;
+    }
+}

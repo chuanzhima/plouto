@@ -1,0 +1,41 @@
+package com.smk.pay.core.controller;
+
+
+import com.smk.pay.account.core.enums.AccountTypeEnum;
+import com.smk.pay.account.core.request.OpenAccountRequest;
+import com.smk.pay.account.core.service.IAccountMngService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+/**
+ * Project plouto
+ * Created by chuanzhi.macz
+ * Date 2016/10/17 15:45
+ */
+@RestController
+@RequestMapping("/query")
+public class AccountQueryController {
+
+    private final static Logger LOGGER = LoggerFactory.getLogger(AccountQueryController.class);
+    @Autowired
+    private Environment environment;
+    @Autowired
+    private IAccountMngService accountMngService;
+
+    @GetMapping("/{id}")
+    public String query(@PathVariable("id") String id) {
+
+        OpenAccountRequest openAccountRequest = new OpenAccountRequest("20161221000000464", "杨单锋", "1", "220322198904128114");
+        openAccountRequest.setUserCls("1");
+
+        accountMngService.openAccount(openAccountRequest, AccountTypeEnum.ONLINE);
+
+        return "query done! id = " + id + " env = " + environment.getProperty("logging.level.org.springframework.web");
+    }
+}

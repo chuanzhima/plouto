@@ -1,0 +1,26 @@
+package com.smk.pay.core.manager;
+
+import com.smk.pay.account.core.enums.AccountTypeEnum;
+import com.smk.pay.core.dto.AccountInfoDto;
+
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Project plouto
+ * Created by chuanzhi.macz
+ * Date 2016/10/23 19:26
+ */
+public interface IAccountQueryManager {
+
+    /**
+     * 查询账户可用余额
+     *
+     * @param value
+     * @param typeEnum
+     * @return
+     */
+    Map<String, BigDecimal> queryAvailableAmount(String value, AccountTypeEnum typeEnum);
+
+}

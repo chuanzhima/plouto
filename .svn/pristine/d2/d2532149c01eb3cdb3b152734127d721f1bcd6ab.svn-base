@@ -1,0 +1,38 @@
+package com.smk.pay.core.api;
+
+import com.smk.pay.account.core.enums.AccountChannelEnum;
+import com.smk.pay.account.core.enums.AccountFundFlowEnum;
+import com.smk.pay.account.core.enums.AccountTypeEnum;
+import com.smk.pay.account.core.request.RequestHeader;
+import com.smk.pay.account.core.response.RpcResponse;
+import com.smk.pay.account.core.service.IAccountWithdrawService;
+import com.smk.pay.core.base.BaseServiceTest;
+import junit.framework.TestCase;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.math.BigDecimal;
+
+/**
+ * AccountWithdrawService Tester.
+ *
+ * @author <Authors name>
+ * @version 1.0
+ * @since <pre>11/29/2016</pre>
+ */
+public class AccountWithdrawServiceTest extends BaseServiceTest {
+    @Autowired
+    private IAccountWithdrawService accountWithdrawService;
+
+    @org.junit.Test
+    public void testWithdraw() {
+        RequestHeader header = new RequestHeader("20161201", "174623", "20161201174623321");
+        String merchantId = "123";
+        String userId = "100002611";
+        BigDecimal amount = new BigDecimal(500);
+        String bankId = "0001";
+        RpcResponse<String> response = accountWithdrawService.withdraw(header, AccountChannelEnum.INTERNET,
+                merchantId, AccountTypeEnum.ONLINE, userId, AccountFundFlowEnum.YHK, amount, bankId);
+        org.junit.Assert.assertNotNull(response);
+    }
+
+}

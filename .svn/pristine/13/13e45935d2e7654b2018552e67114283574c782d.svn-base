@@ -1,0 +1,97 @@
+package com.smk.pay.core.manager.impl;
+
+import com.smk.pay.account.core.enums.AccountChannelEnum;
+import com.smk.pay.account.core.enums.AccountFundFlowEnum;
+import com.smk.pay.account.core.request.RequestHeader;
+import com.smk.pay.core.constant.ResultCodeConstant;
+import com.smk.pay.core.entity.AccSystemEntity;
+import com.smk.pay.core.exception.DBException;
+import com.smk.pay.core.exception.ServiceException;
+import com.smk.pay.core.factory.RechargeFactory;
+import com.smk.pay.core.manager.IAccountRechargeManager;
+import com.smk.pay.core.manager.atom.IRecharge;
+import com.smk.pay.core.mapper.AccSystemEntityMapper;
+import com.smk.pay.core.utils.StringUtil;
+import com.smk.pay.core.validator.RechargeValidator;
+import com.smk.pay.dal.condtion.EntityCondition;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
+
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Project plouto
+ * Created by chuanzhi.macz
+ * Date 2016/11/29 10:10
+ */
+@Service(value = "accountRechargeManager")
+public class AccountRechargeManagerImpl implements IAccountRechargeManager {
+
+    @Autowired
+    private RechargeValidator rechargeValidator;
+    @Autowired
+    private RechargeFactory rechargeFactory;
+    @Autowired
+    private AccSystemEntityMapper accSystemEntityMapper;
+
+    @Transactional
+    @Override
+    public void recharge(RequestHeader header, AccountChannelEnum channelEnum, String merchantId,
+                         String type, String typeValue, AccountFundFlowEnum fundFlowEnum, BigDecimal amount,
+                         String bankId, String companyId) {
+        /**
+         * 校验账户是否存在及状态是否正常，不正常返回错误信息， 正常返回账户id
+         */
+        Map<Boolean, String> check = rechargeValidator.validate(header, fundFlowEnum, type,
+                typeValue);
+        if (check.containsKey(Boolean.FALSE)) {
+            throw new ServiceException(check.get(Boolean.FALSE));
+        }
+        String accountId = check.get(Boolean.TRUE);
+        String accDate = this.queryAccDate();
+        String sequence = StringUtil.randomSequence();
+        /**
+         * 根据不同的充值方式，选择不同的实现类充值
+         */
+        IRecharge recharge = rechargeFactory.getRechargeBean(fundFlowEnum);
+        recharge.recharge(sequence, accountId, amount, bankId, merchantId, accDate, header, new Date(), channelEnum);
+    }
+
+    @Transactional
+    @Override
+    public void recharge4Merchant(RequestHeader header, AccountChannelEnum channelEnum, String merchantId,
+                                  AccountFundFlowEnum fundFlowEnum, BigDecimal amount, String bankId) {
+
+        Map<Boolean, String> check = rechargeValidator.validate4Merchant(header, merchantId);
+
+        if (check.containsKey(Boolean.FALSE)) {
+            throw new ServiceException(check.get(Boolean.FALSE));
+        }
+        String merchantAccountId = check.get(Boolean.TRUE);
+        String accDate = this.queryAccDate();
+        String sequence = StringUtil.randomSequence();
+        /**
+         * 根据不同的充值方式，选择不同的实现类充值
+         */
+        IRecharge recharge = rechargeFactory.getRechargeBean4Merchant(fundFlowEnum);
+        recharge.recharge(sequence, merchantAccountId, amount, bankId, merchantId, accDate, header, new Date(), channelEnum);
+    }
+
+    private String queryAccDate() {
+        List<AccSystemEntity> list;
+        try {
+            list = accSystemEntityMapper.selectList(new EntityCondition());
+        } catch (Exception e) {
+            throw new DBException(e);
+        }
+        if (CollectionUtils.isEmpty(list)) {
+            throw new ServiceException(ResultCodeConstant.ACC_SYSTEM_NO_DATA);
+        }
+        return list.get(0).getAccDate();
+    }
+}

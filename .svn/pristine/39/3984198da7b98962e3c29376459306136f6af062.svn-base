@@ -1,0 +1,674 @@
+package com.smk.pay.core.dto;
+
+import java.math.BigDecimal;
+import java.util.Date;
+
+/**
+ * Project plouto
+ * Created by chuanzhi.macz
+ * Date 2016/11/11 16:27
+ */
+public class TransDetailDto {
+
+    private String serialNo;
+
+    private String transId;
+
+    private String transType;
+
+    private String userId;
+
+    private String userName;
+
+    private String originalSerialNo;
+
+    private String originalTransDate;
+
+    private String originalTransTime;
+
+    private String sourceOfFunds;
+
+    private String accountId;
+
+    private String accountClass;
+
+    private String accountCl;
+
+    private String rivalAccount;
+
+    private String rivalAccountClass;
+
+    private String rivalAccountCl;
+
+    private String rivalUserId;
+
+    private String rivalUserName;
+
+    private String reqSerialNo;
+
+    private String reqTransDate;
+
+    private String reqTransTime;
+
+    private BigDecimal cost;
+
+    private Date transDate;
+
+    private String status;
+
+    private String channel;
+
+    private String partyMarkNo;
+
+    private String accountTypeItem;
+
+    private String merchantId;
+
+    private String userDefindMark;
+
+    private BigDecimal integral;
+
+    private BigDecimal guaranteeDeposit;
+
+    private String accountType;
+
+    private BigDecimal time;
+
+    private String accDate;
+
+    private String replacementFlag;
+
+    private BigDecimal amount1;
+
+    private BigDecimal amount2;
+
+    private BigDecimal amount3;
+
+    private BigDecimal amount4;
+
+    private BigDecimal amount5;
+
+    private BigDecimal amount6;
+
+    private BigDecimal amount7;
+
+    private BigDecimal amount8;
+
+    private BigDecimal amount9;
+
+    private BigDecimal amount10;
+
+    private BigDecimal amount11;
+
+    private BigDecimal amount12;
+
+    private BigDecimal amount13;
+
+    private BigDecimal amount14;
+
+    private BigDecimal amount15;
+
+    private BigDecimal amount16;
+
+    private BigDecimal amount17;
+
+    private BigDecimal amount18;
+
+    private BigDecimal amount19;
+
+    private BigDecimal amount20;
+
+    private String accountingTrans;
+
+    private String businessType;
+
+    public TransDetailDto() {
+
+    }
+
+    public TransDetailDto(String serialNo, String transId, String transType, String sourceOfFunds,
+                          String accountId, String accountClass, String accountCl, String reqSerialNo,
+                          String reqTransDate, String reqTransTime, Date transDate,
+                          String status,String replacementFlag, String partyMarkNo, BigDecimal amount1,
+                          BigDecimal amount2, BigDecimal amount3, BigDecimal amount4, BigDecimal amount5,
+                          BigDecimal amount6, BigDecimal amount11, BigDecimal amount12, BigDecimal amount13,
+                          BigDecimal amount14, BigDecimal amount15, String userDefindMark,
+                          String channel, String merchantId, String accDate) {
+        this.serialNo = serialNo;
+        this.transId = transId;
+        this.transType = transType;
+        this.sourceOfFunds = sourceOfFunds;
+        this.accountId = accountId;
+        this.accountClass = accountClass;
+        this.accountCl = accountCl;
+        this.reqSerialNo = reqSerialNo;
+        this.reqTransDate = reqTransDate;
+        this.reqTransTime = reqTransTime;
+        this.transDate = transDate;
+        this.status = status;
+        this.replacementFlag = replacementFlag;
+        this.partyMarkNo = partyMarkNo;
+        this.amount1 = amount1;
+        this.amount2 = amount2;
+        this.amount3 = amount3;
+        this.amount4 = amount4;
+        this.amount5 = amount5;
+        this.amount6 = amount6;
+        this.amount11 = amount11;
+        this.amount12 = amount12;
+        this.amount13 = amount13;
+        this.amount14 = amount14;
+        this.amount15 = amount15;
+        this.userDefindMark = userDefindMark;
+        this.channel = channel;
+        this.merchantId = merchantId;
+        this.accDate = accDate;
+    }
+
+    public TransDetailDto(String serialNo, String transId, String transType, String userId, String userName, String originalSerialNo, String originalTransDate, String originalTransTime, String sourceOfFunds, String accountId, String accountClass, String accountCl, String rivalAccount, String rivalAccountClass, String rivalAccountCl, String rivalUserId, String rivalUserName, String reqSerialNo, String reqTransDate, String reqTransTime, BigDecimal cost, Date transDate, String status, String channel, String partyMarkNo, String accountTypeItem, String merchantId, String userDefindMark, BigDecimal integral, BigDecimal guaranteeDeposit, String accountType, BigDecimal time, String accDate, String replacementFlag, BigDecimal amount1, BigDecimal amount2, BigDecimal amount3, BigDecimal amount4, BigDecimal amount5, BigDecimal amount6, BigDecimal amount7, BigDecimal amount8, BigDecimal amount9, BigDecimal amount10, BigDecimal amount11, BigDecimal amount12, BigDecimal amount13, BigDecimal amount14, BigDecimal amount15, BigDecimal amount16, BigDecimal amount17, BigDecimal amount18, BigDecimal amount19, BigDecimal amount20, String accountingTrans, String businessType) {
+        this.serialNo = serialNo;
+        this.transId = transId;
+        this.transType = transType;
+        this.userId = userId;
+        this.userName = userName;
+        this.originalSerialNo = originalSerialNo;
+        this.originalTransDate = originalTransDate;
+        this.originalTransTime = originalTransTime;
+        this.sourceOfFunds = sourceOfFunds;
+        this.accountId = accountId;
+        this.accountClass = accountClass;
+        this.accountCl = accountCl;
+        this.rivalAccount = rivalAccount;
+        this.rivalAccountClass = rivalAccountClass;
+        this.rivalAccountCl = rivalAccountCl;
+        this.rivalUserId = rivalUserId;
+        this.rivalUserName = rivalUserName;
+        this.reqSerialNo = reqSerialNo;
+        this.reqTransDate = reqTransDate;
+        this.reqTransTime = reqTransTime;
+        this.cost = cost;
+        this.transDate = transDate;
+        this.status = status;
+        this.channel = channel;
+        this.partyMarkNo = partyMarkNo;
+        this.accountTypeItem = accountTypeItem;
+        this.merchantId = merchantId;
+        this.userDefindMark = userDefindMark;
+        this.integral = integral;
+        this.guaranteeDeposit = guaranteeDeposit;
+        this.accountType = accountType;
+        this.time = time;
+        this.accDate = accDate;
+        this.replacementFlag = replacementFlag;
+        this.amount1 = amount1;
+        this.amount2 = amount2;
+        this.amount3 = amount3;
+        this.amount4 = amount4;
+        this.amount5 = amount5;
+        this.amount6 = amount6;
+        this.amount7 = amount7;
+        this.amount8 = amount8;
+        this.amount9 = amount9;
+        this.amount10 = amount10;
+        this.amount11 = amount11;
+        this.amount12 = amount12;
+        this.amount13 = amount13;
+        this.amount14 = amount14;
+        this.amount15 = amount15;
+        this.amount16 = amount16;
+        this.amount17 = amount17;
+        this.amount18 = amount18;
+        this.amount19 = amount19;
+        this.amount20 = amount20;
+        this.accountingTrans = accountingTrans;
+        this.businessType = businessType;
+    }
+
+    public String getSerialNo() {
+        return serialNo;
+    }
+
+    public void setSerialNo(String serialNo) {
+        this.serialNo = serialNo;
+    }
+
+    public String getTransId() {
+        return transId;
+    }
+
+    public void setTransId(String transId) {
+        this.transId = transId;
+    }
+
+    public String getTransType() {
+        return transType;
+    }
+
+    public void setTransType(String transType) {
+        this.transType = transType;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getOriginalSerialNo() {
+        return originalSerialNo;
+    }
+
+    public void setOriginalSerialNo(String originalSerialNo) {
+        this.originalSerialNo = originalSerialNo;
+    }
+
+    public String getOriginalTransDate() {
+        return originalTransDate;
+    }
+
+    public void setOriginalTransDate(String originalTransDate) {
+        this.originalTransDate = originalTransDate;
+    }
+
+    public String getOriginalTransTime() {
+        return originalTransTime;
+    }
+
+    public void setOriginalTransTime(String originalTransTime) {
+        this.originalTransTime = originalTransTime;
+    }
+
+    public String getSourceOfFunds() {
+        return sourceOfFunds;
+    }
+
+    public void setSourceOfFunds(String sourceOfFunds) {
+        this.sourceOfFunds = sourceOfFunds;
+    }
+
+    public String getAccountId() {
+        return accountId;
+    }
+
+    public void setAccountId(String accountId) {
+        this.accountId = accountId;
+    }
+
+    public String getAccountClass() {
+        return accountClass;
+    }
+
+    public void setAccountClass(String accountClass) {
+        this.accountClass = accountClass;
+    }
+
+    public String getAccountCl() {
+        return accountCl;
+    }
+
+    public void setAccountCl(String accountCl) {
+        this.accountCl = accountCl;
+    }
+
+    public String getRivalAccount() {
+        return rivalAccount;
+    }
+
+    public void setRivalAccount(String rivalAccount) {
+        this.rivalAccount = rivalAccount;
+    }
+
+    public String getRivalAccountClass() {
+        return rivalAccountClass;
+    }
+
+    public void setRivalAccountClass(String rivalAccountClass) {
+        this.rivalAccountClass = rivalAccountClass;
+    }
+
+    public String getRivalAccountCl() {
+        return rivalAccountCl;
+    }
+
+    public void setRivalAccountCl(String rivalAccountCl) {
+        this.rivalAccountCl = rivalAccountCl;
+    }
+
+    public String getRivalUserId() {
+        return rivalUserId;
+    }
+
+    public void setRivalUserId(String rivalUserId) {
+        this.rivalUserId = rivalUserId;
+    }
+
+    public String getRivalUserName() {
+        return rivalUserName;
+    }
+
+    public void setRivalUserName(String rivalUserName) {
+        this.rivalUserName = rivalUserName;
+    }
+
+    public String getReqSerialNo() {
+        return reqSerialNo;
+    }
+
+    public void setReqSerialNo(String reqSerialNo) {
+        this.reqSerialNo = reqSerialNo;
+    }
+
+    public String getReqTransDate() {
+        return reqTransDate;
+    }
+
+    public void setReqTransDate(String reqTransDate) {
+        this.reqTransDate = reqTransDate;
+    }
+
+    public String getReqTransTime() {
+        return reqTransTime;
+    }
+
+    public void setReqTransTime(String reqTransTime) {
+        this.reqTransTime = reqTransTime;
+    }
+
+    public BigDecimal getCost() {
+        return cost;
+    }
+
+    public void setCost(BigDecimal cost) {
+        this.cost = cost;
+    }
+
+    public Date getTransDate() {
+        return transDate;
+    }
+
+    public void setTransDate(Date transDate) {
+        this.transDate = transDate;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getChannel() {
+        return channel;
+    }
+
+    public void setChannel(String channel) {
+        this.channel = channel;
+    }
+
+    public String getPartyMarkNo() {
+        return partyMarkNo;
+    }
+
+    public void setPartyMarkNo(String partyMarkNo) {
+        this.partyMarkNo = partyMarkNo;
+    }
+
+    public String getAccountTypeItem() {
+        return accountTypeItem;
+    }
+
+    public void setAccountTypeItem(String accountTypeItem) {
+        this.accountTypeItem = accountTypeItem;
+    }
+
+    public String getMerchantId() {
+        return merchantId;
+    }
+
+    public void setMerchantId(String merchantId) {
+        this.merchantId = merchantId;
+    }
+
+    public String getUserDefindMark() {
+        return userDefindMark;
+    }
+
+    public void setUserDefindMark(String userDefindMark) {
+        this.userDefindMark = userDefindMark;
+    }
+
+    public BigDecimal getIntegral() {
+        return integral;
+    }
+
+    public void setIntegral(BigDecimal integral) {
+        this.integral = integral;
+    }
+
+    public BigDecimal getGuaranteeDeposit() {
+        return guaranteeDeposit;
+    }
+
+    public void setGuaranteeDeposit(BigDecimal guaranteeDeposit) {
+        this.guaranteeDeposit = guaranteeDeposit;
+    }
+
+    public String getAccountType() {
+        return accountType;
+    }
+
+    public void setAccountType(String accountType) {
+        this.accountType = accountType;
+    }
+
+    public BigDecimal getTime() {
+        return time;
+    }
+
+    public void setTime(BigDecimal time) {
+        this.time = time;
+    }
+
+    public String getAccDate() {
+        return accDate;
+    }
+
+    public void setAccDate(String accDate) {
+        this.accDate = accDate;
+    }
+
+    public String getReplacementFlag() {
+        return replacementFlag;
+    }
+
+    public void setReplacementFlag(String replacementFlag) {
+        this.replacementFlag = replacementFlag;
+    }
+
+    public BigDecimal getAmount1() {
+        return amount1;
+    }
+
+    public void setAmount1(BigDecimal amount1) {
+        this.amount1 = amount1;
+    }
+
+    public BigDecimal getAmount2() {
+        return amount2;
+    }
+
+    public void setAmount2(BigDecimal amount2) {
+        this.amount2 = amount2;
+    }
+
+    public BigDecimal getAmount3() {
+        return amount3;
+    }
+
+    public void setAmount3(BigDecimal amount3) {
+        this.amount3 = amount3;
+    }
+
+    public BigDecimal getAmount4() {
+        return amount4;
+    }
+
+    public void setAmount4(BigDecimal amount4) {
+        this.amount4 = amount4;
+    }
+
+    public BigDecimal getAmount5() {
+        return amount5;
+    }
+
+    public void setAmount5(BigDecimal amount5) {
+        this.amount5 = amount5;
+    }
+
+    public BigDecimal getAmount6() {
+        return amount6;
+    }
+
+    public void setAmount6(BigDecimal amount6) {
+        this.amount6 = amount6;
+    }
+
+    public BigDecimal getAmount7() {
+        return amount7;
+    }
+
+    public void setAmount7(BigDecimal amount7) {
+        this.amount7 = amount7;
+    }
+
+    public BigDecimal getAmount8() {
+        return amount8;
+    }
+
+    public void setAmount8(BigDecimal amount8) {
+        this.amount8 = amount8;
+    }
+
+    public BigDecimal getAmount9() {
+        return amount9;
+    }
+
+    public void setAmount9(BigDecimal amount9) {
+        this.amount9 = amount9;
+    }
+
+    public BigDecimal getAmount10() {
+        return amount10;
+    }
+
+    public void setAmount10(BigDecimal amount10) {
+        this.amount10 = amount10;
+    }
+
+    public BigDecimal getAmount11() {
+        return amount11;
+    }
+
+    public void setAmount11(BigDecimal amount11) {
+        this.amount11 = amount11;
+    }
+
+    public BigDecimal getAmount12() {
+        return amount12;
+    }
+
+    public void setAmount12(BigDecimal amount12) {
+        this.amount12 = amount12;
+    }
+
+    public BigDecimal getAmount13() {
+        return amount13;
+    }
+
+    public void setAmount13(BigDecimal amount13) {
+        this.amount13 = amount13;
+    }
+
+    public BigDecimal getAmount14() {
+        return amount14;
+    }
+
+    public void setAmount14(BigDecimal amount14) {
+        this.amount14 = amount14;
+    }
+
+    public BigDecimal getAmount15() {
+        return amount15;
+    }
+
+    public void setAmount15(BigDecimal amount15) {
+        this.amount15 = amount15;
+    }
+
+    public BigDecimal getAmount16() {
+        return amount16;
+    }
+
+    public void setAmount16(BigDecimal amount16) {
+        this.amount16 = amount16;
+    }
+
+    public BigDecimal getAmount17() {
+        return amount17;
+    }
+
+    public void setAmount17(BigDecimal amount17) {
+        this.amount17 = amount17;
+    }
+
+    public BigDecimal getAmount18() {
+        return amount18;
+    }
+
+    public void setAmount18(BigDecimal amount18) {
+        this.amount18 = amount18;
+    }
+
+    public BigDecimal getAmount19() {
+        return amount19;
+    }
+
+    public void setAmount19(BigDecimal amount19) {
+        this.amount19 = amount19;
+    }
+
+    public BigDecimal getAmount20() {
+        return amount20;
+    }
+
+    public void setAmount20(BigDecimal amount20) {
+        this.amount20 = amount20;
+    }
+
+    public String getAccountingTrans() {
+        return accountingTrans;
+    }
+
+    public void setAccountingTrans(String accountingTrans) {
+        this.accountingTrans = accountingTrans;
+    }
+
+    public String getBusinessType() {
+        return businessType;
+    }
+
+    public void setBusinessType(String businessType) {
+        this.businessType = businessType;
+    }
+}

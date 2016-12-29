@@ -1,0 +1,30 @@
+
+# security related
+security.user.name=admin
+security.user.password=test
+
+
+# log setting
+logging.path=d:
+logging.file=${logging.path}\\plouto-sys.log
+logging.level.org.springframework.web=DEBUG
+logging.config=classpath:logback-spring.xml
+
+# main data source
+spring.datasource.type=com.alibaba.druid.pool.DruidDataSource
+spring.datasource.driver-class-name=oracle.jdbc.driver.OracleDriver
+spring.datasource.url=jdbc:oracle:thin:@192.168.23.52:1521:ORCL
+spring.datasource.username=upscoreuser
+spring.datasource.password=upscoreuser
+
+spring.datasource.initialSize=5
+spring.datasource.minIdle=5
+spring.datasource.maxActive=20
+
+spring.datasource.filters=stat,wall,log4j
+spring.datasource.connectionProperties=druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
+
+mybatis.mapper-locations=classpath*:com/smk/pay/core/sqlmap/*Mapper.xml
+mybatis.type-aliases-package=com.smk.pay.core.entity
+
+

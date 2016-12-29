@@ -1,0 +1,13 @@
+package com.smk.pay.core.api;
+
+import com.smk.pay.account.core.service.IAccountOnlineService;
+
+/**
+ * Project plouto
+ * Created by chuanzhi.macz
+ * Date 2016/10/24 9:58
+ */
+public class AccountOnlineService implements IAccountOnlineService {
+
+
+}

@@ -1,0 +1,46 @@
+package com.smk.pay.core.manager.impl;
+
+import com.smk.pay.core.dto.TransDetailDto;
+import com.smk.pay.core.entity.TransDetailEntity;
+import com.smk.pay.core.manager.ITransDetailManager;
+import com.smk.pay.core.mapper.TransDetailEntityMapper;
+import com.smk.pay.core.utils.BeanCopierCacheUtil;
+import com.smk.pay.dal.condtion.Criteria;
+import com.smk.pay.dal.condtion.EntityCondition;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import java.util.Date;
+
+/**
+ * Project plouto
+ * Created by chuanzhi.macz
+ * Date 2016/11/11 16:52
+ */
+@Component(value = "transDetailManager")
+public class TransDetailManager implements ITransDetailManager {
+
+    @Autowired
+    private TransDetailEntityMapper transDetailEntityMapper;
+
+    public int addTransDetail(TransDetailDto transDetailDto) {
+        TransDetailEntity transDetailEntity = new TransDetailEntity();
+        BeanCopierCacheUtil.copy(transDetailDto, transDetailEntity, null);
+        transDetailEntity.setTransId(transDetailDto.getTransId());
+        transDetailEntity.setSerialNo(transDetailDto.getSerialNo());
+        return transDetailEntityMapper.insertSelective(transDetailEntity);
+    }
+
+    public TransDetailDto querySumAccount(String transType, String transId, String accountId,
+                                          Date fromTransDate, Date toTransDate) {
+
+        TransDetailDto transDetailDto = new TransDetailDto();
+        TransDetailEntity transDetailEntity = transDetailEntityMapper.selectSumAmount(new EntityCondition()
+                .addCriteria(new Criteria()
+                        .addCriterion("TRANS_TYPE=", transType, "TRANS_TYPE").addCriterion("TRANS_ID=",
+                                transId, "TRANS_ID").addCriterion("ACCOUNT_ID=", accountId, "ACCOUNT_ID")
+                        .addCriterion("TRANS_DATE BETWEEN ", fromTransDate, toTransDate, "TRANS_DATE")));
+        BeanCopierCacheUtil.copy(transDetailEntity, transDetailDto, null);
+        return transDetailDto;
+    }
+}

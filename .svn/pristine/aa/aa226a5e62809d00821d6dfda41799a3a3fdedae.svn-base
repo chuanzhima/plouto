@@ -1,0 +1,17 @@
+package com.smk.pay.core.mapper;
+
+import com.smk.pay.core.entity.InternalAccountEntity;
+import org.apache.ibatis.annotations.Mapper;
+
+import java.math.BigDecimal;
+
+/**
+ * Project plouto
+ * Created by chuanzhi.macz
+ * Date 2016/11/11 14:48
+ */
+@Mapper
+public interface InternalAccountEntityMapper extends BaseEntityMapper<InternalAccountEntity> {
+
+    int updateAmountByPK(String pkId, BigDecimal amount);
+}

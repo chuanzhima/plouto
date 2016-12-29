@@ -1,0 +1,37 @@
+package com.smk.pay.core.manager.atom.impl;
+
+import com.smk.pay.core.dto.AccountInfoDto;
+import com.smk.pay.core.manager.atom.IReverse;
+import com.smk.pay.core.manager.base.IAccountInfoManager;
+import com.smk.pay.core.manager.base.ITransDetailManager;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import javax.annotation.Resource;
+import java.math.BigDecimal;
+
+/**
+ * 充值冲正, 对应原交易trans_type = '01'
+ *
+ * Project plouto
+ * Created by chuanzhi.macz
+ * Date 2016/12/14 15:25
+ */
+public class Reverse4Recharge implements IReverse {
+
+    @Resource(name = "accountInfoManager")
+    private IAccountInfoManager accountInfoManager;
+
+    @Override
+    public void reverse(AccountInfoDto accountInfoDto, String transDetailSeq, String originalSeq, String
+            originalDate, String originalTime,
+                        String sequence, String accDate, BigDecimal... amounts) {
+
+        AccountInfoDto newAccount = new AccountInfoDto.Builder().amount1(accountInfoDto.getAmount1().subtract
+                (amounts[0])).amount2(accountInfoDto.getAmount2().subtract(amounts[1])).amount3(accountInfoDto
+                .getAmount3().subtract(amounts[2])).amount4(accountInfoDto.getAmount4().subtract(amounts[3])).amount5
+                (accountInfoDto.getAmount5().subtract(amounts[4])).amount6(accountInfoDto.getAmount6().subtract
+                (amounts[5])).build();
+        accountInfoManager.updateAccountAmount(accountInfoDto.getAccountId().toString(), new AccountInfoDto.Builder().amount1
+                (accountInfoDto.getAmount1()).build(), newAccount);
+    }
+}

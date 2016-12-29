@@ -1,0 +1,15 @@
+package com.smk.pay.core.annotations;
+
+import java.lang.annotation.*;
+
+/**
+ * Project plouto
+ * Created by chuanzhi.macz
+ * Date 2016/11/24 11:04
+ */
+@Target({ElementType.METHOD})
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+public @interface DubboServiceLog {
+
+}

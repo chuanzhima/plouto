@@ -1,0 +1,39 @@
+package com.smk.pay.core.manager.impl;
+
+import com.smk.pay.core.dto.UserInfoDto;
+import com.smk.pay.core.entity.UserInfoEntity;
+import com.smk.pay.core.exception.ServiceException;
+import com.smk.pay.core.mapper.UserInfoEntityMapper;
+import com.smk.pay.core.manager.IUserInfoManager;
+import com.smk.pay.core.utils.BeanCopierCacheUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+/**
+ * Project plouto
+ * Created by chuanzhi.macz
+ * Date 2016/10/21 10:12
+ */
+@Service(value = "userInfoManager")
+public class UserInfoManagerImpl implements IUserInfoManager {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserInfoManagerImpl.class);
+    @Autowired
+    private UserInfoEntityMapper userInfoEntityMapper;
+
+    public UserInfoDto getUserById(String userId) {
+        UserInfoDto userInfoDto = new UserInfoDto();
+        try {
+            UserInfoEntity userInfoEntity = userInfoEntityMapper.selectByPrimaryKey(userId);
+            if (null == userInfoEntity)
+                return null;
+            BeanCopierCacheUtil.copy(userInfoEntity, userInfoDto, null);
+        } catch (Exception e) {
+            LOGGER.error("getUserById exception, userId=" + userId, e);
+            throw new ServiceException(e);
+        }
+        return userInfoDto;
+    }
+}

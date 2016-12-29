@@ -1,0 +1,212 @@
+package com.smk.pay.core.atom.impl;
+
+import com.smk.pay.account.core.constant.AccountConstant;
+import com.smk.pay.account.core.enums.AccountChannelEnum;
+import com.smk.pay.account.core.enums.AccountFundFlowEnum;
+import com.smk.pay.account.core.enums.AccountLevelEnum;
+import com.smk.pay.account.core.request.RequestHeader;
+import com.smk.pay.core.atom.IRecharge;
+import com.smk.pay.core.constant.AccountBizConstant;
+import com.smk.pay.core.constant.ResultCodeConstant;
+import com.smk.pay.core.dto.AccountInfoDto;
+import com.smk.pay.core.dto.TransDetailDto;
+import com.smk.pay.core.entity.AccSystemEntity;
+import com.smk.pay.core.entity.InternalAccountModifyDetailEntity;
+import com.smk.pay.core.entity.InvoiceInfoEntity;
+import com.smk.pay.core.entity.O2oAmountDetailEntity;
+import com.smk.pay.core.enums.AccountTransTypeEnum;
+import com.smk.pay.core.exception.ServiceException;
+import com.smk.pay.core.manager.IAccountBaseManager;
+import com.smk.pay.core.manager.IAccountQueryManager;
+import com.smk.pay.core.manager.ITransDetailManager;
+import com.smk.pay.core.mapper.AccSystemEntityMapper;
+import com.smk.pay.core.mapper.InternalAccountModifyDetailEntityMapper;
+import com.smk.pay.core.mapper.InvoiceInfoEntityMapper;
+import com.smk.pay.core.mapper.O2oAmountDetailEntityMapper;
+import com.smk.pay.core.utils.DateUtil;
+import com.smk.pay.dal.condtion.Criteria;
+import com.smk.pay.dal.condtion.EntityCondition;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
+
+import javax.annotation.Resource;
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.List;
+
+/**
+ * Project plouto
+ * Created by chuanzhi.macz
+ * Date 2016/11/14 11:40
+ */
+@Component("rechargeGGK")
+public class RechargeGGK implements IRecharge {
+
+    @Autowired
+    private IAccountQueryManager accountQueryManager;
+    @Resource(name = "accountBaseManager")
+    private IAccountBaseManager accountBaseManager;
+    @Autowired
+    private InternalAccountModifyDetailEntityMapper internalAccountModifyDetailEntityMapper;
+    @Autowired
+    private ITransDetailManager transDetailManager;
+    @Autowired
+    private InvoiceInfoEntityMapper invoiceInfoEntityMapper;
+    @Autowired
+    private AccSystemEntityMapper accSystemEntityMapper;
+    @Autowired
+    private O2oAmountDetailEntityMapper o2oAmountDetailEntityMapper;
+
+
+    public void recharge(String sequence, String accountId, BigDecimal amount, String bankId,
+                         String merchantId, String accDate, RequestHeader header, Date transDate,
+                         AccountChannelEnum channelEnum) {
+        AccountInfoDto accountInfoDto = accountQueryManager.queryAccountById(accountId);
+        BigDecimal xjAmount = accountInfoDto.getAmount2();
+        BigDecimal zxzjAmount = accountInfoDto.getAmount3();
+        BigDecimal ggkAmount = accountInfoDto.getAmount4();
+
+        List<AccSystemEntity> list = accSystemEntityMapper.selectList(new EntityCondition());
+        if (!CollectionUtils.isEmpty(list)) {
+            throw new ServiceException(ResultCodeConstant.ACC_SYSTEM_NO_DATA);
+        }
+
+        BigDecimal cardLimit = list.get(0).getCardLimite();
+        String totalType = list.get(0).getTotalType();
+        BigDecimal o2oAmountLimit = list.get(0).getO2oAmountLimite();
+
+        Date toDate = new Date();
+        Date fromDate;
+        if (AccountBizConstant.ACC_SYSTEM_TOTAL_TYPE_1.equals(totalType)) {
+            fromDate = DateUtil.thisYear();
+        } else {
+            fromDate = DateUtil.addMonth(toDate, -12);
+        }
+
+        TransDetailDto transDetailDto = transDetailManager.querySumAccount(AccountTransTypeEnum
+                        .RECHARGE.key(),
+                AccountBizConstant.TRANS_DETAIL_TRANS_ID_1, accountId, fromDate, toDate);
+        if (xjAmount.add(ggkAmount).add(amount).compareTo(cardLimit) < 0) {
+            AccountInfoDto oldAmount4 = new AccountInfoDto();
+            oldAmount4.setAmount4(accountInfoDto.getAmount4());
+
+            AccountInfoDto newAmount4 = new AccountInfoDto();
+            newAmount4.setAmount4(accountInfoDto.getAmount4().add(amount));
+            int updateCount = accountBaseManager.updateAccountAmount(accountId, oldAmount4, newAmount4);
+            if (updateCount != 1)
+                throw new ServiceException(ResultCodeConstant.SYSTEM_ERROR_CONCURRENT);
+
+            AccountInfoDto accountInfoDto2 = accountQueryManager.queryAccountById(accountId);
+
+            TransDetailDto transDetailDto2 = new TransDetailDto(sequence, AccountBizConstant
+                    .TRANS_DETAIL_TRANS_ID_1, AccountTransTypeEnum.RECHARGE.key(),
+                    AccountFundFlowEnum.GGK.name(), accountId, accountInfoDto.getAccountClass(),
+                    AccountBizConstant.GGK_AMOUNT_COLUMN,
+                    header.getReqSeq(), header.getTxDate(), header.getTxTime(), transDate,
+                    AccountBizConstant.TRANS_DETAIL_STATUS_1,
+                    AccountBizConstant.TRANS_DETAIL_REPLACEMENT_FLAG_0,
+                    AccountConstant.PARTY_MARK_NO_0001, null, null, null, amount, null, null,
+                    accountInfoDto2.getAmount1(), accountInfoDto2.getAmount2(), accountInfoDto2
+                    .getAmount3(), accountInfoDto2.getAmount4(), accountInfoDto2.getAmount5(),
+                    AccountBizConstant.TRANS_DETAIL_USER_DEFIND_MARK_0, channelEnum.name(), merchantId);
+
+            transDetailDto2.setRivalAccount("10000006");
+            transDetailDto2.setRivalAccountCl(AccountBizConstant.YHK_AMOUNT_COLUMN);
+            transDetailDto2.setRivalAccountClass(AccountLevelEnum.THIRD.value());
+            transDetailDto2.setAccDate(accDate);
+            transDetailManager.addTransDetail(transDetailDto);
+
+            InvoiceInfoEntity invoiceInfoEntity = new InvoiceInfoEntity(null, AccountBizConstant
+                    .INVOICE_INFO_DEBIT_ACCOUNT_TYPE_2601, AccountBizConstant
+                    .INVOICE_INFO_CREDIT_ACCOUNT_TYPE_2104, AccountTransTypeEnum.RECHARGE.key(),
+                    sequence, "10000006", accountId, AccountBizConstant
+                    .INVOICE_INFO_DEBIT_ORG_ID_0001, AccountBizConstant
+                    .INVOICE_INFO_CREDIT_ORG_ID_0001, transDate, AccountBizConstant
+                    .INVOICE_INFO_SOURCE_OF_FUNDS_2, amount, AccountBizConstant
+                    .INVOICE_INFO_STATUS_1, AccountConstant.PARTY_MARK_NO_0001, accDate);
+            invoiceInfoEntityMapper.insertSelective(invoiceInfoEntity);
+        } else {
+            int sumAmount = o2oAmountDetailEntityMapper.querySumAmount(new EntityCondition()
+                    .addCriteria(new
+                            Criteria().addCriterion("ACCOUNT_ID=", accountId, "ACCOUNT_ID").addCriterion
+                            ("STATUS=", AccountBizConstant.O2O_AMOUNT_DETAIL_STATUS_1, "STATUS")
+                            .addCriterion("DIRECTION=", AccountBizConstant.O2O_AMOUNT_DETAIL_DIRECTION_1,
+                                    "DIRECTION").addCriterion("TRANS_DATE BETWEEN", fromDate, toDate,
+                                    "TRANS_DATE")));
+            if (o2oAmountLimit.compareTo(xjAmount.add(ggkAmount).add(amount).add(new BigDecimal
+                    (String.valueOf(sumAmount))).subtract(cardLimit)) < 0) {
+                throw new ServiceException(ResultCodeConstant.OFFLINE_2_ONLINE_AMOUNT_EXCEED);
+            }
+            AccountInfoDto oldAmount = new AccountInfoDto();
+            oldAmount.setAmount4(ggkAmount);
+            oldAmount.setAmount3(zxzjAmount);
+
+            AccountInfoDto newAmount = new AccountInfoDto();
+            newAmount.setAmount4(cardLimit.subtract(xjAmount));
+            newAmount.setAmount3(zxzjAmount.add(amount).subtract(cardLimit.subtract(xjAmount.add
+                    (ggkAmount))));
+            int updateCount = accountBaseManager.updateAccountAmount(accountId, oldAmount, newAmount);
+            if (updateCount != 1)
+                throw new ServiceException(ResultCodeConstant.SYSTEM_ERROR_CONCURRENT);
+
+            InternalAccountModifyDetailEntity detailEntity = new InternalAccountModifyDetailEntity(sequence,
+                    "10000006", amount, AccountBizConstant.FUND_DIRECTION_OUT, accDate);
+            internalAccountModifyDetailEntityMapper.insertSelective(detailEntity);
+
+            AccountInfoDto accountInfoDto2 = accountQueryManager.queryAccountById(accountId);
+            TransDetailDto transDetailDto2 = new TransDetailDto(sequence, AccountBizConstant
+                    .TRANS_DETAIL_TRANS_ID_1, AccountTransTypeEnum.RECHARGE.key(),
+                    AccountFundFlowEnum.GGK.name(), accountId, accountInfoDto.getAccountClass(),
+                    AccountBizConstant.GGK_AMOUNT_COLUMN,
+                    header.getReqSeq(), header.getTxDate(), header.getTxTime(), transDate,
+                    AccountBizConstant.TRANS_DETAIL_STATUS_1,
+                    AccountBizConstant.TRANS_DETAIL_REPLACEMENT_FLAG_0,
+                    AccountConstant.PARTY_MARK_NO_0001, null, null, null, amount, null, null,
+                    accountInfoDto2.getAmount1(), accountInfoDto2.getAmount2(), accountInfoDto2
+                    .getAmount3(), accountInfoDto2.getAmount4(), accountInfoDto2.getAmount5(),
+                    AccountBizConstant.TRANS_DETAIL_USER_DEFIND_MARK_0, channelEnum.name(), merchantId);
+            transDetailDto2.setRivalAccount("10000006");
+            transDetailDto2.setRivalAccountCl(AccountBizConstant.YHK_AMOUNT_COLUMN);
+            transDetailDto2.setRivalAccountClass(AccountLevelEnum.THIRD.value());
+            transDetailDto2.setAccDate(accDate);
+            transDetailManager.addTransDetail(transDetailDto2);
+
+            transDetailDto2.setTransType(AccountTransTypeEnum.INTERNAL_TRANSFER.key());
+            transDetailDto2.setAccountCl(AccountBizConstant.ZXZJ_AMOUNT_COLUMN);
+            transDetailDto2.setRivalAccount(accountId);
+            transDetailDto2.setRivalAccountClass(AccountLevelEnum.FIRST.value());
+            transDetailDto2.setRivalAccountCl(AccountBizConstant.GGK_AMOUNT_COLUMN);
+            transDetailDto2.setAmount1(amount.subtract(cardLimit.subtract(xjAmount.add(ggkAmount))));
+            transDetailManager.addTransDetail(transDetailDto2);
+
+            InvoiceInfoEntity invoiceInfoEntity = new InvoiceInfoEntity(null, AccountBizConstant
+                    .INVOICE_INFO_DEBIT_ACCOUNT_TYPE_2601, AccountBizConstant
+                    .INVOICE_INFO_CREDIT_ACCOUNT_TYPE_2104, AccountTransTypeEnum.RECHARGE.key(),
+                    sequence, "10000006", accountId, AccountBizConstant
+                    .INVOICE_INFO_DEBIT_ORG_ID_0001, AccountBizConstant
+                    .INVOICE_INFO_CREDIT_ORG_ID_0001, transDate, AccountBizConstant
+                    .INVOICE_INFO_SOURCE_OF_FUNDS_2, amount, AccountBizConstant
+                    .INVOICE_INFO_STATUS_1, AccountConstant.PARTY_MARK_NO_0001, accDate);
+            invoiceInfoEntityMapper.insertSelective(invoiceInfoEntity);
+
+            invoiceInfoEntity = new InvoiceInfoEntity(null, AccountBizConstant
+                    .INVOICE_INFO_DEBIT_ACCOUNT_TYPE_2601, AccountBizConstant
+                    .INVOICE_INFO_CREDIT_ACCOUNT_TYPE_2103, AccountTransTypeEnum.INTERNAL_TRANSFER.key(),
+                    sequence, accountId, accountId, AccountBizConstant
+                    .INVOICE_INFO_DEBIT_ORG_ID_0001, AccountBizConstant
+                    .INVOICE_INFO_CREDIT_ORG_ID_0001, transDate, AccountBizConstant
+                    .INVOICE_INFO_SOURCE_OF_FUNDS_2, amount.subtract(cardLimit.subtract(xjAmount.add(ggkAmount))), AccountBizConstant
+                    .INVOICE_INFO_STATUS_1, AccountConstant.PARTY_MARK_NO_0001, accDate);
+            invoiceInfoEntityMapper.insertSelective(invoiceInfoEntity);
+
+            O2oAmountDetailEntity entity = new O2oAmountDetailEntity(sequence, transDate,
+                    accountId, AccountTransTypeEnum.RECHARGE.key(), AccountBizConstant
+                    .O2O_AMOUNT_DETAIL_DIRECTION_1, xjAmount.add(ggkAmount).add(amount).subtract
+                    (cardLimit), AccountBizConstant.O2O_AMOUNT_DETAIL_STATUS_1);
+            o2oAmountDetailEntityMapper.insertSelective(entity);
+        }
+
+    }
+
+}

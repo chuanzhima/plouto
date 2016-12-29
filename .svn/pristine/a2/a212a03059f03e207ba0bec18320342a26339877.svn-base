@@ -1,0 +1,49 @@
+package com.smk.pay.core.meta;
+
+import com.smk.pay.account.core.enums.AccountChannelEnum;
+import com.smk.pay.core.entity.ChannelErrCodeEntity;
+import com.smk.pay.core.mapper.ChannelErrCodeEntityMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.core.annotation.Order;
+import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
+
+import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+
+/**
+ * Project plouto
+ * Created by chuanzhi.macz
+ * Date 2016/12/19 10:32
+ */
+@Component
+@Order(value = 1)
+public class ServiceResultCode implements CommandLineRunner {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ServiceResultCode.class);
+    @Autowired
+    private ChannelErrCodeEntityMapper channelErrCodeEntityMapper;
+
+    public static ConcurrentHashMap<String, String> RESULT_CODE_MAPPING = new ConcurrentHashMap<>();
+
+    public void run(String... strings) throws Exception {
+
+        LOGGER.info("load channel error code from DB ......");
+        List<ChannelErrCodeEntity> list = channelErrCodeEntityMapper.selectByChannel(AccountChannelEnum.INTERNET
+                .name());
+        if (CollectionUtils.isEmpty(list)) {
+            LOGGER.error("channel error code not exist!");
+            throw new Exception("channel error code not exist!");
+        }
+        for (ChannelErrCodeEntity entity : list) {
+            RESULT_CODE_MAPPING.put(entity.getCoreErrCode(), entity.getDirection());
+        }
+        LOGGER.info("channel error code mapping is : " + RESULT_CODE_MAPPING.keySet());
+    }
+
+    public static String value(String key) {
+        return RESULT_CODE_MAPPING.containsKey(key) ? RESULT_CODE_MAPPING.get(key) : "";
+    }
+}

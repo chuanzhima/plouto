@@ -1,0 +1,21 @@
+package com.smk.pay.core.manager;
+
+/**
+ * Project plouto
+ * Created by chuanzhi.macz
+ * Date 2016/11/3 14:06
+ */
+public interface IAccountBaseCommonManager<T> {
+
+    String addAccount(T t);
+
+    int updateAccountStatus(String accountId, String oldStatus, String
+            newStatus);
+
+    int updateAccountLevel(String accountId, String oldLevel, String newLevel);
+
+    int updateAccountAmount(String accountId, T oldAmount, T newAmount);
+
+    int updateAccountAmountAndStatus(String accountId, String newStatus, T newAmount);
+
+}

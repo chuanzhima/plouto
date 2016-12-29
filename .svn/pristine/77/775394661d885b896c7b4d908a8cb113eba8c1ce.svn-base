@@ -1,0 +1,95 @@
+package com.smk.pay.core.aspect;
+
+import com.alibaba.fastjson.JSONObject;
+import com.smk.pay.account.core.response.RpcResponse;
+import com.smk.pay.core.annotations.DubboServiceLog;
+import com.smk.pay.core.constant.ResultCodeConstant;
+import com.smk.pay.core.exception.DBException;
+import com.smk.pay.core.exception.ServiceException;
+import com.smk.pay.core.utils.PropertiesUtil;
+import com.smk.pay.core.utils.StringUtil;
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.Around;
+import org.aspectj.lang.annotation.Aspect;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
+
+import java.lang.reflect.Array;
+
+/**
+ * Project plouto
+ * Created by chuanzhi.macz
+ * Date 2016/11/24 11:07
+ */
+@Aspect
+@Component
+public class DubboServiceLogAspect {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(DubboServiceLog.class);
+
+    @Around("@annotation(com.smk.pay.core.annotations.DubboServiceLog)")
+    public Object around(ProceedingJoinPoint joinPoint) throws Throwable {
+
+        try {
+            String methodName = joinPoint.getSignature().getName();
+            Object[] args = joinPoint.getArgs();
+            long beginMills = System.currentTimeMillis();
+            StringBuffer argsBuffer = new StringBuffer("params = ");
+            if (null != args && args.length > 0) {
+                for (int i = 0; i < args.length; i++) {
+                    argsBuffer.append("args[").append(i + 1).append("] = ").append(toJsonStr(args[i])).append(",");
+                }
+            } else {
+                argsBuffer.append("empty");
+            }
+
+            LOGGER.info(methodName + ": " + argsBuffer.toString());
+            Object retVal = null;
+            try {
+                retVal = joinPoint.proceed();
+            } catch (Throwable throwable) {
+                if (throwable instanceof ServiceException) {
+                    LOGGER.warn(methodName + " ServiceException! " + throwable.getMessage());
+                    return new RpcResponse<>(Boolean.FALSE, throwable.getMessage(),
+                            PropertiesUtil.LOCALE_PROPERTIES_Map.get(throwable.getMessage()));
+                }
+                if (throwable instanceof DBException) {
+                    LOGGER.error(methodName + " DBException! ", throwable);
+                    return new RpcResponse<>(Boolean.FALSE, ResultCodeConstant.SYSTEM_ERROR,
+                            PropertiesUtil.LOCALE_PROPERTIES_Map.get(ResultCodeConstant.SYSTEM_ERROR));
+                } else {
+                    LOGGER.error(methodName + " Exception! ", throwable);
+                    return new RpcResponse<>(Boolean.FALSE, ResultCodeConstant.SYSTEM_ERROR,
+                            PropertiesUtil.LOCALE_PROPERTIES_Map.get(ResultCodeConstant.SYSTEM_ERROR));
+                }
+
+            }
+            LOGGER.info(methodName + ": " + "result = " + toJsonStr(retVal));
+            LOGGER.info(methodName + ": " + "cost = " + Float.valueOf((System.currentTimeMillis()
+                    - beginMills))/1000 + " s");
+
+            return retVal;
+        } catch (Throwable throwable) {
+            Object retVal = joinPoint.proceed();
+            return retVal;
+        }
+    }
+
+    // Object 2 json string
+    private String toJsonStr(Object object) {
+        if (object == null)
+            return StringUtil.EMPTY;
+        if (object instanceof Object || object instanceof Array)
+            return JSONObject.toJSONString(object);
+        else
+            return object.toString();
+    }
+
+    public static void main(String[] args) throws Exception{
+        long begin = System.currentTimeMillis();
+        Thread.sleep(5232);
+
+        System.out.println(Float.valueOf((System.currentTimeMillis() - begin))/1000);
+    }
+}

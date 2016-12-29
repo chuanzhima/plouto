@@ -1,0 +1,609 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.smk.pay.core.mapper.MerchantAccountInfoEntityMapper">
+  <resultMap id="BaseResultMap" type="com.smk.pay.core.entity.MerchantAccountInfoEntity">
+    <id column="MER_ACCOUNT_ID" jdbcType="VARCHAR" property="merAccountId" />
+    <result column="MERCHANT_ID" jdbcType="VARCHAR" property="merchantId" />
+    <result column="MERCHANT_NAME" jdbcType="VARCHAR" property="merchantName" />
+    <result column="ACCOUNT_TYPE" jdbcType="VARCHAR" property="accountType" />
+    <result column="ACCOUNT_TYPE_ITEM" jdbcType="VARCHAR" property="accountTypeItem" />
+    <result column="ACCOUNT_CLASS" jdbcType="VARCHAR" property="accountClass" />
+    <result column="STATUS" jdbcType="VARCHAR" property="status" />
+    <result column="CREATE_SERIAL_NO" jdbcType="VARCHAR" property="createSerialNo" />
+    <result column="CANCEL_SERIAL_NO" jdbcType="VARCHAR" property="cancelSerialNo" />
+    <result column="CREATE_DATE" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="LAST_UPDATE_DATE" jdbcType="TIMESTAMP" property="lastUpdateDate" />
+    <result column="CANCEL_DATE" jdbcType="TIMESTAMP" property="cancelDate" />
+    <result column="IMMEDIATELY_SUM" jdbcType="VARCHAR" property="immediatelySum" />
+    <result column="PARTY_MARK_NO" jdbcType="VARCHAR" property="partyMarkNo" />
+    <result column="START_DATE" jdbcType="TIMESTAMP" property="startDate" />
+    <result column="END_DATE" jdbcType="TIMESTAMP" property="endDate" />
+    <result column="INTEGRAL" jdbcType="DECIMAL" property="integral" />
+    <result column="TIME" jdbcType="DECIMAL" property="time" />
+    <result column="USER_DEFIND_MARK" jdbcType="VARCHAR" property="userDefindMark" />
+    <result column="COMPANY_ID" jdbcType="VARCHAR" property="companyId" />
+    <result column="AMOUNT1" jdbcType="DECIMAL" property="amount1" />
+    <result column="AMOUNT2" jdbcType="DECIMAL" property="amount2" />
+    <result column="AMOUNT3" jdbcType="DECIMAL" property="amount3" />
+    <result column="AMOUNT4" jdbcType="DECIMAL" property="amount4" />
+    <result column="AMOUNT5" jdbcType="DECIMAL" property="amount5" />
+    <result column="AMOUNT6" jdbcType="DECIMAL" property="amount6" />
+    <result column="AMOUNT7" jdbcType="DECIMAL" property="amount7" />
+    <result column="AMOUNT8" jdbcType="DECIMAL" property="amount8" />
+    <result column="AMOUNT9" jdbcType="DECIMAL" property="amount9" />
+    <result column="AMOUNT10" jdbcType="DECIMAL" property="amount10" />
+  </resultMap>
+  <sql id="Query_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_Where_Clause">
+    <where>
+      <foreach collection="condition.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    MER_ACCOUNT_ID, MERCHANT_ID, MERCHANT_NAME, ACCOUNT_TYPE, ACCOUNT_TYPE_ITEM, ACCOUNT_CLASS, 
+    STATUS, CREATE_SERIAL_NO, CANCEL_SERIAL_NO, CREATE_DATE, LAST_UPDATE_DATE, CANCEL_DATE, 
+    IMMEDIATELY_SUM, PARTY_MARK_NO, START_DATE, END_DATE, INTEGRAL, TIME, USER_DEFIND_MARK, 
+    COMPANY_ID, AMOUNT1, AMOUNT2, AMOUNT3, AMOUNT4, AMOUNT5, AMOUNT6, AMOUNT7, AMOUNT8, 
+    AMOUNT9, AMOUNT10
+  </sql>
+  <select id="selectList" parameterType="com.smk.pay.dal.condtion.EntityCondition" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from MERCHANT_ACCOUNT_INFO
+    <if test="_parameter != null">
+      <include refid="Query_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from MERCHANT_ACCOUNT_INFO
+    where MER_ACCOUNT_ID = #{merAccountId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from MERCHANT_ACCOUNT_INFO
+    where MER_ACCOUNT_ID = #{merAccountId,jdbcType=VARCHAR}
+  </delete>
+  <delete id="delete" parameterType="com.smk.pay.dal.condtion.EntityCondition">
+    delete from MERCHANT_ACCOUNT_INFO
+    <if test="_parameter != null">
+      <include refid="Query_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.smk.pay.core.entity.MerchantAccountInfoEntity">
+    insert into MERCHANT_ACCOUNT_INFO (MER_ACCOUNT_ID, MERCHANT_ID, MERCHANT_NAME, 
+      ACCOUNT_TYPE, ACCOUNT_TYPE_ITEM, ACCOUNT_CLASS, 
+      STATUS, CREATE_SERIAL_NO, CANCEL_SERIAL_NO, 
+      CREATE_DATE, LAST_UPDATE_DATE, CANCEL_DATE, 
+      IMMEDIATELY_SUM, PARTY_MARK_NO, START_DATE, 
+      END_DATE, INTEGRAL, TIME, 
+      USER_DEFIND_MARK, COMPANY_ID, AMOUNT1, 
+      AMOUNT2, AMOUNT3, AMOUNT4, 
+      AMOUNT5, AMOUNT6, AMOUNT7, 
+      AMOUNT8, AMOUNT9, AMOUNT10
+      )
+    values (#{merAccountId,jdbcType=VARCHAR}, #{merchantId,jdbcType=VARCHAR}, #{merchantName,jdbcType=VARCHAR}, 
+      #{accountType,jdbcType=VARCHAR}, #{accountTypeItem,jdbcType=VARCHAR}, #{accountClass,jdbcType=VARCHAR}, 
+      #{status,jdbcType=VARCHAR}, #{createSerialNo,jdbcType=VARCHAR}, #{cancelSerialNo,jdbcType=VARCHAR}, 
+      #{createDate,jdbcType=TIMESTAMP}, #{lastUpdateDate,jdbcType=TIMESTAMP}, #{cancelDate,jdbcType=TIMESTAMP}, 
+      #{immediatelySum,jdbcType=VARCHAR}, #{partyMarkNo,jdbcType=VARCHAR}, #{startDate,jdbcType=TIMESTAMP}, 
+      #{endDate,jdbcType=TIMESTAMP}, #{integral,jdbcType=DECIMAL}, #{time,jdbcType=DECIMAL}, 
+      #{userDefindMark,jdbcType=VARCHAR}, #{companyId,jdbcType=VARCHAR}, #{amount1,jdbcType=DECIMAL}, 
+      #{amount2,jdbcType=DECIMAL}, #{amount3,jdbcType=DECIMAL}, #{amount4,jdbcType=DECIMAL}, 
+      #{amount5,jdbcType=DECIMAL}, #{amount6,jdbcType=DECIMAL}, #{amount7,jdbcType=DECIMAL}, 
+      #{amount8,jdbcType=DECIMAL}, #{amount9,jdbcType=DECIMAL}, #{amount10,jdbcType=DECIMAL}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.smk.pay.core.entity.MerchantAccountInfoEntity">
+    insert into MERCHANT_ACCOUNT_INFO
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="merAccountId != null">
+        MER_ACCOUNT_ID,
+      </if>
+      <if test="merchantId != null">
+        MERCHANT_ID,
+      </if>
+      <if test="merchantName != null">
+        MERCHANT_NAME,
+      </if>
+      <if test="accountType != null">
+        ACCOUNT_TYPE,
+      </if>
+      <if test="accountTypeItem != null">
+        ACCOUNT_TYPE_ITEM,
+      </if>
+      <if test="accountClass != null">
+        ACCOUNT_CLASS,
+      </if>
+      <if test="status != null">
+        STATUS,
+      </if>
+      <if test="createSerialNo != null">
+        CREATE_SERIAL_NO,
+      </if>
+      <if test="cancelSerialNo != null">
+        CANCEL_SERIAL_NO,
+      </if>
+      <if test="createDate != null">
+        CREATE_DATE,
+      </if>
+      <if test="lastUpdateDate != null">
+        LAST_UPDATE_DATE,
+      </if>
+      <if test="cancelDate != null">
+        CANCEL_DATE,
+      </if>
+      <if test="immediatelySum != null">
+        IMMEDIATELY_SUM,
+      </if>
+      <if test="partyMarkNo != null">
+        PARTY_MARK_NO,
+      </if>
+      <if test="startDate != null">
+        START_DATE,
+      </if>
+      <if test="endDate != null">
+        END_DATE,
+      </if>
+      <if test="integral != null">
+        INTEGRAL,
+      </if>
+      <if test="time != null">
+        TIME,
+      </if>
+      <if test="userDefindMark != null">
+        USER_DEFIND_MARK,
+      </if>
+      <if test="companyId != null">
+        COMPANY_ID,
+      </if>
+      <if test="amount1 != null">
+        AMOUNT1,
+      </if>
+      <if test="amount2 != null">
+        AMOUNT2,
+      </if>
+      <if test="amount3 != null">
+        AMOUNT3,
+      </if>
+      <if test="amount4 != null">
+        AMOUNT4,
+      </if>
+      <if test="amount5 != null">
+        AMOUNT5,
+      </if>
+      <if test="amount6 != null">
+        AMOUNT6,
+      </if>
+      <if test="amount7 != null">
+        AMOUNT7,
+      </if>
+      <if test="amount8 != null">
+        AMOUNT8,
+      </if>
+      <if test="amount9 != null">
+        AMOUNT9,
+      </if>
+      <if test="amount10 != null">
+        AMOUNT10,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="merAccountId != null">
+        #{merAccountId,jdbcType=VARCHAR},
+      </if>
+      <if test="merchantId != null">
+        #{merchantId,jdbcType=VARCHAR},
+      </if>
+      <if test="merchantName != null">
+        #{merchantName,jdbcType=VARCHAR},
+      </if>
+      <if test="accountType != null">
+        #{accountType,jdbcType=VARCHAR},
+      </if>
+      <if test="accountTypeItem != null">
+        #{accountTypeItem,jdbcType=VARCHAR},
+      </if>
+      <if test="accountClass != null">
+        #{accountClass,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="createSerialNo != null">
+        #{createSerialNo,jdbcType=VARCHAR},
+      </if>
+      <if test="cancelSerialNo != null">
+        #{cancelSerialNo,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastUpdateDate != null">
+        #{lastUpdateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="cancelDate != null">
+        #{cancelDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="immediatelySum != null">
+        #{immediatelySum,jdbcType=VARCHAR},
+      </if>
+      <if test="partyMarkNo != null">
+        #{partyMarkNo,jdbcType=VARCHAR},
+      </if>
+      <if test="startDate != null">
+        #{startDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endDate != null">
+        #{endDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="integral != null">
+        #{integral,jdbcType=DECIMAL},
+      </if>
+      <if test="time != null">
+        #{time,jdbcType=DECIMAL},
+      </if>
+      <if test="userDefindMark != null">
+        #{userDefindMark,jdbcType=VARCHAR},
+      </if>
+      <if test="companyId != null">
+        #{companyId,jdbcType=VARCHAR},
+      </if>
+      <if test="amount1 != null">
+        #{amount1,jdbcType=DECIMAL},
+      </if>
+      <if test="amount2 != null">
+        #{amount2,jdbcType=DECIMAL},
+      </if>
+      <if test="amount3 != null">
+        #{amount3,jdbcType=DECIMAL},
+      </if>
+      <if test="amount4 != null">
+        #{amount4,jdbcType=DECIMAL},
+      </if>
+      <if test="amount5 != null">
+        #{amount5,jdbcType=DECIMAL},
+      </if>
+      <if test="amount6 != null">
+        #{amount6,jdbcType=DECIMAL},
+      </if>
+      <if test="amount7 != null">
+        #{amount7,jdbcType=DECIMAL},
+      </if>
+      <if test="amount8 != null">
+        #{amount8,jdbcType=DECIMAL},
+      </if>
+      <if test="amount9 != null">
+        #{amount9,jdbcType=DECIMAL},
+      </if>
+      <if test="amount10 != null">
+        #{amount10,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  <select id="count" parameterType="com.smk.pay.dal.condtion.EntityCondition" resultType="java.lang.Integer">
+    select count(*) from MERCHANT_ACCOUNT_INFO
+    <if test="_parameter != null">
+      <include refid="Query_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateSelective" parameterType="map">
+    update MERCHANT_ACCOUNT_INFO
+    <set>
+      <if test="record.merAccountId != null">
+        MER_ACCOUNT_ID = #{record.merAccountId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.merchantId != null">
+        MERCHANT_ID = #{record.merchantId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.merchantName != null">
+        MERCHANT_NAME = #{record.merchantName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.accountType != null">
+        ACCOUNT_TYPE = #{record.accountType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.accountTypeItem != null">
+        ACCOUNT_TYPE_ITEM = #{record.accountTypeItem,jdbcType=VARCHAR},
+      </if>
+      <if test="record.accountClass != null">
+        ACCOUNT_CLASS = #{record.accountClass,jdbcType=VARCHAR},
+      </if>
+      <if test="record.status != null">
+        STATUS = #{record.status,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createSerialNo != null">
+        CREATE_SERIAL_NO = #{record.createSerialNo,jdbcType=VARCHAR},
+      </if>
+      <if test="record.cancelSerialNo != null">
+        CANCEL_SERIAL_NO = #{record.cancelSerialNo,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createDate != null">
+        CREATE_DATE = #{record.createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.lastUpdateDate != null">
+        LAST_UPDATE_DATE = #{record.lastUpdateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.cancelDate != null">
+        CANCEL_DATE = #{record.cancelDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.immediatelySum != null">
+        IMMEDIATELY_SUM = #{record.immediatelySum,jdbcType=VARCHAR},
+      </if>
+      <if test="record.partyMarkNo != null">
+        PARTY_MARK_NO = #{record.partyMarkNo,jdbcType=VARCHAR},
+      </if>
+      <if test="record.startDate != null">
+        START_DATE = #{record.startDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.endDate != null">
+        END_DATE = #{record.endDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.integral != null">
+        INTEGRAL = #{record.integral,jdbcType=DECIMAL},
+      </if>
+      <if test="record.time != null">
+        TIME = #{record.time,jdbcType=DECIMAL},
+      </if>
+      <if test="record.userDefindMark != null">
+        USER_DEFIND_MARK = #{record.userDefindMark,jdbcType=VARCHAR},
+      </if>
+      <if test="record.companyId != null">
+        COMPANY_ID = #{record.companyId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.amount1 != null">
+        AMOUNT1 = #{record.amount1,jdbcType=DECIMAL},
+      </if>
+      <if test="record.amount2 != null">
+        AMOUNT2 = #{record.amount2,jdbcType=DECIMAL},
+      </if>
+      <if test="record.amount3 != null">
+        AMOUNT3 = #{record.amount3,jdbcType=DECIMAL},
+      </if>
+      <if test="record.amount4 != null">
+        AMOUNT4 = #{record.amount4,jdbcType=DECIMAL},
+      </if>
+      <if test="record.amount5 != null">
+        AMOUNT5 = #{record.amount5,jdbcType=DECIMAL},
+      </if>
+      <if test="record.amount6 != null">
+        AMOUNT6 = #{record.amount6,jdbcType=DECIMAL},
+      </if>
+      <if test="record.amount7 != null">
+        AMOUNT7 = #{record.amount7,jdbcType=DECIMAL},
+      </if>
+      <if test="record.amount8 != null">
+        AMOUNT8 = #{record.amount8,jdbcType=DECIMAL},
+      </if>
+      <if test="record.amount9 != null">
+        AMOUNT9 = #{record.amount9,jdbcType=DECIMAL},
+      </if>
+      <if test="record.amount10 != null">
+        AMOUNT10 = #{record.amount10,jdbcType=DECIMAL},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_Where_Clause" />
+    </if>
+  </update>
+  <update id="update" parameterType="map">
+    update MERCHANT_ACCOUNT_INFO
+    set MER_ACCOUNT_ID = #{record.merAccountId,jdbcType=VARCHAR},
+      MERCHANT_ID = #{record.merchantId,jdbcType=VARCHAR},
+      MERCHANT_NAME = #{record.merchantName,jdbcType=VARCHAR},
+      ACCOUNT_TYPE = #{record.accountType,jdbcType=VARCHAR},
+      ACCOUNT_TYPE_ITEM = #{record.accountTypeItem,jdbcType=VARCHAR},
+      ACCOUNT_CLASS = #{record.accountClass,jdbcType=VARCHAR},
+      STATUS = #{record.status,jdbcType=VARCHAR},
+      CREATE_SERIAL_NO = #{record.createSerialNo,jdbcType=VARCHAR},
+      CANCEL_SERIAL_NO = #{record.cancelSerialNo,jdbcType=VARCHAR},
+      CREATE_DATE = #{record.createDate,jdbcType=TIMESTAMP},
+      LAST_UPDATE_DATE = #{record.lastUpdateDate,jdbcType=TIMESTAMP},
+      CANCEL_DATE = #{record.cancelDate,jdbcType=TIMESTAMP},
+      IMMEDIATELY_SUM = #{record.immediatelySum,jdbcType=VARCHAR},
+      PARTY_MARK_NO = #{record.partyMarkNo,jdbcType=VARCHAR},
+      START_DATE = #{record.startDate,jdbcType=TIMESTAMP},
+      END_DATE = #{record.endDate,jdbcType=TIMESTAMP},
+      INTEGRAL = #{record.integral,jdbcType=DECIMAL},
+      TIME = #{record.time,jdbcType=DECIMAL},
+      USER_DEFIND_MARK = #{record.userDefindMark,jdbcType=VARCHAR},
+      COMPANY_ID = #{record.companyId,jdbcType=VARCHAR},
+      AMOUNT1 = #{record.amount1,jdbcType=DECIMAL},
+      AMOUNT2 = #{record.amount2,jdbcType=DECIMAL},
+      AMOUNT3 = #{record.amount3,jdbcType=DECIMAL},
+      AMOUNT4 = #{record.amount4,jdbcType=DECIMAL},
+      AMOUNT5 = #{record.amount5,jdbcType=DECIMAL},
+      AMOUNT6 = #{record.amount6,jdbcType=DECIMAL},
+      AMOUNT7 = #{record.amount7,jdbcType=DECIMAL},
+      AMOUNT8 = #{record.amount8,jdbcType=DECIMAL},
+      AMOUNT9 = #{record.amount9,jdbcType=DECIMAL},
+      AMOUNT10 = #{record.amount10,jdbcType=DECIMAL}
+    <if test="_parameter != null">
+      <include refid="Update_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.smk.pay.core.entity.MerchantAccountInfoEntity">
+    update MERCHANT_ACCOUNT_INFO
+    <set>
+      <if test="merchantId != null">
+        MERCHANT_ID = #{merchantId,jdbcType=VARCHAR},
+      </if>
+      <if test="merchantName != null">
+        MERCHANT_NAME = #{merchantName,jdbcType=VARCHAR},
+      </if>
+      <if test="accountType != null">
+        ACCOUNT_TYPE = #{accountType,jdbcType=VARCHAR},
+      </if>
+      <if test="accountTypeItem != null">
+        ACCOUNT_TYPE_ITEM = #{accountTypeItem,jdbcType=VARCHAR},
+      </if>
+      <if test="accountClass != null">
+        ACCOUNT_CLASS = #{accountClass,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        STATUS = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="createSerialNo != null">
+        CREATE_SERIAL_NO = #{createSerialNo,jdbcType=VARCHAR},
+      </if>
+      <if test="cancelSerialNo != null">
+        CANCEL_SERIAL_NO = #{cancelSerialNo,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        CREATE_DATE = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastUpdateDate != null">
+        LAST_UPDATE_DATE = #{lastUpdateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="cancelDate != null">
+        CANCEL_DATE = #{cancelDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="immediatelySum != null">
+        IMMEDIATELY_SUM = #{immediatelySum,jdbcType=VARCHAR},
+      </if>
+      <if test="partyMarkNo != null">
+        PARTY_MARK_NO = #{partyMarkNo,jdbcType=VARCHAR},
+      </if>
+      <if test="startDate != null">
+        START_DATE = #{startDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endDate != null">
+        END_DATE = #{endDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="integral != null">
+        INTEGRAL = #{integral,jdbcType=DECIMAL},
+      </if>
+      <if test="time != null">
+        TIME = #{time,jdbcType=DECIMAL},
+      </if>
+      <if test="userDefindMark != null">
+        USER_DEFIND_MARK = #{userDefindMark,jdbcType=VARCHAR},
+      </if>
+      <if test="companyId != null">
+        COMPANY_ID = #{companyId,jdbcType=VARCHAR},
+      </if>
+      <if test="amount1 != null">
+        AMOUNT1 = #{amount1,jdbcType=DECIMAL},
+      </if>
+      <if test="amount2 != null">
+        AMOUNT2 = #{amount2,jdbcType=DECIMAL},
+      </if>
+      <if test="amount3 != null">
+        AMOUNT3 = #{amount3,jdbcType=DECIMAL},
+      </if>
+      <if test="amount4 != null">
+        AMOUNT4 = #{amount4,jdbcType=DECIMAL},
+      </if>
+      <if test="amount5 != null">
+        AMOUNT5 = #{amount5,jdbcType=DECIMAL},
+      </if>
+      <if test="amount6 != null">
+        AMOUNT6 = #{amount6,jdbcType=DECIMAL},
+      </if>
+      <if test="amount7 != null">
+        AMOUNT7 = #{amount7,jdbcType=DECIMAL},
+      </if>
+      <if test="amount8 != null">
+        AMOUNT8 = #{amount8,jdbcType=DECIMAL},
+      </if>
+      <if test="amount9 != null">
+        AMOUNT9 = #{amount9,jdbcType=DECIMAL},
+      </if>
+      <if test="amount10 != null">
+        AMOUNT10 = #{amount10,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where MER_ACCOUNT_ID = #{merAccountId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.smk.pay.core.entity.MerchantAccountInfoEntity">
+    update MERCHANT_ACCOUNT_INFO
+    set MERCHANT_ID = #{merchantId,jdbcType=VARCHAR},
+      MERCHANT_NAME = #{merchantName,jdbcType=VARCHAR},
+      ACCOUNT_TYPE = #{accountType,jdbcType=VARCHAR},
+      ACCOUNT_TYPE_ITEM = #{accountTypeItem,jdbcType=VARCHAR},
+      ACCOUNT_CLASS = #{accountClass,jdbcType=VARCHAR},
+      STATUS = #{status,jdbcType=VARCHAR},
+      CREATE_SERIAL_NO = #{createSerialNo,jdbcType=VARCHAR},
+      CANCEL_SERIAL_NO = #{cancelSerialNo,jdbcType=VARCHAR},
+      CREATE_DATE = #{createDate,jdbcType=TIMESTAMP},
+      LAST_UPDATE_DATE = #{lastUpdateDate,jdbcType=TIMESTAMP},
+      CANCEL_DATE = #{cancelDate,jdbcType=TIMESTAMP},
+      IMMEDIATELY_SUM = #{immediatelySum,jdbcType=VARCHAR},
+      PARTY_MARK_NO = #{partyMarkNo,jdbcType=VARCHAR},
+      START_DATE = #{startDate,jdbcType=TIMESTAMP},
+      END_DATE = #{endDate,jdbcType=TIMESTAMP},
+      INTEGRAL = #{integral,jdbcType=DECIMAL},
+      TIME = #{time,jdbcType=DECIMAL},
+      USER_DEFIND_MARK = #{userDefindMark,jdbcType=VARCHAR},
+      COMPANY_ID = #{companyId,jdbcType=VARCHAR},
+      AMOUNT1 = #{amount1,jdbcType=DECIMAL},
+      AMOUNT2 = #{amount2,jdbcType=DECIMAL},
+      AMOUNT3 = #{amount3,jdbcType=DECIMAL},
+      AMOUNT4 = #{amount4,jdbcType=DECIMAL},
+      AMOUNT5 = #{amount5,jdbcType=DECIMAL},
+      AMOUNT6 = #{amount6,jdbcType=DECIMAL},
+      AMOUNT7 = #{amount7,jdbcType=DECIMAL},
+      AMOUNT8 = #{amount8,jdbcType=DECIMAL},
+      AMOUNT9 = #{amount9,jdbcType=DECIMAL},
+      AMOUNT10 = #{amount10,jdbcType=DECIMAL}
+    where MER_ACCOUNT_ID = #{merAccountId,jdbcType=VARCHAR}
+  </update>
+
+</mapper>

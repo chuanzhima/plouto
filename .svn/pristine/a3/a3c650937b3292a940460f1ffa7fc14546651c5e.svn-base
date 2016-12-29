@@ -1,0 +1,875 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.smk.pay.core.mapper.LnsAcctRpyPlanEntityMapper" >
+  <resultMap id="BaseResultMap" type="com.smk.pay.core.entity.LnsAcctRpyPlanEntity" >
+    <id column="RPYPLANNO" property="rpyplanno" jdbcType="VARCHAR" />
+    <result column="BRC" property="brc" jdbcType="VARCHAR" />
+    <result column="ACCTNO" property="acctno" jdbcType="VARCHAR" />
+    <result column="SUBSECTION" property="subsection" jdbcType="VARCHAR" />
+    <result column="REPAYTERM" property="repayterm" jdbcType="DECIMAL" />
+    <result column="SUBCTRLCODE" property="subctrlcode" jdbcType="VARCHAR" />
+    <result column="ACCTFLAG" property="acctflag" jdbcType="VARCHAR" />
+    <result column="ORIGINAL_SERIAL_NO" property="originalSerialNo" jdbcType="VARCHAR" />
+    <result column="ORIGINAL_TRANS_DATE" property="originalTransDate" jdbcType="VARCHAR" />
+    <result column="ORIGINAL_TRANS_TIME" property="originalTransTime" jdbcType="VARCHAR" />
+    <result column="REQ_SERIAL_NO" property="reqSerialNo" jdbcType="VARCHAR" />
+    <result column="REQ_TRANS_DATE" property="reqTransDate" jdbcType="VARCHAR" />
+    <result column="REQ_TRANS_TIME" property="reqTransTime" jdbcType="VARCHAR" />
+    <result column="MERCHANT_ID" property="merchantId" jdbcType="VARCHAR" />
+    <result column="TRANS_DATE" property="transDate" jdbcType="TIMESTAMP" />
+    <result column="REPAYOWNBDATE" property="repayownbdate" jdbcType="VARCHAR" />
+    <result column="REPAYOWNEDATE" property="repayownedate" jdbcType="VARCHAR" />
+    <result column="REPAYINTBDATE" property="repayintbdate" jdbcType="VARCHAR" />
+    <result column="REPAYINTEDATE" property="repayintedate" jdbcType="VARCHAR" />
+    <result column="AHEADDATE" property="aheaddate" jdbcType="VARCHAR" />
+    <result column="TERMRETDATE" property="termretdate" jdbcType="VARCHAR" />
+    <result column="TERMRETPRIN" property="termretprin" jdbcType="DECIMAL" />
+    <result column="TERMRETINT" property="termretint" jdbcType="DECIMAL" />
+    <result column="TERMTXINT" property="termtxint" jdbcType="DECIMAL" />
+    <result column="NORETAMT" property="noretamt" jdbcType="DECIMAL" />
+    <result column="NORETINT" property="noretint" jdbcType="DECIMAL" />
+    <result column="TERMFINT" property="termfint" jdbcType="DECIMAL" />
+    <result column="TERMCINT" property="termcint" jdbcType="DECIMAL" />
+    <result column="TERMSPEINT" property="termspeint" jdbcType="DECIMAL" />
+    <result column="RETINTAMT" property="retintamt" jdbcType="DECIMAL" />
+    <result column="DAYS" property="days" jdbcType="DECIMAL" />
+    <result column="TERMCDINT" property="termcdint" jdbcType="DECIMAL" />
+    <result column="SURPLUSCDINT" property="surpluscdint" jdbcType="DECIMAL" />
+    <result column="DAYFINT" property="dayfint" jdbcType="DECIMAL" />
+    <result column="BALANCE" property="balance" jdbcType="DECIMAL" />
+    <result column="STATUS" property="status" jdbcType="VARCHAR" />
+    <result column="CDFLAG" property="cdflag" jdbcType="VARCHAR" />
+    <result column="FLAG" property="flag" jdbcType="VARCHAR" />
+    <result column="TERMMCFINT" property="termmcfint" jdbcType="DECIMAL" />
+    <result column="TERMMCCINT" property="termmccint" jdbcType="DECIMAL" />
+    <result column="DAYMCFINT" property="daymcfint" jdbcType="DECIMAL" />
+    <result column="TERMMCCDINT" property="termmccdint" jdbcType="DECIMAL" />
+    <result column="MODIFYDATE" property="modifydate" jdbcType="VARCHAR" />
+    <result column="MODIFYTIME" property="modifytime" jdbcType="VARCHAR" />
+    <result column="RESERVE1" property="reserve1" jdbcType="VARCHAR" />
+    <result column="RIVAL_MERCHANT_ID" property="rivalMerchantId" jdbcType="VARCHAR" />
+    <result column="BUSINESS_TYPE" property="businessType" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Query_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_Where_Clause" >
+    <where >
+      <foreach collection="condition.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    RPYPLANNO, BRC, ACCTNO, SUBSECTION, REPAYTERM, SUBCTRLCODE, ACCTFLAG, ORIGINAL_SERIAL_NO, 
+    ORIGINAL_TRANS_DATE, ORIGINAL_TRANS_TIME, REQ_SERIAL_NO, REQ_TRANS_DATE, REQ_TRANS_TIME, 
+    MERCHANT_ID, TRANS_DATE, REPAYOWNBDATE, REPAYOWNEDATE, REPAYINTBDATE, REPAYINTEDATE, 
+    AHEADDATE, TERMRETDATE, TERMRETPRIN, TERMRETINT, TERMTXINT, NORETAMT, NORETINT, TERMFINT, 
+    TERMCINT, TERMSPEINT, RETINTAMT, DAYS, TERMCDINT, SURPLUSCDINT, DAYFINT, BALANCE, 
+    STATUS, CDFLAG, FLAG, TERMMCFINT, TERMMCCINT, DAYMCFINT, TERMMCCDINT, MODIFYDATE, 
+    MODIFYTIME, RESERVE1, RIVAL_MERCHANT_ID, BUSINESS_TYPE
+  </sql>
+  <select id="selectList" resultMap="BaseResultMap" parameterType="com.smk.pay.dal.condtion.EntityCondition" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from LNSACCTRPYPLAN
+    <if test="_parameter != null" >
+      <include refid="Query_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from LNSACCTRPYPLAN
+    where RPYPLANNO = #{rpyplanno,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from LNSACCTRPYPLAN
+    where RPYPLANNO = #{rpyplanno,jdbcType=VARCHAR}
+  </delete>
+  <delete id="delete" parameterType="com.smk.pay.dal.condtion.EntityCondition" >
+    delete from LNSACCTRPYPLAN
+    <if test="_parameter != null" >
+      <include refid="Query_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.smk.pay.core.entity.LnsAcctRpyPlanEntity" >
+    insert into LNSACCTRPYPLAN (RPYPLANNO, BRC, ACCTNO, 
+      SUBSECTION, REPAYTERM, SUBCTRLCODE, 
+      ACCTFLAG, ORIGINAL_SERIAL_NO, ORIGINAL_TRANS_DATE, 
+      ORIGINAL_TRANS_TIME, REQ_SERIAL_NO, REQ_TRANS_DATE, 
+      REQ_TRANS_TIME, MERCHANT_ID, TRANS_DATE, 
+      REPAYOWNBDATE, REPAYOWNEDATE, REPAYINTBDATE, 
+      REPAYINTEDATE, AHEADDATE, TERMRETDATE, 
+      TERMRETPRIN, TERMRETINT, TERMTXINT, 
+      NORETAMT, NORETINT, TERMFINT, 
+      TERMCINT, TERMSPEINT, RETINTAMT, 
+      DAYS, TERMCDINT, SURPLUSCDINT, 
+      DAYFINT, BALANCE, STATUS, 
+      CDFLAG, FLAG, TERMMCFINT, 
+      TERMMCCINT, DAYMCFINT, TERMMCCDINT, 
+      MODIFYDATE, MODIFYTIME, RESERVE1, 
+      RIVAL_MERCHANT_ID, BUSINESS_TYPE)
+    values (#{rpyplanno,jdbcType=VARCHAR}, #{brc,jdbcType=VARCHAR}, #{acctno,jdbcType=VARCHAR}, 
+      #{subsection,jdbcType=VARCHAR}, #{repayterm,jdbcType=DECIMAL}, #{subctrlcode,jdbcType=VARCHAR}, 
+      #{acctflag,jdbcType=VARCHAR}, #{originalSerialNo,jdbcType=VARCHAR}, #{originalTransDate,jdbcType=VARCHAR}, 
+      #{originalTransTime,jdbcType=VARCHAR}, #{reqSerialNo,jdbcType=VARCHAR}, #{reqTransDate,jdbcType=VARCHAR}, 
+      #{reqTransTime,jdbcType=VARCHAR}, #{merchantId,jdbcType=VARCHAR}, #{transDate,jdbcType=TIMESTAMP}, 
+      #{repayownbdate,jdbcType=VARCHAR}, #{repayownedate,jdbcType=VARCHAR}, #{repayintbdate,jdbcType=VARCHAR}, 
+      #{repayintedate,jdbcType=VARCHAR}, #{aheaddate,jdbcType=VARCHAR}, #{termretdate,jdbcType=VARCHAR}, 
+      #{termretprin,jdbcType=DECIMAL}, #{termretint,jdbcType=DECIMAL}, #{termtxint,jdbcType=DECIMAL}, 
+      #{noretamt,jdbcType=DECIMAL}, #{noretint,jdbcType=DECIMAL}, #{termfint,jdbcType=DECIMAL}, 
+      #{termcint,jdbcType=DECIMAL}, #{termspeint,jdbcType=DECIMAL}, #{retintamt,jdbcType=DECIMAL}, 
+      #{days,jdbcType=DECIMAL}, #{termcdint,jdbcType=DECIMAL}, #{surpluscdint,jdbcType=DECIMAL}, 
+      #{dayfint,jdbcType=DECIMAL}, #{balance,jdbcType=DECIMAL}, #{status,jdbcType=VARCHAR}, 
+      #{cdflag,jdbcType=VARCHAR}, #{flag,jdbcType=VARCHAR}, #{termmcfint,jdbcType=DECIMAL}, 
+      #{termmccint,jdbcType=DECIMAL}, #{daymcfint,jdbcType=DECIMAL}, #{termmccdint,jdbcType=DECIMAL}, 
+      #{modifydate,jdbcType=VARCHAR}, #{modifytime,jdbcType=VARCHAR}, #{reserve1,jdbcType=VARCHAR}, 
+      #{rivalMerchantId,jdbcType=VARCHAR}, #{businessType,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.smk.pay.core.entity.LnsAcctRpyPlanEntity" >
+    insert into LNSACCTRPYPLAN
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="rpyplanno != null" >
+        RPYPLANNO,
+      </if>
+      <if test="brc != null" >
+        BRC,
+      </if>
+      <if test="acctno != null" >
+        ACCTNO,
+      </if>
+      <if test="subsection != null" >
+        SUBSECTION,
+      </if>
+      <if test="repayterm != null" >
+        REPAYTERM,
+      </if>
+      <if test="subctrlcode != null" >
+        SUBCTRLCODE,
+      </if>
+      <if test="acctflag != null" >
+        ACCTFLAG,
+      </if>
+      <if test="originalSerialNo != null" >
+        ORIGINAL_SERIAL_NO,
+      </if>
+      <if test="originalTransDate != null" >
+        ORIGINAL_TRANS_DATE,
+      </if>
+      <if test="originalTransTime != null" >
+        ORIGINAL_TRANS_TIME,
+      </if>
+      <if test="reqSerialNo != null" >
+        REQ_SERIAL_NO,
+      </if>
+      <if test="reqTransDate != null" >
+        REQ_TRANS_DATE,
+      </if>
+      <if test="reqTransTime != null" >
+        REQ_TRANS_TIME,
+      </if>
+      <if test="merchantId != null" >
+        MERCHANT_ID,
+      </if>
+      <if test="transDate != null" >
+        TRANS_DATE,
+      </if>
+      <if test="repayownbdate != null" >
+        REPAYOWNBDATE,
+      </if>
+      <if test="repayownedate != null" >
+        REPAYOWNEDATE,
+      </if>
+      <if test="repayintbdate != null" >
+        REPAYINTBDATE,
+      </if>
+      <if test="repayintedate != null" >
+        REPAYINTEDATE,
+      </if>
+      <if test="aheaddate != null" >
+        AHEADDATE,
+      </if>
+      <if test="termretdate != null" >
+        TERMRETDATE,
+      </if>
+      <if test="termretprin != null" >
+        TERMRETPRIN,
+      </if>
+      <if test="termretint != null" >
+        TERMRETINT,
+      </if>
+      <if test="termtxint != null" >
+        TERMTXINT,
+      </if>
+      <if test="noretamt != null" >
+        NORETAMT,
+      </if>
+      <if test="noretint != null" >
+        NORETINT,
+      </if>
+      <if test="termfint != null" >
+        TERMFINT,
+      </if>
+      <if test="termcint != null" >
+        TERMCINT,
+      </if>
+      <if test="termspeint != null" >
+        TERMSPEINT,
+      </if>
+      <if test="retintamt != null" >
+        RETINTAMT,
+      </if>
+      <if test="days != null" >
+        DAYS,
+      </if>
+      <if test="termcdint != null" >
+        TERMCDINT,
+      </if>
+      <if test="surpluscdint != null" >
+        SURPLUSCDINT,
+      </if>
+      <if test="dayfint != null" >
+        DAYFINT,
+      </if>
+      <if test="balance != null" >
+        BALANCE,
+      </if>
+      <if test="status != null" >
+        STATUS,
+      </if>
+      <if test="cdflag != null" >
+        CDFLAG,
+      </if>
+      <if test="flag != null" >
+        FLAG,
+      </if>
+      <if test="termmcfint != null" >
+        TERMMCFINT,
+      </if>
+      <if test="termmccint != null" >
+        TERMMCCINT,
+      </if>
+      <if test="daymcfint != null" >
+        DAYMCFINT,
+      </if>
+      <if test="termmccdint != null" >
+        TERMMCCDINT,
+      </if>
+      <if test="modifydate != null" >
+        MODIFYDATE,
+      </if>
+      <if test="modifytime != null" >
+        MODIFYTIME,
+      </if>
+      <if test="reserve1 != null" >
+        RESERVE1,
+      </if>
+      <if test="rivalMerchantId != null" >
+        RIVAL_MERCHANT_ID,
+      </if>
+      <if test="businessType != null" >
+        BUSINESS_TYPE,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="rpyplanno != null" >
+        #{rpyplanno,jdbcType=VARCHAR},
+      </if>
+      <if test="brc != null" >
+        #{brc,jdbcType=VARCHAR},
+      </if>
+      <if test="acctno != null" >
+        #{acctno,jdbcType=VARCHAR},
+      </if>
+      <if test="subsection != null" >
+        #{subsection,jdbcType=VARCHAR},
+      </if>
+      <if test="repayterm != null" >
+        #{repayterm,jdbcType=DECIMAL},
+      </if>
+      <if test="subctrlcode != null" >
+        #{subctrlcode,jdbcType=VARCHAR},
+      </if>
+      <if test="acctflag != null" >
+        #{acctflag,jdbcType=VARCHAR},
+      </if>
+      <if test="originalSerialNo != null" >
+        #{originalSerialNo,jdbcType=VARCHAR},
+      </if>
+      <if test="originalTransDate != null" >
+        #{originalTransDate,jdbcType=VARCHAR},
+      </if>
+      <if test="originalTransTime != null" >
+        #{originalTransTime,jdbcType=VARCHAR},
+      </if>
+      <if test="reqSerialNo != null" >
+        #{reqSerialNo,jdbcType=VARCHAR},
+      </if>
+      <if test="reqTransDate != null" >
+        #{reqTransDate,jdbcType=VARCHAR},
+      </if>
+      <if test="reqTransTime != null" >
+        #{reqTransTime,jdbcType=VARCHAR},
+      </if>
+      <if test="merchantId != null" >
+        #{merchantId,jdbcType=VARCHAR},
+      </if>
+      <if test="transDate != null" >
+        #{transDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="repayownbdate != null" >
+        #{repayownbdate,jdbcType=VARCHAR},
+      </if>
+      <if test="repayownedate != null" >
+        #{repayownedate,jdbcType=VARCHAR},
+      </if>
+      <if test="repayintbdate != null" >
+        #{repayintbdate,jdbcType=VARCHAR},
+      </if>
+      <if test="repayintedate != null" >
+        #{repayintedate,jdbcType=VARCHAR},
+      </if>
+      <if test="aheaddate != null" >
+        #{aheaddate,jdbcType=VARCHAR},
+      </if>
+      <if test="termretdate != null" >
+        #{termretdate,jdbcType=VARCHAR},
+      </if>
+      <if test="termretprin != null" >
+        #{termretprin,jdbcType=DECIMAL},
+      </if>
+      <if test="termretint != null" >
+        #{termretint,jdbcType=DECIMAL},
+      </if>
+      <if test="termtxint != null" >
+        #{termtxint,jdbcType=DECIMAL},
+      </if>
+      <if test="noretamt != null" >
+        #{noretamt,jdbcType=DECIMAL},
+      </if>
+      <if test="noretint != null" >
+        #{noretint,jdbcType=DECIMAL},
+      </if>
+      <if test="termfint != null" >
+        #{termfint,jdbcType=DECIMAL},
+      </if>
+      <if test="termcint != null" >
+        #{termcint,jdbcType=DECIMAL},
+      </if>
+      <if test="termspeint != null" >
+        #{termspeint,jdbcType=DECIMAL},
+      </if>
+      <if test="retintamt != null" >
+        #{retintamt,jdbcType=DECIMAL},
+      </if>
+      <if test="days != null" >
+        #{days,jdbcType=DECIMAL},
+      </if>
+      <if test="termcdint != null" >
+        #{termcdint,jdbcType=DECIMAL},
+      </if>
+      <if test="surpluscdint != null" >
+        #{surpluscdint,jdbcType=DECIMAL},
+      </if>
+      <if test="dayfint != null" >
+        #{dayfint,jdbcType=DECIMAL},
+      </if>
+      <if test="balance != null" >
+        #{balance,jdbcType=DECIMAL},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="cdflag != null" >
+        #{cdflag,jdbcType=VARCHAR},
+      </if>
+      <if test="flag != null" >
+        #{flag,jdbcType=VARCHAR},
+      </if>
+      <if test="termmcfint != null" >
+        #{termmcfint,jdbcType=DECIMAL},
+      </if>
+      <if test="termmccint != null" >
+        #{termmccint,jdbcType=DECIMAL},
+      </if>
+      <if test="daymcfint != null" >
+        #{daymcfint,jdbcType=DECIMAL},
+      </if>
+      <if test="termmccdint != null" >
+        #{termmccdint,jdbcType=DECIMAL},
+      </if>
+      <if test="modifydate != null" >
+        #{modifydate,jdbcType=VARCHAR},
+      </if>
+      <if test="modifytime != null" >
+        #{modifytime,jdbcType=VARCHAR},
+      </if>
+      <if test="reserve1 != null" >
+        #{reserve1,jdbcType=VARCHAR},
+      </if>
+      <if test="rivalMerchantId != null" >
+        #{rivalMerchantId,jdbcType=VARCHAR},
+      </if>
+      <if test="businessType != null" >
+        #{businessType,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="count" parameterType="com.smk.pay.dal.condtion.EntityCondition" resultType="java.lang.Integer" >
+    select count(*) from LNSACCTRPYPLAN
+    <if test="_parameter != null" >
+      <include refid="Query_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateSelective" parameterType="map" >
+    update LNSACCTRPYPLAN
+    <set >
+      <if test="record.rpyplanno != null" >
+        RPYPLANNO = #{record.rpyplanno,jdbcType=VARCHAR},
+      </if>
+      <if test="record.brc != null" >
+        BRC = #{record.brc,jdbcType=VARCHAR},
+      </if>
+      <if test="record.acctno != null" >
+        ACCTNO = #{record.acctno,jdbcType=VARCHAR},
+      </if>
+      <if test="record.subsection != null" >
+        SUBSECTION = #{record.subsection,jdbcType=VARCHAR},
+      </if>
+      <if test="record.repayterm != null" >
+        REPAYTERM = #{record.repayterm,jdbcType=DECIMAL},
+      </if>
+      <if test="record.subctrlcode != null" >
+        SUBCTRLCODE = #{record.subctrlcode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.acctflag != null" >
+        ACCTFLAG = #{record.acctflag,jdbcType=VARCHAR},
+      </if>
+      <if test="record.originalSerialNo != null" >
+        ORIGINAL_SERIAL_NO = #{record.originalSerialNo,jdbcType=VARCHAR},
+      </if>
+      <if test="record.originalTransDate != null" >
+        ORIGINAL_TRANS_DATE = #{record.originalTransDate,jdbcType=VARCHAR},
+      </if>
+      <if test="record.originalTransTime != null" >
+        ORIGINAL_TRANS_TIME = #{record.originalTransTime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.reqSerialNo != null" >
+        REQ_SERIAL_NO = #{record.reqSerialNo,jdbcType=VARCHAR},
+      </if>
+      <if test="record.reqTransDate != null" >
+        REQ_TRANS_DATE = #{record.reqTransDate,jdbcType=VARCHAR},
+      </if>
+      <if test="record.reqTransTime != null" >
+        REQ_TRANS_TIME = #{record.reqTransTime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.merchantId != null" >
+        MERCHANT_ID = #{record.merchantId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.transDate != null" >
+        TRANS_DATE = #{record.transDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.repayownbdate != null" >
+        REPAYOWNBDATE = #{record.repayownbdate,jdbcType=VARCHAR},
+      </if>
+      <if test="record.repayownedate != null" >
+        REPAYOWNEDATE = #{record.repayownedate,jdbcType=VARCHAR},
+      </if>
+      <if test="record.repayintbdate != null" >
+        REPAYINTBDATE = #{record.repayintbdate,jdbcType=VARCHAR},
+      </if>
+      <if test="record.repayintedate != null" >
+        REPAYINTEDATE = #{record.repayintedate,jdbcType=VARCHAR},
+      </if>
+      <if test="record.aheaddate != null" >
+        AHEADDATE = #{record.aheaddate,jdbcType=VARCHAR},
+      </if>
+      <if test="record.termretdate != null" >
+        TERMRETDATE = #{record.termretdate,jdbcType=VARCHAR},
+      </if>
+      <if test="record.termretprin != null" >
+        TERMRETPRIN = #{record.termretprin,jdbcType=DECIMAL},
+      </if>
+      <if test="record.termretint != null" >
+        TERMRETINT = #{record.termretint,jdbcType=DECIMAL},
+      </if>
+      <if test="record.termtxint != null" >
+        TERMTXINT = #{record.termtxint,jdbcType=DECIMAL},
+      </if>
+      <if test="record.noretamt != null" >
+        NORETAMT = #{record.noretamt,jdbcType=DECIMAL},
+      </if>
+      <if test="record.noretint != null" >
+        NORETINT = #{record.noretint,jdbcType=DECIMAL},
+      </if>
+      <if test="record.termfint != null" >
+        TERMFINT = #{record.termfint,jdbcType=DECIMAL},
+      </if>
+      <if test="record.termcint != null" >
+        TERMCINT = #{record.termcint,jdbcType=DECIMAL},
+      </if>
+      <if test="record.termspeint != null" >
+        TERMSPEINT = #{record.termspeint,jdbcType=DECIMAL},
+      </if>
+      <if test="record.retintamt != null" >
+        RETINTAMT = #{record.retintamt,jdbcType=DECIMAL},
+      </if>
+      <if test="record.days != null" >
+        DAYS = #{record.days,jdbcType=DECIMAL},
+      </if>
+      <if test="record.termcdint != null" >
+        TERMCDINT = #{record.termcdint,jdbcType=DECIMAL},
+      </if>
+      <if test="record.surpluscdint != null" >
+        SURPLUSCDINT = #{record.surpluscdint,jdbcType=DECIMAL},
+      </if>
+      <if test="record.dayfint != null" >
+        DAYFINT = #{record.dayfint,jdbcType=DECIMAL},
+      </if>
+      <if test="record.balance != null" >
+        BALANCE = #{record.balance,jdbcType=DECIMAL},
+      </if>
+      <if test="record.status != null" >
+        STATUS = #{record.status,jdbcType=VARCHAR},
+      </if>
+      <if test="record.cdflag != null" >
+        CDFLAG = #{record.cdflag,jdbcType=VARCHAR},
+      </if>
+      <if test="record.flag != null" >
+        FLAG = #{record.flag,jdbcType=VARCHAR},
+      </if>
+      <if test="record.termmcfint != null" >
+        TERMMCFINT = #{record.termmcfint,jdbcType=DECIMAL},
+      </if>
+      <if test="record.termmccint != null" >
+        TERMMCCINT = #{record.termmccint,jdbcType=DECIMAL},
+      </if>
+      <if test="record.daymcfint != null" >
+        DAYMCFINT = #{record.daymcfint,jdbcType=DECIMAL},
+      </if>
+      <if test="record.termmccdint != null" >
+        TERMMCCDINT = #{record.termmccdint,jdbcType=DECIMAL},
+      </if>
+      <if test="record.modifydate != null" >
+        MODIFYDATE = #{record.modifydate,jdbcType=VARCHAR},
+      </if>
+      <if test="record.modifytime != null" >
+        MODIFYTIME = #{record.modifytime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.reserve1 != null" >
+        RESERVE1 = #{record.reserve1,jdbcType=VARCHAR},
+      </if>
+      <if test="record.rivalMerchantId != null" >
+        RIVAL_MERCHANT_ID = #{record.rivalMerchantId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.businessType != null" >
+        BUSINESS_TYPE = #{record.businessType,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_Where_Clause" />
+    </if>
+  </update>
+  <update id="udpate" parameterType="map" >
+    update LNSACCTRPYPLAN
+    set RPYPLANNO = #{record.rpyplanno,jdbcType=VARCHAR},
+      BRC = #{record.brc,jdbcType=VARCHAR},
+      ACCTNO = #{record.acctno,jdbcType=VARCHAR},
+      SUBSECTION = #{record.subsection,jdbcType=VARCHAR},
+      REPAYTERM = #{record.repayterm,jdbcType=DECIMAL},
+      SUBCTRLCODE = #{record.subctrlcode,jdbcType=VARCHAR},
+      ACCTFLAG = #{record.acctflag,jdbcType=VARCHAR},
+      ORIGINAL_SERIAL_NO = #{record.originalSerialNo,jdbcType=VARCHAR},
+      ORIGINAL_TRANS_DATE = #{record.originalTransDate,jdbcType=VARCHAR},
+      ORIGINAL_TRANS_TIME = #{record.originalTransTime,jdbcType=VARCHAR},
+      REQ_SERIAL_NO = #{record.reqSerialNo,jdbcType=VARCHAR},
+      REQ_TRANS_DATE = #{record.reqTransDate,jdbcType=VARCHAR},
+      REQ_TRANS_TIME = #{record.reqTransTime,jdbcType=VARCHAR},
+      MERCHANT_ID = #{record.merchantId,jdbcType=VARCHAR},
+      TRANS_DATE = #{record.transDate,jdbcType=TIMESTAMP},
+      REPAYOWNBDATE = #{record.repayownbdate,jdbcType=VARCHAR},
+      REPAYOWNEDATE = #{record.repayownedate,jdbcType=VARCHAR},
+      REPAYINTBDATE = #{record.repayintbdate,jdbcType=VARCHAR},
+      REPAYINTEDATE = #{record.repayintedate,jdbcType=VARCHAR},
+      AHEADDATE = #{record.aheaddate,jdbcType=VARCHAR},
+      TERMRETDATE = #{record.termretdate,jdbcType=VARCHAR},
+      TERMRETPRIN = #{record.termretprin,jdbcType=DECIMAL},
+      TERMRETINT = #{record.termretint,jdbcType=DECIMAL},
+      TERMTXINT = #{record.termtxint,jdbcType=DECIMAL},
+      NORETAMT = #{record.noretamt,jdbcType=DECIMAL},
+      NORETINT = #{record.noretint,jdbcType=DECIMAL},
+      TERMFINT = #{record.termfint,jdbcType=DECIMAL},
+      TERMCINT = #{record.termcint,jdbcType=DECIMAL},
+      TERMSPEINT = #{record.termspeint,jdbcType=DECIMAL},
+      RETINTAMT = #{record.retintamt,jdbcType=DECIMAL},
+      DAYS = #{record.days,jdbcType=DECIMAL},
+      TERMCDINT = #{record.termcdint,jdbcType=DECIMAL},
+      SURPLUSCDINT = #{record.surpluscdint,jdbcType=DECIMAL},
+      DAYFINT = #{record.dayfint,jdbcType=DECIMAL},
+      BALANCE = #{record.balance,jdbcType=DECIMAL},
+      STATUS = #{record.status,jdbcType=VARCHAR},
+      CDFLAG = #{record.cdflag,jdbcType=VARCHAR},
+      FLAG = #{record.flag,jdbcType=VARCHAR},
+      TERMMCFINT = #{record.termmcfint,jdbcType=DECIMAL},
+      TERMMCCINT = #{record.termmccint,jdbcType=DECIMAL},
+      DAYMCFINT = #{record.daymcfint,jdbcType=DECIMAL},
+      TERMMCCDINT = #{record.termmccdint,jdbcType=DECIMAL},
+      MODIFYDATE = #{record.modifydate,jdbcType=VARCHAR},
+      MODIFYTIME = #{record.modifytime,jdbcType=VARCHAR},
+      RESERVE1 = #{record.reserve1,jdbcType=VARCHAR},
+      RIVAL_MERCHANT_ID = #{record.rivalMerchantId,jdbcType=VARCHAR},
+      BUSINESS_TYPE = #{record.businessType,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.smk.pay.core.entity.LnsAcctRpyPlanEntity" >
+    update LNSACCTRPYPLAN
+    <set >
+      <if test="brc != null" >
+        BRC = #{brc,jdbcType=VARCHAR},
+      </if>
+      <if test="acctno != null" >
+        ACCTNO = #{acctno,jdbcType=VARCHAR},
+      </if>
+      <if test="subsection != null" >
+        SUBSECTION = #{subsection,jdbcType=VARCHAR},
+      </if>
+      <if test="repayterm != null" >
+        REPAYTERM = #{repayterm,jdbcType=DECIMAL},
+      </if>
+      <if test="subctrlcode != null" >
+        SUBCTRLCODE = #{subctrlcode,jdbcType=VARCHAR},
+      </if>
+      <if test="acctflag != null" >
+        ACCTFLAG = #{acctflag,jdbcType=VARCHAR},
+      </if>
+      <if test="originalSerialNo != null" >
+        ORIGINAL_SERIAL_NO = #{originalSerialNo,jdbcType=VARCHAR},
+      </if>
+      <if test="originalTransDate != null" >
+        ORIGINAL_TRANS_DATE = #{originalTransDate,jdbcType=VARCHAR},
+      </if>
+      <if test="originalTransTime != null" >
+        ORIGINAL_TRANS_TIME = #{originalTransTime,jdbcType=VARCHAR},
+      </if>
+      <if test="reqSerialNo != null" >
+        REQ_SERIAL_NO = #{reqSerialNo,jdbcType=VARCHAR},
+      </if>
+      <if test="reqTransDate != null" >
+        REQ_TRANS_DATE = #{reqTransDate,jdbcType=VARCHAR},
+      </if>
+      <if test="reqTransTime != null" >
+        REQ_TRANS_TIME = #{reqTransTime,jdbcType=VARCHAR},
+      </if>
+      <if test="merchantId != null" >
+        MERCHANT_ID = #{merchantId,jdbcType=VARCHAR},
+      </if>
+      <if test="transDate != null" >
+        TRANS_DATE = #{transDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="repayownbdate != null" >
+        REPAYOWNBDATE = #{repayownbdate,jdbcType=VARCHAR},
+      </if>
+      <if test="repayownedate != null" >
+        REPAYOWNEDATE = #{repayownedate,jdbcType=VARCHAR},
+      </if>
+      <if test="repayintbdate != null" >
+        REPAYINTBDATE = #{repayintbdate,jdbcType=VARCHAR},
+      </if>
+      <if test="repayintedate != null" >
+        REPAYINTEDATE = #{repayintedate,jdbcType=VARCHAR},
+      </if>
+      <if test="aheaddate != null" >
+        AHEADDATE = #{aheaddate,jdbcType=VARCHAR},
+      </if>
+      <if test="termretdate != null" >
+        TERMRETDATE = #{termretdate,jdbcType=VARCHAR},
+      </if>
+      <if test="termretprin != null" >
+        TERMRETPRIN = #{termretprin,jdbcType=DECIMAL},
+      </if>
+      <if test="termretint != null" >
+        TERMRETINT = #{termretint,jdbcType=DECIMAL},
+      </if>
+      <if test="termtxint != null" >
+        TERMTXINT = #{termtxint,jdbcType=DECIMAL},
+      </if>
+      <if test="noretamt != null" >
+        NORETAMT = #{noretamt,jdbcType=DECIMAL},
+      </if>
+      <if test="noretint != null" >
+        NORETINT = #{noretint,jdbcType=DECIMAL},
+      </if>
+      <if test="termfint != null" >
+        TERMFINT = #{termfint,jdbcType=DECIMAL},
+      </if>
+      <if test="termcint != null" >
+        TERMCINT = #{termcint,jdbcType=DECIMAL},
+      </if>
+      <if test="termspeint != null" >
+        TERMSPEINT = #{termspeint,jdbcType=DECIMAL},
+      </if>
+      <if test="retintamt != null" >
+        RETINTAMT = #{retintamt,jdbcType=DECIMAL},
+      </if>
+      <if test="days != null" >
+        DAYS = #{days,jdbcType=DECIMAL},
+      </if>
+      <if test="termcdint != null" >
+        TERMCDINT = #{termcdint,jdbcType=DECIMAL},
+      </if>
+      <if test="surpluscdint != null" >
+        SURPLUSCDINT = #{surpluscdint,jdbcType=DECIMAL},
+      </if>
+      <if test="dayfint != null" >
+        DAYFINT = #{dayfint,jdbcType=DECIMAL},
+      </if>
+      <if test="balance != null" >
+        BALANCE = #{balance,jdbcType=DECIMAL},
+      </if>
+      <if test="status != null" >
+        STATUS = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="cdflag != null" >
+        CDFLAG = #{cdflag,jdbcType=VARCHAR},
+      </if>
+      <if test="flag != null" >
+        FLAG = #{flag,jdbcType=VARCHAR},
+      </if>
+      <if test="termmcfint != null" >
+        TERMMCFINT = #{termmcfint,jdbcType=DECIMAL},
+      </if>
+      <if test="termmccint != null" >
+        TERMMCCINT = #{termmccint,jdbcType=DECIMAL},
+      </if>
+      <if test="daymcfint != null" >
+        DAYMCFINT = #{daymcfint,jdbcType=DECIMAL},
+      </if>
+      <if test="termmccdint != null" >
+        TERMMCCDINT = #{termmccdint,jdbcType=DECIMAL},
+      </if>
+      <if test="modifydate != null" >
+        MODIFYDATE = #{modifydate,jdbcType=VARCHAR},
+      </if>
+      <if test="modifytime != null" >
+        MODIFYTIME = #{modifytime,jdbcType=VARCHAR},
+      </if>
+      <if test="reserve1 != null" >
+        RESERVE1 = #{reserve1,jdbcType=VARCHAR},
+      </if>
+      <if test="rivalMerchantId != null" >
+        RIVAL_MERCHANT_ID = #{rivalMerchantId,jdbcType=VARCHAR},
+      </if>
+      <if test="businessType != null" >
+        BUSINESS_TYPE = #{businessType,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where RPYPLANNO = #{rpyplanno,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.smk.pay.core.entity.LnsAcctRpyPlanEntity" >
+    update LNSACCTRPYPLAN
+    set BRC = #{brc,jdbcType=VARCHAR},
+      ACCTNO = #{acctno,jdbcType=VARCHAR},
+      SUBSECTION = #{subsection,jdbcType=VARCHAR},
+      REPAYTERM = #{repayterm,jdbcType=DECIMAL},
+      SUBCTRLCODE = #{subctrlcode,jdbcType=VARCHAR},
+      ACCTFLAG = #{acctflag,jdbcType=VARCHAR},
+      ORIGINAL_SERIAL_NO = #{originalSerialNo,jdbcType=VARCHAR},
+      ORIGINAL_TRANS_DATE = #{originalTransDate,jdbcType=VARCHAR},
+      ORIGINAL_TRANS_TIME = #{originalTransTime,jdbcType=VARCHAR},
+      REQ_SERIAL_NO = #{reqSerialNo,jdbcType=VARCHAR},
+      REQ_TRANS_DATE = #{reqTransDate,jdbcType=VARCHAR},
+      REQ_TRANS_TIME = #{reqTransTime,jdbcType=VARCHAR},
+      MERCHANT_ID = #{merchantId,jdbcType=VARCHAR},
+      TRANS_DATE = #{transDate,jdbcType=TIMESTAMP},
+      REPAYOWNBDATE = #{repayownbdate,jdbcType=VARCHAR},
+      REPAYOWNEDATE = #{repayownedate,jdbcType=VARCHAR},
+      REPAYINTBDATE = #{repayintbdate,jdbcType=VARCHAR},
+      REPAYINTEDATE = #{repayintedate,jdbcType=VARCHAR},
+      AHEADDATE = #{aheaddate,jdbcType=VARCHAR},
+      TERMRETDATE = #{termretdate,jdbcType=VARCHAR},
+      TERMRETPRIN = #{termretprin,jdbcType=DECIMAL},
+      TERMRETINT = #{termretint,jdbcType=DECIMAL},
+      TERMTXINT = #{termtxint,jdbcType=DECIMAL},
+      NORETAMT = #{noretamt,jdbcType=DECIMAL},
+      NORETINT = #{noretint,jdbcType=DECIMAL},
+      TERMFINT = #{termfint,jdbcType=DECIMAL},
+      TERMCINT = #{termcint,jdbcType=DECIMAL},
+      TERMSPEINT = #{termspeint,jdbcType=DECIMAL},
+      RETINTAMT = #{retintamt,jdbcType=DECIMAL},
+      DAYS = #{days,jdbcType=DECIMAL},
+      TERMCDINT = #{termcdint,jdbcType=DECIMAL},
+      SURPLUSCDINT = #{surpluscdint,jdbcType=DECIMAL},
+      DAYFINT = #{dayfint,jdbcType=DECIMAL},
+      BALANCE = #{balance,jdbcType=DECIMAL},
+      STATUS = #{status,jdbcType=VARCHAR},
+      CDFLAG = #{cdflag,jdbcType=VARCHAR},
+      FLAG = #{flag,jdbcType=VARCHAR},
+      TERMMCFINT = #{termmcfint,jdbcType=DECIMAL},
+      TERMMCCINT = #{termmccint,jdbcType=DECIMAL},
+      DAYMCFINT = #{daymcfint,jdbcType=DECIMAL},
+      TERMMCCDINT = #{termmccdint,jdbcType=DECIMAL},
+      MODIFYDATE = #{modifydate,jdbcType=VARCHAR},
+      MODIFYTIME = #{modifytime,jdbcType=VARCHAR},
+      RESERVE1 = #{reserve1,jdbcType=VARCHAR},
+      RIVAL_MERCHANT_ID = #{rivalMerchantId,jdbcType=VARCHAR},
+      BUSINESS_TYPE = #{businessType,jdbcType=VARCHAR}
+    where RPYPLANNO = #{rpyplanno,jdbcType=VARCHAR}
+  </update>
+</mapper>

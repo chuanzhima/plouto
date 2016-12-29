@@ -1,0 +1,39 @@
+package com.smk.pay.core.manager;
+
+import com.smk.pay.core.dto.AccountInfoDto;
+
+import java.util.List;
+
+/**
+ * Project plouto
+ * Created by chuanzhi.macz
+ * Date 2016/10/23 19:26
+ */
+public interface IAccountQueryManager {
+
+
+    /**
+     * 查询账户基本信息
+     *
+     * @param userId
+     * @param isIncludeMerged 是否包含绑定多张卡账户，如果未绑定，则只查询主账户信息
+     * @return
+     */
+    List<AccountInfoDto> queryAccountByUserId(String userId, boolean isIncludeMerged);
+
+    /**
+     * 查询主账户信息
+     *
+     * @param userId
+     * @return
+     */
+    AccountInfoDto queryMainAccountByUserId(String userId);
+
+    /**
+     * 根据账户id查询账户信息
+     *
+     * @param accountId
+     * @return
+     */
+    AccountInfoDto queryAccountById(String accountId);
+}

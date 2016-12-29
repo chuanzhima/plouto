@@ -1,0 +1,64 @@
+package com.smk.pay.core.validator;
+
+import com.smk.pay.account.core.enums.AccountInfoStatusEnum;
+import com.smk.pay.account.core.request.RequestHeader;
+import com.smk.pay.core.constant.ResultCodeConstant;
+import com.smk.pay.core.enums.AccountTransTypeEnum;
+import com.smk.pay.core.validator.base.AccountValidator;
+import com.smk.pay.core.validator.base.TransValidator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Project plouto
+ * Created by chuanzhi.macz
+ * Date 2016/12/19 21:07
+ */
+
+@Component(value = "settleValidator")
+public class SettleValidator {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(SettleValidator.class);
+    @Autowired
+    private AccountValidator accountValidator;
+    @Autowired
+    private TransValidator transValidator;
+
+    // 商户充值校验
+    public Map<Boolean, String> validate4Merchant(RequestHeader header, String merchantId) {
+
+        Map<Boolean, String> validateMap = new HashMap<Boolean, String>() {{
+            put(Boolean.TRUE, ResultCodeConstant.SUCCESS);
+        }};
+
+        // 校验重复交易
+        Boolean isRepeat = transValidator.isRepeatTrans(header.getReqSeq(), header.getTxDate
+                (), header.getTxTime(), AccountTransTypeEnum.RECHARGE.key(), AccountInfoStatusEnum
+                .NORMAL.value());
+        if (isRepeat) {
+            LOGGER.warn("validate4Merchant result: sequence-no repeat,no=" + header.getReqSeq());
+            return new HashMap<Boolean, String>() {{
+                put(Boolean.FALSE, ResultCodeConstant.REPEAT_TRANS_SEQUENCE_NO);
+            }};
+        }
+        Map<Boolean, List<String>> accountMap = accountValidator.isValidAccount(merchantId,
+                null, Arrays.asList(AccountInfoStatusEnum.NORMAL.value()));
+
+        if (accountMap.containsKey(Boolean.FALSE)) {
+            final String resultVal = accountMap.get(Boolean.FALSE).get(0);
+            LOGGER.warn("validate4Merchant result: account invalid,no=" + header.getReqSeq());
+            return new HashMap<Boolean, String>() {{
+                put(Boolean.FALSE, resultVal);
+            }};
+        }
+        validateMap.put(Boolean.TRUE, accountMap.get(Boolean.TRUE).get(0));
+        return validateMap;
+    }
+}

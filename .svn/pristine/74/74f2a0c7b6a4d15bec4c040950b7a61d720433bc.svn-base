@@ -1,0 +1,34 @@
+package com.smk.pay.core.api;
+
+import com.smk.pay.account.core.enums.AccountTypeEnum;
+import com.smk.pay.account.core.response.AccountInfo;
+import com.smk.pay.account.core.response.RpcResponse;
+import com.smk.pay.account.core.service.IAccountQueryService;
+import com.smk.pay.core.base.BaseServiceTest;
+import org.junit.Assert;
+import org.springframework.beans.factory.annotation.Autowired;
+
+/**
+ * AccountQueryService Tester.
+ *
+ * @author <Authors name>
+ * @version 1.0
+ * @since <pre>11/08/2016</pre>
+ */
+public class AccountQueryServiceTest extends BaseServiceTest {
+
+    @Autowired
+    private IAccountQueryService accountQueryService;
+
+    @org.junit.Test
+    public void testQueryAccountInfo() {
+        String userId = "123451";
+        RpcResponse<AccountInfo> rpcResponse = accountQueryService.queryAccountInfo(userId,
+                AccountTypeEnum.ONLINE);
+        Assert.assertTrue(rpcResponse.getIsSucc());
+    }
+
+    public void testQueryAvailableAmount() {
+
+    }
+}

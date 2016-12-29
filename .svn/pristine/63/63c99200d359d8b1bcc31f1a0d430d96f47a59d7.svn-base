@@ -1,0 +1,147 @@
+package com.smk.pay.core.api;
+
+import com.smk.pay.account.core.enums.AccountBizEnum;
+import com.smk.pay.account.core.enums.AccountChannelEnum;
+import com.smk.pay.account.core.enums.AccountTypeEnum;
+import com.smk.pay.account.core.response.*;
+import com.smk.pay.account.core.service.IAccountQueryService;
+import com.smk.pay.core.annotations.DubboService;
+import com.smk.pay.core.constant.ResultCodeConstant;
+import com.smk.pay.core.dto.AccountInfoDto;
+import com.smk.pay.core.manager.IAccountQueryManager;
+import com.smk.pay.core.manager.base.IAccountInfoManager;
+import com.smk.pay.core.utils.BeanCopierCacheUtil;
+import com.smk.pay.core.utils.PropertiesUtil;
+import com.smk.pay.core.utils.StringUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
+
+import javax.annotation.Resource;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Project plouto
+ * Created by chuanzhi.macz
+ * Date 2016/10/24 9:57
+ */
+@Service(value = "accountQueryService")
+public class AccountQueryService implements IAccountQueryService {
+
+    @Autowired
+    private IAccountQueryManager accountQueryManager;
+    @Resource(name = "accountInfoManager")
+    private IAccountInfoManager accountInfoManager;
+
+    @DubboService
+    public RpcResponse<AccountAvailable> queryAvailableAmount(String value, AccountTypeEnum typeEnum) {
+
+        if (typeEnum == null || StringUtil.isEmpty(value))
+            return new RpcResponse<>(Boolean.FALSE, ResultCodeConstant
+                    .PARAMETER_INVALID, PropertiesUtil.LOCALE_PROPERTIES_Map.get
+                    (ResultCodeConstant.PARAMETER_INVALID));
+
+        AccountAvailable available = new AccountAvailable.Builder().build();
+        Map<String, BigDecimal> availableAmount = accountQueryManager.queryAvailableAmount(value,
+                typeEnum);
+        available.setRechargeableGGKAmount(availableAmount.get("rechargeableGGKAmount"));
+        available.setConsumeableAmount(availableAmount.get("consumealbeAmount"));
+        return new RpcResponse<>(available, Boolean.TRUE);
+    }
+
+    @DubboService
+    @Override
+    public RpcResponse<AccountDetailResp> queryAccountDetail(String value, AccountTypeEnum typeEnum,
+                                                             String transType, AccountChannelEnum channelEnum,
+                                                             String merchantId, AccountBizEnum bizEnum,
+                                                             Date fromTransDate, Date toTransDate, int pageNum, int pageSize) {
+        if (StringUtil.isEmpty(value) || fromTransDate == null || toTransDate == null || pageNum
+                <= 0 || pageSize <= 0)
+            return new RpcResponse<>(Boolean.FALSE, ResultCodeConstant
+                    .PARAMETER_INVALID, PropertiesUtil.LOCALE_PROPERTIES_Map.get
+                    (ResultCodeConstant.PARAMETER_INVALID));
+        if (pageSize > 20)
+            return new RpcResponse<>(Boolean.FALSE, ResultCodeConstant.QUERY_RECORDS_TOO_MUCH,
+                    PropertiesUtil.LOCALE_PROPERTIES_Map.get(ResultCodeConstant
+                            .QUERY_RECORDS_TOO_MUCH));
+        AccountDetailResp resp = accountQueryManager.queryAccountDetail(value, typeEnum, transType,
+                channelEnum, merchantId, bizEnum, fromTransDate, toTransDate, pageNum, pageSize);
+        return new RpcResponse<>(resp, Boolean.TRUE);
+    }
+
+    @DubboService
+    @Override
+    public RpcResponse<ArrayList<AccountInfo>> queryBindedAccountInfo(String userId) {
+
+        if (StringUtil.isEmpty(userId))
+            return new RpcResponse<>(Boolean.FALSE, ResultCodeConstant
+                    .PARAMETER_INVALID, PropertiesUtil.LOCALE_PROPERTIES_Map.get
+                    (ResultCodeConstant.PARAMETER_INVALID));
+        ArrayList<AccountInfo> accountInfos = new ArrayList<>();
+        List<AccountInfoDto> accountInfoDtoList = accountInfoManager.queryAccountsByUserId(userId, true);
+        if (!CollectionUtils.isEmpty(accountInfoDtoList)) {
+            for (AccountInfoDto accountInfoDto : accountInfoDtoList) {
+                AccountInfo accountInfo = new AccountInfo.Builder().build();
+                BeanCopierCacheUtil.copy(accountInfoDto, accountInfo, null);
+                // 取出映射卡号字段
+                accountInfo.setCardNo(accountInfoDto.getUserDefindMark());
+                accountInfo.setWithdrawalAmount4XJ(accountInfoDto.getAmount1().add(accountInfoDto.getAmount2()));
+                accountInfo.setWithdrawalAmount4YHK(accountInfoDto.getAmount1());
+                accountInfo.setCurrentTotalAmount(accountInfoDto.getAmount1().add(accountInfoDto
+                        .getAmount2()).add(accountInfoDto.getAmount3()).add(accountInfoDto.getAmount4()));
+                accountInfos.add(accountInfo);
+            }
+        }
+        return new RpcResponse<>(accountInfos, Boolean.TRUE);
+    }
+
+    @DubboService
+    @Override
+    public RpcResponse<AccountInfo> queryAccountInfoByUserId(String userId) {
+
+        if (StringUtil.isEmpty(userId))
+            return new RpcResponse<>(Boolean.FALSE, ResultCodeConstant
+                    .PARAMETER_INVALID, PropertiesUtil.LOCALE_PROPERTIES_Map.get
+                    (ResultCodeConstant.PARAMETER_INVALID));
+
+        AccountInfo accountInfo = new AccountInfo.Builder().build();
+        AccountInfoDto accountInfoDto = accountInfoManager.queryMainAccountByUserId(userId);
+        if (accountInfoDto == null)
+            return new RpcResponse<>(Boolean.FALSE, ResultCodeConstant
+                    .ACCOUNT_NOT_EXIST, PropertiesUtil.LOCALE_PROPERTIES_Map.get
+                    (ResultCodeConstant.ACCOUNT_NOT_EXIST));
+        BeanCopierCacheUtil.copy(accountInfoDto, accountInfo, null);
+        accountInfo.setWithdrawalAmount4XJ(accountInfoDto.getAmount1().add(accountInfoDto.getAmount2()));
+        accountInfo.setWithdrawalAmount4YHK(accountInfoDto.getAmount1());
+        accountInfo.setCurrentTotalAmount(accountInfoDto.getAmount1().add(accountInfoDto
+                .getAmount2()).add(accountInfoDto.getAmount3()).add(accountInfoDto.getAmount4()));
+        return new RpcResponse<>(accountInfo, Boolean.TRUE);
+    }
+
+    @DubboService
+    @Override
+    public RpcResponse<AccountInfo> queryAccountInfoByCarNo(String cardNo) {
+        if (StringUtil.isEmpty(cardNo))
+            return new RpcResponse<>(Boolean.FALSE, ResultCodeConstant
+                    .PARAMETER_INVALID, PropertiesUtil.LOCALE_PROPERTIES_Map.get
+                    (ResultCodeConstant.PARAMETER_INVALID));
+
+        AccountInfo accountInfo = new AccountInfo.Builder().build();
+        AccountInfoDto accountInfoDto = accountInfoManager.queryCardAccountByCardNo(cardNo);
+        if (accountInfoDto == null)
+            return new RpcResponse<>(Boolean.FALSE, ResultCodeConstant
+                    .ACCOUNT_NOT_EXIST, PropertiesUtil.LOCALE_PROPERTIES_Map.get
+                    (ResultCodeConstant.ACCOUNT_NOT_EXIST));
+        BeanCopierCacheUtil.copy(accountInfoDto, accountInfo, null);
+        accountInfo.setWithdrawalAmount4XJ(accountInfoDto.getAmount1().add(accountInfoDto.getAmount2()));
+        accountInfo.setWithdrawalAmount4YHK(accountInfoDto.getAmount1());
+        accountInfo.setCurrentTotalAmount(accountInfoDto.getAmount1().add(accountInfoDto
+                .getAmount2()).add(accountInfoDto.getAmount3()).add(accountInfoDto.getAmount4()));
+        return new RpcResponse<>(accountInfo, Boolean.TRUE);
+    }
+
+}

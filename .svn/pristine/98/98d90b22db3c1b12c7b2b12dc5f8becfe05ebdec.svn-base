@@ -1,0 +1,47 @@
+package com.smk.pay.core.api;
+
+import com.smk.pay.account.core.request.ImpostorRequest;
+import com.smk.pay.account.core.response.RpcResponse;
+import com.smk.pay.account.core.service.IAccountImpostorService;
+import com.smk.pay.core.base.BaseServiceTest;
+import org.junit.Assert;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.math.BigDecimal;
+
+/**
+ * AccountImposterService Tester.
+ *
+ * @author <Authors name>
+ * @version 1.0
+ * @since <pre>11/02/2016</pre>
+ */
+public class AccountImposterServiceTest extends BaseServiceTest {
+
+    @Autowired
+    private IAccountImpostorService accountImpostorService;
+
+    @org.junit.Test
+    public void testAdd() {
+        ImpostorRequest impostorRequest = new ImpostorRequest("名测试冒2", "1", "370881198912218940",
+                "18668206789", "214@qq.com", "三廊庙", "f", new BigDecimal(25));
+        RpcResponse<String> rpcResponse = accountImpostorService.add(impostorRequest);
+        Assert.assertTrue(rpcResponse.getIsSucc());
+    }
+
+    @org.junit.Test
+    public void testUpdate() {
+        ImpostorRequest impostorRequest = new ImpostorRequest("测试冒名11", "1", "370881198912218940",
+                "18668206780", "215@qq.com", "三廊庙2", "m", new BigDecimal(27));
+        RpcResponse<String> rpcResponse = accountImpostorService.update("370881198912218940", impostorRequest);
+        Assert.assertTrue(rpcResponse.getIsSucc());
+    }
+
+    @org.junit.Test
+    public void testDelete() {
+        RpcResponse<String> rpcResponse = accountImpostorService.delete("370881198912218940");
+        Assert.assertTrue(rpcResponse.getIsSucc());
+    }
+
+
+}

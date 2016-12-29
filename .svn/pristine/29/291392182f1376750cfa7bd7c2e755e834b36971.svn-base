@@ -1,0 +1,38 @@
+package com.smk.pay.core.constant;
+
+/**
+ * Project plouto
+ * Created by chuanzhi.macz
+ * Date 2016/10/26 20:37
+ */
+public class ResultCodeConstant {
+
+    public static final String SUCCESS = "SUCCESS";
+
+
+
+    public static final String PARAMETER_INVALID = "PARAMETER_INVALID";
+
+    public static final String USER_INVALID = "USER_INVALID";
+
+    public static final String ACCOUNT_NOT_EXIST = "ACCOUNT_NOT_EXIST";
+
+    public static final String ACCOUNT_STATUS_PREFIX = "ACCOUNT_STATUS_";
+
+    public static final String ACCOUNT_STATUS_INVALID = "ACCOUNT_STATUS_INVALID";
+
+    public static final String ACCOUNT_STATUS_CANCEL = "ACCOUNT_STATUS_CANCEL";
+
+    public static final String ACCOUNT_STATUS_UNACTIVATED = "ACCOUNT_STATUS_UNACTIVATED";
+
+    public static final String ACCOUNT_STATUS_FROZEN = "ACCOUNT_STATUS_FROZEN";
+
+    public static final String ACCOUNT_STATUS_STOP_PAYMENT = "ACCOUNT_STATUS_STOP_PAYMENT";
+
+    public static final String ACCOUNT_STATUS_SUSPEND = "ACCOUNT_STATUS_SUSPEND";
+
+    public static final String ACCOUNT_TASK_PROPERTY_ERROR = "ACCOUNT_TASK_PROPERTY_ERROR";
+
+    public static final String SYSTEM_ERROR = "SYSTEM_ERROR";
+
+}

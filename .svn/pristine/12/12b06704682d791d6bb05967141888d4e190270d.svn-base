@@ -1,0 +1,28 @@
+package com.smk.pay.core.manager.impl;
+
+import com.smk.pay.core.dto.AccountInfoLogDto;
+import com.smk.pay.core.entity.AccountInfoLogEntity;
+import com.smk.pay.core.manager.IAccountInfoLogManager;
+import com.smk.pay.core.mapper.AccountInfoLogEntityMapper;
+import com.smk.pay.core.utils.BeanCopierCacheUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+/**
+ * Project plouto
+ * Created by chuanzhi.macz
+ * Date 2016/11/10 16:51
+ */
+@Component(value = "accountInfoLogManager")
+public class AccountInfoLogManager implements IAccountInfoLogManager {
+
+    @Autowired
+    private AccountInfoLogEntityMapper accountInfoLogEntityMapper;
+
+    public void addAccountInfoLog(AccountInfoLogDto accountInfoLogDto) {
+
+        AccountInfoLogEntity accountInfoLogEntity = new AccountInfoLogEntity();
+        BeanCopierCacheUtil.copy(accountInfoLogDto, accountInfoLogEntity, null);
+        accountInfoLogEntityMapper.insertSelective(accountInfoLogEntity);
+    }
+}

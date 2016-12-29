@@ -1,0 +1,496 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.smk.pay.core.mapper.InternalAccountEntityMapper" >
+  <resultMap id="BaseResultMap" type="com.smk.pay.core.entity.InternalAccountEntity" >
+    <id column="INTERNAL_ACCOUNT_ID" property="internalAccountId" jdbcType="VARCHAR" />
+    <result column="ACCOUNT_NAME" property="accountName" jdbcType="VARCHAR" />
+    <result column="ACCOUNT_TYPE_ID" property="accountTypeId" jdbcType="VARCHAR" />
+    <result column="BANK_ACCOUNT_ID" property="bankAccountId" jdbcType="VARCHAR" />
+    <result column="BANK_ACCOUNT_NAME" property="bankAccountName" jdbcType="VARCHAR" />
+    <result column="STATUS" property="status" jdbcType="VARCHAR" />
+    <result column="AMOUNT1" property="amount1" jdbcType="DECIMAL" />
+    <result column="AMOUNT2" property="amount2" jdbcType="DECIMAL" />
+    <result column="PARENT_ACCOUNT_ID" property="parentAccountId" jdbcType="VARCHAR" />
+    <result column="ORGANIZATION_ID" property="organizationId" jdbcType="VARCHAR" />
+    <result column="BANK_ID" property="bankId" jdbcType="VARCHAR" />
+    <result column="CREATE_DATE" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="LAST_UPDATE_DATE" property="lastUpdateDate" jdbcType="TIMESTAMP" />
+    <result column="CANCEL_DATE" property="cancelDate" jdbcType="TIMESTAMP" />
+    <result column="IMMEDIATELY_SUM" property="immediatelySum" jdbcType="VARCHAR" />
+    <result column="PARTY_MARK_NO" property="partyMarkNo" jdbcType="VARCHAR" />
+    <result column="ENTITY_BY" property="entityBy" jdbcType="VARCHAR" />
+    <result column="MODIFY_BY" property="modifyBy" jdbcType="VARCHAR" />
+    <result column="CANCEL_BY" property="cancelBy" jdbcType="VARCHAR" />
+    <result column="APPROVE_BY" property="approveBy" jdbcType="VARCHAR" />
+    <result column="PURPOSE_TYPE" property="purposeType" jdbcType="VARCHAR" />
+    <result column="CREATE_SERIAL_NO" property="createSerialNo" jdbcType="VARCHAR" />
+    <result column="CANCEL_SERIAL_NO" property="cancelSerialNo" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Query_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_Where_Clause" >
+    <where >
+      <foreach collection="condition.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    INTERNAL_ACCOUNT_ID, ACCOUNT_NAME, ACCOUNT_TYPE_ID, BANK_ACCOUNT_ID, BANK_ACCOUNT_NAME, 
+    STATUS, AMOUNT1, AMOUNT2, PARENT_ACCOUNT_ID, ORGANIZATION_ID, BANK_ID, CREATE_DATE, 
+    LAST_UPDATE_DATE, CANCEL_DATE, IMMEDIATELY_SUM, PARTY_MARK_NO, ENTITY_BY, MODIFY_BY, 
+    CANCEL_BY, APPROVE_BY, PURPOSE_TYPE, CREATE_SERIAL_NO, CANCEL_SERIAL_NO
+  </sql>
+  <select id="selectList" resultMap="BaseResultMap" parameterType="com.smk.pay.dal.condtion.EntityCondition" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from INTERNAL_ACCOUNT
+    <if test="_parameter != null" >
+      <include refid="Query_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from INTERNAL_ACCOUNT
+    where INTERNAL_ACCOUNT_ID = #{internalAccountId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from INTERNAL_ACCOUNT
+    where INTERNAL_ACCOUNT_ID = #{internalAccountId,jdbcType=VARCHAR}
+  </delete>
+  <delete id="delete" parameterType="com.smk.pay.dal.condtion.EntityCondition" >
+    delete from INTERNAL_ACCOUNT
+    <if test="_parameter != null" >
+      <include refid="Query_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.smk.pay.core.entity.InternalAccountEntity" >
+    insert into INTERNAL_ACCOUNT (INTERNAL_ACCOUNT_ID, ACCOUNT_NAME, ACCOUNT_TYPE_ID, 
+      BANK_ACCOUNT_ID, BANK_ACCOUNT_NAME, STATUS, 
+      AMOUNT1, AMOUNT2, PARENT_ACCOUNT_ID, 
+      ORGANIZATION_ID, BANK_ID, CREATE_DATE, 
+      LAST_UPDATE_DATE, CANCEL_DATE, IMMEDIATELY_SUM, 
+      PARTY_MARK_NO, ENTITY_BY, MODIFY_BY, 
+      CANCEL_BY, APPROVE_BY, PURPOSE_TYPE, 
+      CREATE_SERIAL_NO, CANCEL_SERIAL_NO)
+    values (#{internalAccountId,jdbcType=VARCHAR}, #{accountName,jdbcType=VARCHAR}, #{accountTypeId,jdbcType=VARCHAR}, 
+      #{bankAccountId,jdbcType=VARCHAR}, #{bankAccountName,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR}, 
+      #{amount1,jdbcType=DECIMAL}, #{amount2,jdbcType=DECIMAL}, #{parentAccountId,jdbcType=VARCHAR}, 
+      #{organizationId,jdbcType=VARCHAR}, #{bankId,jdbcType=VARCHAR}, #{createDate,jdbcType=TIMESTAMP}, 
+      #{lastUpdateDate,jdbcType=TIMESTAMP}, #{cancelDate,jdbcType=TIMESTAMP}, #{immediatelySum,jdbcType=VARCHAR}, 
+      #{partyMarkNo,jdbcType=VARCHAR}, #{entityBy,jdbcType=VARCHAR}, #{modifyBy,jdbcType=VARCHAR}, 
+      #{cancelBy,jdbcType=VARCHAR}, #{approveBy,jdbcType=VARCHAR}, #{purposeType,jdbcType=VARCHAR}, 
+      #{createSerialNo,jdbcType=VARCHAR}, #{cancelSerialNo,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.smk.pay.core.entity.InternalAccountEntity" >
+    insert into INTERNAL_ACCOUNT
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="internalAccountId != null" >
+        INTERNAL_ACCOUNT_ID,
+      </if>
+      <if test="accountName != null" >
+        ACCOUNT_NAME,
+      </if>
+      <if test="accountTypeId != null" >
+        ACCOUNT_TYPE_ID,
+      </if>
+      <if test="bankAccountId != null" >
+        BANK_ACCOUNT_ID,
+      </if>
+      <if test="bankAccountName != null" >
+        BANK_ACCOUNT_NAME,
+      </if>
+      <if test="status != null" >
+        STATUS,
+      </if>
+      <if test="amount1 != null" >
+        AMOUNT1,
+      </if>
+      <if test="amount2 != null" >
+        AMOUNT2,
+      </if>
+      <if test="parentAccountId != null" >
+        PARENT_ACCOUNT_ID,
+      </if>
+      <if test="organizationId != null" >
+        ORGANIZATION_ID,
+      </if>
+      <if test="bankId != null" >
+        BANK_ID,
+      </if>
+      <if test="createDate != null" >
+        CREATE_DATE,
+      </if>
+      <if test="lastUpdateDate != null" >
+        LAST_UPDATE_DATE,
+      </if>
+      <if test="cancelDate != null" >
+        CANCEL_DATE,
+      </if>
+      <if test="immediatelySum != null" >
+        IMMEDIATELY_SUM,
+      </if>
+      <if test="partyMarkNo != null" >
+        PARTY_MARK_NO,
+      </if>
+      <if test="entityBy != null" >
+        ENTITY_BY,
+      </if>
+      <if test="modifyBy != null" >
+        MODIFY_BY,
+      </if>
+      <if test="cancelBy != null" >
+        CANCEL_BY,
+      </if>
+      <if test="approveBy != null" >
+        APPROVE_BY,
+      </if>
+      <if test="purposeType != null" >
+        PURPOSE_TYPE,
+      </if>
+      <if test="createSerialNo != null" >
+        CREATE_SERIAL_NO,
+      </if>
+      <if test="cancelSerialNo != null" >
+        CANCEL_SERIAL_NO,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="internalAccountId != null" >
+        #{internalAccountId,jdbcType=VARCHAR},
+      </if>
+      <if test="accountName != null" >
+        #{accountName,jdbcType=VARCHAR},
+      </if>
+      <if test="accountTypeId != null" >
+        #{accountTypeId,jdbcType=VARCHAR},
+      </if>
+      <if test="bankAccountId != null" >
+        #{bankAccountId,jdbcType=VARCHAR},
+      </if>
+      <if test="bankAccountName != null" >
+        #{bankAccountName,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="amount1 != null" >
+        #{amount1,jdbcType=DECIMAL},
+      </if>
+      <if test="amount2 != null" >
+        #{amount2,jdbcType=DECIMAL},
+      </if>
+      <if test="parentAccountId != null" >
+        #{parentAccountId,jdbcType=VARCHAR},
+      </if>
+      <if test="organizationId != null" >
+        #{organizationId,jdbcType=VARCHAR},
+      </if>
+      <if test="bankId != null" >
+        #{bankId,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null" >
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastUpdateDate != null" >
+        #{lastUpdateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="cancelDate != null" >
+        #{cancelDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="immediatelySum != null" >
+        #{immediatelySum,jdbcType=VARCHAR},
+      </if>
+      <if test="partyMarkNo != null" >
+        #{partyMarkNo,jdbcType=VARCHAR},
+      </if>
+      <if test="entityBy != null" >
+        #{entityBy,jdbcType=VARCHAR},
+      </if>
+      <if test="modifyBy != null" >
+        #{modifyBy,jdbcType=VARCHAR},
+      </if>
+      <if test="cancelBy != null" >
+        #{cancelBy,jdbcType=VARCHAR},
+      </if>
+      <if test="approveBy != null" >
+        #{approveBy,jdbcType=VARCHAR},
+      </if>
+      <if test="purposeType != null" >
+        #{purposeType,jdbcType=VARCHAR},
+      </if>
+      <if test="createSerialNo != null" >
+        #{createSerialNo,jdbcType=VARCHAR},
+      </if>
+      <if test="cancelSerialNo != null" >
+        #{cancelSerialNo,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="count" parameterType="com.smk.pay.dal.condtion.EntityCondition" resultType="java.lang.Integer" >
+    select count(*) from INTERNAL_ACCOUNT
+    <if test="_parameter != null" >
+      <include refid="Query_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateSelective" parameterType="map" >
+    update INTERNAL_ACCOUNT
+    <set >
+      <if test="record.internalAccountId != null" >
+        INTERNAL_ACCOUNT_ID = #{record.internalAccountId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.accountName != null" >
+        ACCOUNT_NAME = #{record.accountName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.accountTypeId != null" >
+        ACCOUNT_TYPE_ID = #{record.accountTypeId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.bankAccountId != null" >
+        BANK_ACCOUNT_ID = #{record.bankAccountId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.bankAccountName != null" >
+        BANK_ACCOUNT_NAME = #{record.bankAccountName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.status != null" >
+        STATUS = #{record.status,jdbcType=VARCHAR},
+      </if>
+      <if test="record.amount1 != null" >
+        AMOUNT1 = #{record.amount1,jdbcType=DECIMAL},
+      </if>
+      <if test="record.amount2 != null" >
+        AMOUNT2 = #{record.amount2,jdbcType=DECIMAL},
+      </if>
+      <if test="record.parentAccountId != null" >
+        PARENT_ACCOUNT_ID = #{record.parentAccountId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.organizationId != null" >
+        ORGANIZATION_ID = #{record.organizationId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.bankId != null" >
+        BANK_ID = #{record.bankId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createDate != null" >
+        CREATE_DATE = #{record.createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.lastUpdateDate != null" >
+        LAST_UPDATE_DATE = #{record.lastUpdateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.cancelDate != null" >
+        CANCEL_DATE = #{record.cancelDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.immediatelySum != null" >
+        IMMEDIATELY_SUM = #{record.immediatelySum,jdbcType=VARCHAR},
+      </if>
+      <if test="record.partyMarkNo != null" >
+        PARTY_MARK_NO = #{record.partyMarkNo,jdbcType=VARCHAR},
+      </if>
+      <if test="record.entityBy != null" >
+        ENTITY_BY = #{record.entityBy,jdbcType=VARCHAR},
+      </if>
+      <if test="record.modifyBy != null" >
+        MODIFY_BY = #{record.modifyBy,jdbcType=VARCHAR},
+      </if>
+      <if test="record.cancelBy != null" >
+        CANCEL_BY = #{record.cancelBy,jdbcType=VARCHAR},
+      </if>
+      <if test="record.approveBy != null" >
+        APPROVE_BY = #{record.approveBy,jdbcType=VARCHAR},
+      </if>
+      <if test="record.purposeType != null" >
+        PURPOSE_TYPE = #{record.purposeType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createSerialNo != null" >
+        CREATE_SERIAL_NO = #{record.createSerialNo,jdbcType=VARCHAR},
+      </if>
+      <if test="record.cancelSerialNo != null" >
+        CANCEL_SERIAL_NO = #{record.cancelSerialNo,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_Where_Clause" />
+    </if>
+  </update>
+  <update id="update" parameterType="map" >
+    update INTERNAL_ACCOUNT
+    set INTERNAL_ACCOUNT_ID = #{record.internalAccountId,jdbcType=VARCHAR},
+      ACCOUNT_NAME = #{record.accountName,jdbcType=VARCHAR},
+      ACCOUNT_TYPE_ID = #{record.accountTypeId,jdbcType=VARCHAR},
+      BANK_ACCOUNT_ID = #{record.bankAccountId,jdbcType=VARCHAR},
+      BANK_ACCOUNT_NAME = #{record.bankAccountName,jdbcType=VARCHAR},
+      STATUS = #{record.status,jdbcType=VARCHAR},
+      AMOUNT1 = #{record.amount1,jdbcType=DECIMAL},
+      AMOUNT2 = #{record.amount2,jdbcType=DECIMAL},
+      PARENT_ACCOUNT_ID = #{record.parentAccountId,jdbcType=VARCHAR},
+      ORGANIZATION_ID = #{record.organizationId,jdbcType=VARCHAR},
+      BANK_ID = #{record.bankId,jdbcType=VARCHAR},
+      CREATE_DATE = #{record.createDate,jdbcType=TIMESTAMP},
+      LAST_UPDATE_DATE = #{record.lastUpdateDate,jdbcType=TIMESTAMP},
+      CANCEL_DATE = #{record.cancelDate,jdbcType=TIMESTAMP},
+      IMMEDIATELY_SUM = #{record.immediatelySum,jdbcType=VARCHAR},
+      PARTY_MARK_NO = #{record.partyMarkNo,jdbcType=VARCHAR},
+      ENTITY_BY = #{record.entityBy,jdbcType=VARCHAR},
+      MODIFY_BY = #{record.modifyBy,jdbcType=VARCHAR},
+      CANCEL_BY = #{record.cancelBy,jdbcType=VARCHAR},
+      APPROVE_BY = #{record.approveBy,jdbcType=VARCHAR},
+      PURPOSE_TYPE = #{record.purposeType,jdbcType=VARCHAR},
+      CREATE_SERIAL_NO = #{record.createSerialNo,jdbcType=VARCHAR},
+      CANCEL_SERIAL_NO = #{record.cancelSerialNo,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.smk.pay.core.entity.InternalAccountEntity" >
+    update INTERNAL_ACCOUNT
+    <set >
+      <if test="accountName != null" >
+        ACCOUNT_NAME = #{accountName,jdbcType=VARCHAR},
+      </if>
+      <if test="accountTypeId != null" >
+        ACCOUNT_TYPE_ID = #{accountTypeId,jdbcType=VARCHAR},
+      </if>
+      <if test="bankAccountId != null" >
+        BANK_ACCOUNT_ID = #{bankAccountId,jdbcType=VARCHAR},
+      </if>
+      <if test="bankAccountName != null" >
+        BANK_ACCOUNT_NAME = #{bankAccountName,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        STATUS = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="amount1 != null" >
+        AMOUNT1 = #{amount1,jdbcType=DECIMAL},
+      </if>
+      <if test="amount2 != null" >
+        AMOUNT2 = #{amount2,jdbcType=DECIMAL},
+      </if>
+      <if test="parentAccountId != null" >
+        PARENT_ACCOUNT_ID = #{parentAccountId,jdbcType=VARCHAR},
+      </if>
+      <if test="organizationId != null" >
+        ORGANIZATION_ID = #{organizationId,jdbcType=VARCHAR},
+      </if>
+      <if test="bankId != null" >
+        BANK_ID = #{bankId,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null" >
+        CREATE_DATE = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastUpdateDate != null" >
+        LAST_UPDATE_DATE = #{lastUpdateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="cancelDate != null" >
+        CANCEL_DATE = #{cancelDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="immediatelySum != null" >
+        IMMEDIATELY_SUM = #{immediatelySum,jdbcType=VARCHAR},
+      </if>
+      <if test="partyMarkNo != null" >
+        PARTY_MARK_NO = #{partyMarkNo,jdbcType=VARCHAR},
+      </if>
+      <if test="entityBy != null" >
+        ENTITY_BY = #{entityBy,jdbcType=VARCHAR},
+      </if>
+      <if test="modifyBy != null" >
+        MODIFY_BY = #{modifyBy,jdbcType=VARCHAR},
+      </if>
+      <if test="cancelBy != null" >
+        CANCEL_BY = #{cancelBy,jdbcType=VARCHAR},
+      </if>
+      <if test="approveBy != null" >
+        APPROVE_BY = #{approveBy,jdbcType=VARCHAR},
+      </if>
+      <if test="purposeType != null" >
+        PURPOSE_TYPE = #{purposeType,jdbcType=VARCHAR},
+      </if>
+      <if test="createSerialNo != null" >
+        CREATE_SERIAL_NO = #{createSerialNo,jdbcType=VARCHAR},
+      </if>
+      <if test="cancelSerialNo != null" >
+        CANCEL_SERIAL_NO = #{cancelSerialNo,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where INTERNAL_ACCOUNT_ID = #{internalAccountId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.smk.pay.core.entity.InternalAccountEntity" >
+    update INTERNAL_ACCOUNT
+    set ACCOUNT_NAME = #{accountName,jdbcType=VARCHAR},
+      ACCOUNT_TYPE_ID = #{accountTypeId,jdbcType=VARCHAR},
+      BANK_ACCOUNT_ID = #{bankAccountId,jdbcType=VARCHAR},
+      BANK_ACCOUNT_NAME = #{bankAccountName,jdbcType=VARCHAR},
+      STATUS = #{status,jdbcType=VARCHAR},
+      AMOUNT1 = #{amount1,jdbcType=DECIMAL},
+      AMOUNT2 = #{amount2,jdbcType=DECIMAL},
+      PARENT_ACCOUNT_ID = #{parentAccountId,jdbcType=VARCHAR},
+      ORGANIZATION_ID = #{organizationId,jdbcType=VARCHAR},
+      BANK_ID = #{bankId,jdbcType=VARCHAR},
+      CREATE_DATE = #{createDate,jdbcType=TIMESTAMP},
+      LAST_UPDATE_DATE = #{lastUpdateDate,jdbcType=TIMESTAMP},
+      CANCEL_DATE = #{cancelDate,jdbcType=TIMESTAMP},
+      IMMEDIATELY_SUM = #{immediatelySum,jdbcType=VARCHAR},
+      PARTY_MARK_NO = #{partyMarkNo,jdbcType=VARCHAR},
+      ENTITY_BY = #{entityBy,jdbcType=VARCHAR},
+      MODIFY_BY = #{modifyBy,jdbcType=VARCHAR},
+      CANCEL_BY = #{cancelBy,jdbcType=VARCHAR},
+      APPROVE_BY = #{approveBy,jdbcType=VARCHAR},
+      PURPOSE_TYPE = #{purposeType,jdbcType=VARCHAR},
+      CREATE_SERIAL_NO = #{createSerialNo,jdbcType=VARCHAR},
+      CANCEL_SERIAL_NO = #{cancelSerialNo,jdbcType=VARCHAR}
+    where INTERNAL_ACCOUNT_ID = #{internalAccountId,jdbcType=VARCHAR}
+  </update>
+</mapper>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.smk.pay.core.mapper.UserMappingEntityMapper">
+    <resultMap id="BaseResultMap" type="com.smk.pay.core.entity.UserMappingEntity">
+        <id column="PK_ID" property="pkId" jdbcType="DECIMAL"/>
+        <result column="USER_ID" property="userId" jdbcType="VARCHAR"/>
+        <result column="USER_NAME" property="userName" jdbcType="VARCHAR"/>
+        <result column="ID_NO" property="idNo" jdbcType="VARCHAR"/>
+        <result column="CUST_ID" property="custId" jdbcType="VARCHAR"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        PK_ID, USER_ID, USER_NAME, ID_NO, CUST_ID
+    </sql>
+    <select id="getByCustId" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM USER_MAPPING WHERE CUST_ID = #{0}
+    </select>
+    <update id="updateByIdNo">
+        UPDATE USER_MAPPING SET CUST_ID = #{0}, USER_NAME = #{1} WHERE ID_NO = #{2}
+    </update>
+
+    <insert id="insertSelective" parameterType="com.smk.pay.core.entity.UserMappingEntity">
+        <selectKey keyProperty="pkId" resultType="long" order="BEFORE">SELECT
+            SEQ_USER_MAPPING.NEXTVAL FROM DUAL
+        </selectKey>
+        insert into USER_MAPPING
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="pkId != null">
+                PK_ID,
+            </if>
+            <if test="userId != null">
+                USER_ID,
+            </if>
+            <if test="userName != null">
+                USER_NAME,
+            </if>
+            <if test="idNo != null">
+                ID_NO,
+            </if>
+            <if test="custId != null">
+                CUST_ID,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="pkId != null">
+                #{pkId,jdbcType=DECIMAL},
+            </if>
+            <if test="userId != null">
+                #{userId,jdbcType=VARCHAR},
+            </if>
+            <if test="userName != null">
+                #{userName,jdbcType=VARCHAR},
+            </if>
+            <if test="idNo != null">
+                #{idNo,jdbcType=VARCHAR},
+            </if>
+            <if test="custId != null">
+                #{custId,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+</mapper>

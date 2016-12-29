@@ -1,0 +1,22 @@
+package com.smk.pay.core.manager.atom.impl;
+
+import com.smk.pay.core.dto.AccountInfoDto;
+import com.smk.pay.core.manager.atom.IReverse;
+
+import java.math.BigDecimal;
+
+/**
+ * 账户退款冲正
+ *
+ * Project plouto
+ * Created by chuanzhi.macz
+ * Date 2016/12/14 16:05
+ */
+public class Reverse4Refund implements IReverse {
+
+    @Override
+    public void reverse(AccountInfoDto accountInfoDto, String transDetailSeq, String originalSeq, String originalDate,
+                        String originalTime, String sequence, String accDate, BigDecimal... amounts) {
+        // TODO
+    }
+}

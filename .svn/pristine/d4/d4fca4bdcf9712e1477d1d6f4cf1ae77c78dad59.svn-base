@@ -1,0 +1,72 @@
+package com.smk.pay.core.manager.impl;
+
+import com.smk.pay.account.core.enums.AccountChannelEnum;
+import com.smk.pay.account.core.enums.AccountLevelEnum;
+import com.smk.pay.account.core.request.MigrateAccountRequest;
+import com.smk.pay.account.core.request.OpenAccountRequest;
+import com.smk.pay.account.core.request.RequestHeader;
+import com.smk.pay.core.manager.IAccountMngManager;
+import com.smk.pay.core.mapper.AccountInfoEntityMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Project plouto
+ * Created by chuanzhi.macz
+ * Date 2016/10/31 9:44
+ */
+public abstract class AbstractAccountMngManager implements IAccountMngManager {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractAccountMngManager.class);
+
+
+
+
+    public Map<Boolean, String> openAccount(OpenAccountRequest openAccountRequest
+    ) {
+        return null;
+    }
+
+    public String alterAccountLevel(String value, AccountLevelEnum levelEnum
+    ) {
+        return null;
+    }
+
+    public String closeAccount(String value) {
+        return null;
+    }
+
+    protected abstract Map<Boolean, List<String>> checkStatus(String value, List<String>
+            invalidStatus,
+                                                              List<String> validStatus);
+
+    /**
+     * migrate account
+     *
+     * @param header
+     * @param channelEnum
+     * @param merchantId
+     * @param accountRequest
+     */
+    public void migrateAccount(RequestHeader header, AccountChannelEnum channelEnum,
+                               String merchantId, MigrateAccountRequest accountRequest) {
+
+    }
+
+    /**
+     * bind account
+     *
+     * @param header
+     * @param userId
+     * @param cardNo
+     * @param merchantId
+     * @param channelEnum
+     */
+    public void bindAccount(RequestHeader header, String userId, String cardNo, String merchantId, AccountChannelEnum channelEnum) {
+
+    }
+}

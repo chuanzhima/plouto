@@ -1,0 +1,90 @@
+package com.smk.pay.core.validator.base;
+
+import com.smk.pay.account.core.enums.AccountLevelEnum;
+import com.smk.pay.core.constant.AccountBizConstant;
+import com.smk.pay.core.dto.TransDetailDto;
+import com.smk.pay.core.entity.LimitsEntity;
+import com.smk.pay.core.enums.AccountTransTypeEnum;
+import com.smk.pay.core.exception.DBException;
+import com.smk.pay.core.manager.base.ITransDetailManager;
+import com.smk.pay.core.mapper.LimitsEntityMapper;
+import com.smk.pay.core.utils.DateUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.Date;
+
+/**
+ * Project plouto
+ * Created by chuanzhi.macz
+ * Date 2016/11/15 11:44
+ */
+@Component(value = "transValidator")
+public class TransValidator {
+
+    @Autowired
+    private ITransDetailManager transDetailManager;
+    @Autowired
+    private LimitsEntityMapper limitsEntityMapper;
+
+    public Boolean isRepeatTrans(String... params) {
+        try {
+            return transDetailManager.isRepeatTrans(params);
+        } catch (Exception e) {
+            throw new DBException(e);
+        }
+    }
+
+    /**
+     * 查询原交易是否存在
+     *
+     * @param originalSeq
+     * @param originalDate
+     * @param originalTime
+     * @return
+     */
+    public TransDetailDto isExistOriginalTrans(String originalSeq, String originalDate, String originalTime) {
+        TransDetailDto transDetailDto = transDetailManager.queryTransDetail(originalSeq, originalDate, originalTime);
+        return transDetailDto;
+    }
+
+    public Boolean limits(String accountId, AccountLevelEnum levelEnum, BigDecimal amount) {
+
+        LimitsEntity entity = limitsEntityMapper.selectOne();
+        BigDecimal firstLevelLimit = entity.getYlzhLimit();
+        BigDecimal secondLevelLimit = entity.getElzhLimit();
+        BigDecimal thirdLevelLimit = entity.getSlzhLimit();
+        String totalType = entity.getTotalType();
+
+        Date toDate = new Date();
+        Date fromDate;
+        if (AccountBizConstant.LIMITS_TOTAL_TYPE_1.equals(totalType)) {
+            fromDate = DateUtil.thisYear();
+        } else {
+            fromDate = DateUtil.addMonth(toDate, -12);
+        }
+        if (AccountLevelEnum.FIRST == levelEnum) {
+            fromDate = toDate = null;
+        }
+        TransDetailDto transDetailDto = transDetailManager.querySumAccount(Arrays.asList
+                        (AccountTransTypeEnum.CONSUME.key(), AccountTransTypeEnum.WITHDRAW.key(),
+                                AccountTransTypeEnum
+                                        .PRIVATE_2_PUBLIC_TRANSFER.key()), accountId, fromDate, toDate,
+                AccountBizConstant.TRANS_DETAIL_STATUS_1);
+        BigDecimal hisAmount = transDetailDto.getAmount1().add(transDetailDto.getAmount2()).add
+                (transDetailDto.getAmount3()).add(transDetailDto.getAmount4()).add(transDetailDto
+                .getAmount5()).add(transDetailDto.getAmount6());
+
+        if (AccountLevelEnum.FIRST == levelEnum && hisAmount.add(amount).compareTo(firstLevelLimit) > 0) {
+            return Boolean.FALSE;
+        } else if (AccountLevelEnum.SECOND == levelEnum && hisAmount.add(amount).compareTo(secondLevelLimit) > 0) {
+            return Boolean.FALSE;
+        } else if (AccountLevelEnum.THIRD == levelEnum && hisAmount.add(amount).compareTo(thirdLevelLimit) > 0) {
+            return Boolean.FALSE;
+        }
+        return Boolean.TRUE;
+    }
+
+}

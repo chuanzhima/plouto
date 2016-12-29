@@ -1,0 +1,62 @@
+package com.smk.pay.core.aspect;
+
+import com.alibaba.fastjson.JSONObject;
+import com.smk.pay.core.annotations.DubboServiceLog;
+import com.smk.pay.core.utils.StringUtil;
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.Around;
+import org.aspectj.lang.annotation.Aspect;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
+
+import java.lang.reflect.Array;
+
+/**
+ * Project plouto
+ * Created by chuanzhi.macz
+ * Date 2016/11/24 11:07
+ */
+@Aspect
+@Component
+public class DubboServiceLogAspect {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(DubboServiceLog.class);
+
+    @Around("@annotation(com.smk.pay.core.annotations.DubboServiceLog)")
+    public Object around(ProceedingJoinPoint joinPoint) throws Throwable {
+
+        try {
+            String methodName = joinPoint.getSignature().getName();
+            Object[] args = joinPoint.getArgs();
+
+            StringBuffer argsBuffer = new StringBuffer("params is : ");
+            if (null != args && args.length > 0) {
+                for (int i = 0; i < args.length; i++) {
+                    argsBuffer.append("args[").append(i + 1).append("] = ").append(toJsonStr(args[i])).append(",");
+                }
+            } else {
+                argsBuffer.append("empty");
+            }
+
+            LOGGER.info(methodName + ": " + argsBuffer.toString());
+            Object retVal = joinPoint.proceed();
+            LOGGER.info(methodName + ": " + "result is : " + toJsonStr(retVal));
+
+            return retVal;
+        } catch (Throwable throwable) {
+            Object retVal = joinPoint.proceed();
+            return retVal;
+        }
+    }
+
+    // Object 2 json string
+    private String toJsonStr(Object object) {
+        if (object == null)
+            return StringUtil.EMPTY;
+        if (object instanceof Object || object instanceof Array)
+            return JSONObject.toJSONString(object);
+        else
+            return object.toString();
+    }
+}

@@ -1,0 +1,93 @@
+package com.smk.pay.core.manager.base;
+
+import com.smk.pay.core.dto.AccountInfoDto;
+
+/**
+ * Project plouto
+ * Created by chuanzhi.macz
+ * Date 2016/11/25 14:14
+ */
+public interface IAccountInfoManager<T> {
+
+    /**
+     * 添加账户
+     *
+     * @param t
+     * @return
+     */
+    String addAccount(T t);
+    /**
+     * 更新账户状态
+     *
+     * @param accountId
+     * @param oldStatus
+     * @param newStatus
+     * @return
+     */
+    int updateAccountStatus(String accountId, String oldStatus, String newStatus);
+
+
+    /**
+     * 更新账户级别
+     *
+     * @param accountId
+     * @param oldLevel
+     * @param newLevel
+     * @return
+     */
+    int updateAccountLevel(String accountId, String oldLevel, String newLevel);
+
+    /**
+     * 更新金额
+     *
+     * @param accountId
+     * @param oldAmount
+     * @param newAmount
+     * @return
+     */
+    int updateAccountAmount(String accountId, T oldAmount, T newAmount);
+
+    /**
+     * 更新状态和金额
+     *
+     * @param accountId
+     * @param newStatus
+     * @param newAmount
+     * @return
+     */
+    int updateAccountAmountAndStatus(String accountId, String newStatus, T newAmount);
+
+    /**
+     * 更新关联用户
+     *
+     * @param accountId
+     * @param newUserId
+     * @return
+     */
+    int updateUserId(String accountId, String newUserId);
+
+
+    /**
+     * 查询主账户信息
+     *
+     * @param userId
+     * @return
+     */
+    AccountInfoDto queryMainAccountByUserId(String userId);
+
+    /**
+     * 根据账户id查询账户信息
+     *
+     * @param accountId
+     * @return
+     */
+    AccountInfoDto queryAccountById(String accountId);
+
+    /**
+     * 根据卡号查询账户信息
+     *
+     * @param cardNo
+     * @return
+     */
+    AccountInfoDto queryCardAccountByCardNo(String cardNo);
+}

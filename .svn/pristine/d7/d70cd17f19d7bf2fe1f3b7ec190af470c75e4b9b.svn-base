@@ -1,0 +1,49 @@
+package com.smk.pay.core.manager.impl;
+
+import com.smk.pay.account.core.enums.AccountChannelEnum;
+import com.smk.pay.account.core.enums.AccountFundFlowEnum;
+import com.smk.pay.account.core.request.RequestHeader;
+import com.smk.pay.account.core.response.RpcResponse;
+import com.smk.pay.core.atom.IRecharge;
+import com.smk.pay.core.factory.RechargeFactory;
+import com.smk.pay.core.manager.IAccountCommonManager;
+import com.smk.pay.core.utils.PropertiesUtil;
+import com.smk.pay.core.validator.RechargeValidator;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.math.BigDecimal;
+import java.util.Map;
+
+/**
+ * Project plouto
+ * Created by chuanzhi.macz
+ * Date 2016/11/8 14:08
+ */
+public abstract class AbstractAccountCommonManager implements IAccountCommonManager {
+
+    @Autowired
+    private RechargeFactory rechargeFactory;
+
+    @Autowired
+    private RechargeValidator rechargeValidator;
+
+    public RpcResponse<String> recharge(RequestHeader header, AccountChannelEnum channelEnum,
+                                        String merchantId, String typeValue,
+                                        AccountFundFlowEnum fundFlowEnum, BigDecimal amount,
+                                        String bankId, String companyId) {
+        RpcResponse<String> response;
+        // 业务校验
+        Map<Boolean, String> check = rechargeValidator.validate();
+        if (check.containsKey(Boolean.FALSE)) {
+            response = new RpcResponse<String>(Boolean.FALSE, check.get(Boolean.FALSE),
+                    PropertiesUtil.LOCALE_PROPERTIES_Map.get(check.get(Boolean.FALSE)));
+            return response;
+        }
+        String accountId = check.get(Boolean.TRUE);
+        // 根据具体方式充值
+        IRecharge recharge = rechargeFactory.getRechargeBean(fundFlowEnum);
+//        recharge.recharge(accountId);
+        response = new RpcResponse<String>(Boolean.TRUE);
+        return response;
+    }
+}

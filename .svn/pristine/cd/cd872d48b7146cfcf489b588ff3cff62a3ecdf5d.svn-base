@@ -1,0 +1,86 @@
+package com.smk.pay.core.validator;
+
+import com.smk.pay.account.core.enums.AccountChannelEnum;
+import com.smk.pay.account.core.enums.AccountInfoStatusEnum;
+import com.smk.pay.account.core.request.RequestHeader;
+import com.smk.pay.core.constant.ResultCodeConstant;
+import com.smk.pay.core.enums.AccountTransTypeEnum;
+import com.smk.pay.core.manager.atom.IRecharge;
+import com.smk.pay.core.validator.base.AccountValidator;
+import com.smk.pay.core.validator.base.TransValidator;
+import com.smk.pay.core.validator.base.UserValidator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Project plouto
+ * Created by chuanzhi.macz
+ * Date 2016/11/11 11:21
+ */
+@Component(value = "rechargeValidator")
+public class RechargeValidator {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(RechargeValidator.class);
+    @Autowired
+    private UserValidator userValidator;
+    @Autowired
+    private AccountValidator accountValidator;
+    @Autowired
+    private TransValidator transValidator;
+
+    public Map<Boolean, String> validate(RequestHeader header, AccountChannelEnum channelEnum,
+                                         String type, String typeValue) {
+
+        Map<Boolean, String> validateMap = new HashMap<Boolean, String>() {{
+            put(Boolean.TRUE, ResultCodeConstant.SUCCESS);
+        }};
+        /**
+         * 1、流水号是否重复
+         * 2、用户及状态，账户及状态
+         * 3、互联网充值额度限制
+         */
+        if (IRecharge.SOURCE_TYPE_USER_ID.equals(type)) {
+
+            Boolean isRepeat = transValidator.isRepeatTrans(header.getReqSeq(), header.getTxDate
+                    (), header.getTxTime(), AccountTransTypeEnum.RECHARGE.key(), AccountInfoStatusEnum
+                    .NORMAL.value());
+            if (isRepeat) {
+                LOGGER.warn("validate result: sequence-no repeat,no=" + header.getReqSeq());
+                return new HashMap<Boolean, String>() {{
+                    put(Boolean.FALSE, ResultCodeConstant.REPEAT_TRANS_SEQUENCE_NO);
+                }};
+            }
+            if (!userValidator.isUserExistOrNormal(typeValue)) {
+                LOGGER.warn("validate result: user not exist or not normal! userId=" + typeValue);
+                return new HashMap<Boolean, String>() {{
+                    put(Boolean.FALSE, ResultCodeConstant.USER_INVALID);
+                }};
+            }
+            Map<Boolean, List<String>> accountMap = accountValidator.isValidAccount(typeValue,
+                    null, Arrays.asList(AccountInfoStatusEnum.NORMAL.value()));
+            if (accountMap.containsKey(Boolean.FALSE)) {
+                return new HashMap<Boolean, String>() {{
+                    put(Boolean.FALSE, ResultCodeConstant.ACCOUNT_STATUS_INVALID);
+                }};
+            }
+            // TODO 互联网充值额度限制
+        } else if (IRecharge.SOURCE_TYPE_CARD.equals(type)) {
+            // TODO 卡充值
+        } else if (IRecharge.SOURCE_TYPE_IDENTITY_ID.equals(type)) {
+            // TODO 用身份证号对卡充值
+        } else {
+            return new HashMap<Boolean, String>() {{
+                put(Boolean.FALSE, ResultCodeConstant.INVALID_RECHARGE_TYPE);
+            }};
+        }
+
+        return validateMap;
+    }
+}

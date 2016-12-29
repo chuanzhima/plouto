@@ -1,0 +1,91 @@
+package com.smk.pay.core.entity;
+
+import java.util.Date;
+
+public class AccountTaskInfoEntity extends BaseEntity {
+
+    private String status;
+
+    private String type;
+
+    private String accountId;
+
+    private String property;
+
+    private String id;
+
+    private String source;
+
+    public AccountTaskInfoEntity() {
+        super();
+    }
+
+    public AccountTaskInfoEntity(String modifier, Date gmtModified, String status, String
+            property, String id) {
+        super(modifier, gmtModified);
+        this.status = status;
+        this.property = property;
+        this.id = id;
+    }
+
+
+    public AccountTaskInfoEntity(String creator, Date gmtCreate, String modifier,
+                                 Date gmtModified, String isDeleted, String status, String type,
+                                 String accountId, String property, String id, String source) {
+        super(creator, gmtCreate, modifier, gmtModified, isDeleted);
+        this.status = status;
+        this.type = type;
+        this.accountId = accountId;
+        this.property = property;
+        this.id = id;
+        this.source = source;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status == null ? null : status.trim();
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type == null ? null : type.trim();
+    }
+
+    public String getAccountId() {
+        return accountId;
+    }
+
+    public void setAccountId(String accountId) {
+        this.accountId = accountId == null ? null : accountId.trim();
+    }
+
+    public String getProperty() {
+        return property;
+    }
+
+    public void setProperty(String property) {
+        this.property = property == null ? null : property.trim();
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id == null ? null : id.trim();
+    }
+
+    public String getSource() {
+        return source;
+    }
+
+    public void setSource(String source) {
+        this.source = source;
+    }
+}

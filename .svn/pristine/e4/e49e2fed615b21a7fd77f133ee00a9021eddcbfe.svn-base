@@ -1,0 +1,270 @@
+package com.smk.pay.core.api;
+
+import com.smk.pay.account.core.enums.AccountInvokerEnum;
+import com.smk.pay.account.core.enums.AccountLevelEnum;
+import com.smk.pay.account.core.enums.AccountTypeEnum;
+import com.smk.pay.account.core.request.OpenAccountRequest;
+import com.smk.pay.account.core.response.RpcResponse;
+import com.smk.pay.account.core.service.IAccountMngService;
+import com.smk.pay.core.constant.ResultCodeConstant;
+import com.smk.pay.core.manager.IAccountMngManager;
+import com.smk.pay.core.utils.PropertiesUtil;
+import com.smk.pay.core.utils.StringUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+
+import java.util.Date;
+import java.util.Map;
+
+/**
+ * Project plouto
+ * Created by chuanzhi.macz
+ * Date 2016/10/24 9:57
+ */
+@Service(value = "accountMngService")
+public class AccountMngService implements IAccountMngService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(AccountMngService.class);
+
+    @Autowired
+    @Qualifier("accountOnlineMngManager")
+    private IAccountMngManager accountOnlineMngManager;
+
+    public RpcResponse<String> freeze(String value, Date fromDate, Date toDate,
+                                      AccountTypeEnum typeEnum, AccountInvokerEnum invokerEnum, final String operator) {
+
+        RpcResponse<String> rpcResponse = new RpcResponse<String>(Boolean.FALSE);
+        if (StringUtils.isEmpty(value) || typeEnum == null || invokerEnum == null) {
+            rpcResponse = new RpcResponse<String>(Boolean.FALSE, ResultCodeConstant
+                    .PARAMETER_INVALID, PropertiesUtil.LOCALE_PROPERTIES_Map.get(ResultCodeConstant
+                    .PARAMETER_INVALID));
+            return rpcResponse;
+        }
+        // 如果没有设开始时间，默认开始时间为当前时间
+        if (null == fromDate)
+            fromDate = new Date();
+        if (typeEnum == AccountTypeEnum.ONLINE) {
+            String resultCode = accountOnlineMngManager.freeze(value, fromDate, toDate,
+                    invokerEnum, operator);
+            rpcResponse = new RpcResponse<String>(ResultCodeConstant.SUCCESS.equals(resultCode) ?
+                    Boolean.TRUE : Boolean.FALSE, resultCode, PropertiesUtil.LOCALE_PROPERTIES_Map
+                    .get(resultCode));
+        }
+
+        return rpcResponse;
+    }
+
+    public RpcResponse<String> unfreeze(String value, AccountTypeEnum typeEnum, AccountInvokerEnum invokerEnum, final String operator) {
+
+        RpcResponse<String> rpcResponse = new RpcResponse<String>(Boolean.FALSE);
+        if (StringUtils.isEmpty(value) || typeEnum == null || invokerEnum == null) {
+            rpcResponse = new RpcResponse<String>(Boolean.FALSE, ResultCodeConstant
+                    .PARAMETER_INVALID, PropertiesUtil.LOCALE_PROPERTIES_Map.get(ResultCodeConstant
+                    .PARAMETER_INVALID));
+            return rpcResponse;
+        }
+
+        if (typeEnum == AccountTypeEnum.ONLINE) {
+            String resultCode = accountOnlineMngManager.unfreeze(value, invokerEnum, operator);
+            rpcResponse = new RpcResponse<String>(ResultCodeConstant.SUCCESS.equals(resultCode) ?
+                    Boolean.TRUE : Boolean.FALSE, resultCode, PropertiesUtil.LOCALE_PROPERTIES_Map
+                    .get(resultCode));
+        }
+        return rpcResponse;
+    }
+
+    public RpcResponse<String> freezeProlong(String value, Date toDate, AccountTypeEnum typeEnum,
+                                             AccountInvokerEnum invokerEnum, final String operator) {
+        RpcResponse<String> rpcResponse = new RpcResponse<String>(Boolean.FALSE);
+        if (StringUtils.isEmpty(value) || typeEnum == null || invokerEnum == null) {
+            rpcResponse = new RpcResponse<String>(Boolean.FALSE, ResultCodeConstant
+                    .PARAMETER_INVALID, PropertiesUtil.LOCALE_PROPERTIES_Map.get(ResultCodeConstant
+                    .PARAMETER_INVALID));
+            return rpcResponse;
+        }
+        if (typeEnum == AccountTypeEnum.ONLINE) {
+
+            String resultCode = accountOnlineMngManager.freezeProlong(value, toDate, invokerEnum,operator);
+            rpcResponse = new RpcResponse<String>(ResultCodeConstant.SUCCESS.equals(resultCode) ?
+                    Boolean.TRUE : Boolean.FALSE, resultCode, PropertiesUtil.LOCALE_PROPERTIES_Map
+                    .get(resultCode));
+        }
+        return rpcResponse;
+    }
+
+    public RpcResponse<String> stopPayment(String value, Date fromDate, Date toDate,
+                                           AccountTypeEnum typeEnum, AccountInvokerEnum invokerEnum, final String operator) {
+        RpcResponse<String> rpcResponse = new RpcResponse<String>(Boolean.FALSE);
+        if (StringUtils.isEmpty(value) || typeEnum == null || invokerEnum == null) {
+            rpcResponse = new RpcResponse<String>(Boolean.FALSE, ResultCodeConstant
+                    .PARAMETER_INVALID, PropertiesUtil.LOCALE_PROPERTIES_Map.get(ResultCodeConstant
+                    .PARAMETER_INVALID));
+            return rpcResponse;
+        }
+        // 如果没有设开始时间，默认开始时间为当前时间
+        if (null == fromDate)
+            fromDate = new Date();
+        if (typeEnum == AccountTypeEnum.ONLINE) {
+            String resultCode = accountOnlineMngManager.stopPayment(value, fromDate, toDate,
+                    invokerEnum,operator);
+            rpcResponse = new RpcResponse<String>(ResultCodeConstant.SUCCESS.equals(resultCode) ?
+                    Boolean.TRUE : Boolean.FALSE, resultCode, PropertiesUtil.LOCALE_PROPERTIES_Map
+                    .get(resultCode));
+        }
+        return rpcResponse;
+    }
+
+    public RpcResponse<String> closeStopPayment(String value, AccountTypeEnum typeEnum, AccountInvokerEnum invokerEnum, final String operator) {
+
+        RpcResponse<String> rpcResponse = new RpcResponse<String>(Boolean.FALSE);
+        if (StringUtils.isEmpty(value) || typeEnum == null || invokerEnum == null) {
+            rpcResponse = new RpcResponse<String>(Boolean.FALSE, ResultCodeConstant
+                    .PARAMETER_INVALID, PropertiesUtil.LOCALE_PROPERTIES_Map.get(ResultCodeConstant
+                    .PARAMETER_INVALID));
+            return rpcResponse;
+        }
+        if (typeEnum == AccountTypeEnum.ONLINE) {
+            String resultCode = accountOnlineMngManager.closeStopPayment(value, invokerEnum,
+                    operator);
+            rpcResponse = new RpcResponse<String>(ResultCodeConstant.SUCCESS.equals(resultCode) ?
+                    Boolean.TRUE : Boolean.FALSE, resultCode, PropertiesUtil.LOCALE_PROPERTIES_Map
+                    .get(resultCode));
+        }
+        return rpcResponse;
+    }
+
+    public RpcResponse<String> stopPaymentProlong(String value, Date toDate, AccountTypeEnum typeEnum, AccountInvokerEnum invokerEnum, final String operator) {
+
+        RpcResponse<String> rpcResponse = new RpcResponse<String>(Boolean.FALSE);
+        if (StringUtils.isEmpty(value) || typeEnum == null || invokerEnum == null) {
+            rpcResponse = new RpcResponse<String>(Boolean.FALSE, ResultCodeConstant
+                    .PARAMETER_INVALID, PropertiesUtil.LOCALE_PROPERTIES_Map.get(ResultCodeConstant
+                    .PARAMETER_INVALID));
+            return rpcResponse;
+        }
+        if (typeEnum == AccountTypeEnum.ONLINE) {
+            String resultCode = accountOnlineMngManager.stopPaymentProlong(value, toDate,
+                    invokerEnum,operator);
+            rpcResponse = new RpcResponse<String>(ResultCodeConstant.SUCCESS.equals(resultCode) ?
+                    Boolean.TRUE : Boolean.FALSE, resultCode, PropertiesUtil.LOCALE_PROPERTIES_Map
+                    .get(resultCode));
+        }
+        return rpcResponse;
+    }
+
+    public RpcResponse<String> suspend(String value, Date fromDate, Date toDate, AccountTypeEnum typeEnum, AccountInvokerEnum invokerEnum, final String operator) {
+
+        RpcResponse<String> rpcResponse = new RpcResponse<String>(Boolean.FALSE);
+        if (StringUtils.isEmpty(value) || typeEnum == null || invokerEnum == null) {
+            rpcResponse = new RpcResponse<String>(Boolean.FALSE, ResultCodeConstant
+                    .PARAMETER_INVALID, PropertiesUtil.LOCALE_PROPERTIES_Map.get(ResultCodeConstant
+                    .PARAMETER_INVALID));
+            return rpcResponse;
+        }
+        // 如果没有设开始时间，默认开始时间为当前时间
+        if (null == fromDate)
+            fromDate = new Date();
+        if (typeEnum == AccountTypeEnum.ONLINE) {
+            String resultCode = accountOnlineMngManager.suspend(value, fromDate, toDate,
+                    invokerEnum,operator);
+            rpcResponse = new RpcResponse<String>(ResultCodeConstant.SUCCESS.equals(resultCode) ?
+                    Boolean.TRUE : Boolean.FALSE, resultCode, PropertiesUtil.LOCALE_PROPERTIES_Map
+                    .get(resultCode));
+        }
+        return rpcResponse;
+    }
+
+    public RpcResponse<String> closeSuspend(String value, AccountTypeEnum typeEnum, AccountInvokerEnum invokerEnum, final String operator) {
+
+        RpcResponse<String> rpcResponse = new RpcResponse<String>(Boolean.FALSE);
+        if (StringUtils.isEmpty(value) || typeEnum == null || invokerEnum == null) {
+            rpcResponse = new RpcResponse<String>(Boolean.FALSE, ResultCodeConstant
+                    .PARAMETER_INVALID, PropertiesUtil.LOCALE_PROPERTIES_Map.get(ResultCodeConstant
+                    .PARAMETER_INVALID));
+            return rpcResponse;
+        }
+        if (typeEnum == AccountTypeEnum.ONLINE) {
+            String resultCode = accountOnlineMngManager.closeSuspend(value, invokerEnum,operator);
+            rpcResponse = new RpcResponse<String>(ResultCodeConstant.SUCCESS.equals(resultCode) ?
+                    Boolean.TRUE : Boolean.FALSE, resultCode, PropertiesUtil.LOCALE_PROPERTIES_Map
+                    .get(resultCode));
+        }
+        return rpcResponse;
+    }
+
+    public RpcResponse<String> suspendProlong(String value, Date toDate, AccountTypeEnum typeEnum, AccountInvokerEnum invokerEnum, final String operator) {
+
+        RpcResponse<String> rpcResponse = new RpcResponse<String>(Boolean.FALSE);
+        if (StringUtils.isEmpty(value) || typeEnum == null || invokerEnum == null) {
+            rpcResponse = new RpcResponse<String>(Boolean.FALSE, ResultCodeConstant
+                    .PARAMETER_INVALID, PropertiesUtil.LOCALE_PROPERTIES_Map.get(ResultCodeConstant
+                    .PARAMETER_INVALID));
+            return rpcResponse;
+        }
+        if (typeEnum == AccountTypeEnum.ONLINE) {
+            String resultCode = accountOnlineMngManager.suspendProlong(value, toDate, invokerEnum,operator);
+            rpcResponse = new RpcResponse<String>(ResultCodeConstant.SUCCESS.equals(resultCode) ?
+                    Boolean.TRUE : Boolean.FALSE, resultCode, PropertiesUtil.LOCALE_PROPERTIES_Map
+                    .get(resultCode));
+        }
+        return rpcResponse;
+    }
+
+    public RpcResponse<String> openAccount(OpenAccountRequest openAccountRequest,
+                                           AccountTypeEnum typeEnum, AccountInvokerEnum invokerEnum) {
+        RpcResponse<String> rpcResponse = new RpcResponse<String>(Boolean.FALSE);
+        // 当个人开户时，个人开户信息不能为空，当商户开户时，商户信息不能为空
+        if (openAccountRequest == null || typeEnum == null || invokerEnum == null ||
+                (openAccountRequest.getUserCls().equals(OpenAccountRequest.OPEN_ACCOUNT_PERSONAL)
+                 && (StringUtil.isEmpty(openAccountRequest.getCustCredentialNo(),
+                        openAccountRequest.getCustCredentialType(), openAccountRequest.getCustId
+                                (),openAccountRequest.getCustName()))) || (openAccountRequest
+                .getUserCls().equals(OpenAccountRequest.OPEN_ACCOUNT_MERCHANT) && (StringUtil
+                .isEmpty(openAccountRequest.getMerchantNo(), openAccountRequest.getCustName()))
+        )) {
+            rpcResponse = new RpcResponse<String>(Boolean.FALSE, ResultCodeConstant
+                    .PARAMETER_INVALID, PropertiesUtil.LOCALE_PROPERTIES_Map.get(ResultCodeConstant
+                    .PARAMETER_INVALID));
+            return rpcResponse;
+        }
+        if (typeEnum == AccountTypeEnum.ONLINE) {
+            Map<Boolean, String> resultMap = accountOnlineMngManager.openAccount(openAccountRequest, invokerEnum);
+            if (resultMap.containsKey(Boolean.FALSE)) {
+                rpcResponse = new RpcResponse<String>(Boolean.FALSE, resultMap.get(Boolean.FALSE),
+                        PropertiesUtil.LOCALE_PROPERTIES_Map.get(resultMap.get(Boolean.FALSE)));
+            } else {
+                rpcResponse = new RpcResponse<String>(resultMap.get(Boolean.TRUE), Boolean.TRUE);
+            }
+        }
+        return rpcResponse;
+    }
+
+
+    public RpcResponse<String> alterAccountLevel(String value, AccountLevelEnum levelEnum,
+                                                 AccountTypeEnum typeEnum, AccountInvokerEnum invokerEnum) {
+        RpcResponse<String> rpcResponse = new RpcResponse<String>(Boolean.FALSE);
+        if (StringUtil.isEmpty(value) || typeEnum == null || invokerEnum == null) {
+            rpcResponse = new RpcResponse<String>(Boolean.FALSE, ResultCodeConstant
+                    .PARAMETER_INVALID, PropertiesUtil.LOCALE_PROPERTIES_Map.get(ResultCodeConstant
+                    .PARAMETER_INVALID));
+            return rpcResponse;
+        }
+        if (typeEnum == AccountTypeEnum.ONLINE) {
+            String result = accountOnlineMngManager.alterAccountLevel(value, levelEnum,
+                    invokerEnum);
+            rpcResponse = new RpcResponse<String>(ResultCodeConstant.SUCCESS.equals(result),
+                    result, PropertiesUtil.LOCALE_PROPERTIES_Map.get(result));
+        }
+        return rpcResponse;
+    }
+
+    public RpcResponse<String> closeAccount(String value, AccountTypeEnum typeEnum,
+                                            AccountInvokerEnum invokerEnum) {
+        return null;
+    }
+
+}

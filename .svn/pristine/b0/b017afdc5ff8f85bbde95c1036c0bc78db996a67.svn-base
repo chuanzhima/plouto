@@ -1,0 +1,58 @@
+package com.smk.pay.core.api;
+
+import com.smk.pay.account.core.enums.AccountChannelEnum;
+import com.smk.pay.account.core.enums.AccountFundFlowEnum;
+import com.smk.pay.account.core.enums.AccountTypeEnum;
+import com.smk.pay.account.core.request.RequestHeader;
+import com.smk.pay.account.core.response.RpcResponse;
+import com.smk.pay.account.core.service.IAccountRechargeService;
+import com.smk.pay.core.base.BaseServiceTest;
+import com.smk.pay.core.constant.AccountBizConstant;
+import org.junit.Assert;
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.math.BigDecimal;
+
+/**
+ * AccountRechargeService Tester.
+ *
+ * @author <Authors name>
+ * @version 1.0
+ * @since <pre>11/29/2016</pre>
+ */
+public class AccountRechargeServiceTest extends BaseServiceTest {
+
+    @Autowired
+    private IAccountRechargeService accountRechargeService;
+
+    @Test
+    public void testRecharge() {
+
+        RequestHeader header = new RequestHeader("20161129", "143223", "201611291432231233");
+        String merchantId = "123";
+        String userId = "123457";
+        String cardNumber = "A123456";
+        BigDecimal amount = new BigDecimal(1111);
+        String bankId = AccountBizConstant.BANK_INFO_ABC;
+        String companyId = "111";
+
+        RpcResponse<String> response = accountRechargeService.recharge(header, AccountChannelEnum.INTERNET, merchantId,
+                AccountTypeEnum.OFFLINE, cardNumber, AccountFundFlowEnum.GGK, amount, bankId, companyId);
+        Assert.assertNotNull(response);
+    }
+
+    @Test
+    public void testRecharge4Merchant() {
+
+        RequestHeader header = new RequestHeader();
+        String merchantId = "330100600021";
+        BigDecimal amount = new BigDecimal(100);
+        String bankId = AccountBizConstant.BANK_INFO_ABC;
+
+        RpcResponse<String> rpcResponse = accountRechargeService.recharge4Merchant(header, AccountChannelEnum.INTERNET,
+                merchantId, AccountFundFlowEnum.YHK, amount, bankId);
+        Assert.assertNotNull(rpcResponse);
+    }
+
+}

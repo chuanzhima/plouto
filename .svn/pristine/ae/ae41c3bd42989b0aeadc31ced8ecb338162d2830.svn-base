@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.smk.pay.core.mapper.OperationDetailEntityMapper" >
+  <resultMap id="BaseResultMap" type="com.smk.pay.core.entity.OperationDetailEntity" >
+    <result column="CREATETIME" property="createtime" jdbcType="VARCHAR" />
+    <result column="OPERATIONTYPE" property="operationtype" jdbcType="VARCHAR" />
+    <result column="PRINCIPAL" property="principal" jdbcType="DECIMAL" />
+    <result column="INTEREST" property="interest" jdbcType="DECIMAL" />
+    <result column="MERCHANT" property="merchant" jdbcType="VARCHAR" />
+    <result column="NAME" property="name" jdbcType="VARCHAR" />
+    <result column="SMKNUM" property="smknum" jdbcType="VARCHAR" />
+    <result column="STATUS" property="status" jdbcType="VARCHAR" />
+    <result column="IDNUM" property="idnum" jdbcType="VARCHAR" />
+    <result column="MOBILE" property="mobile" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Query_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+
+  <sql id="Base_Column_List" >
+    CREATETIME, OPERATIONTYPE, PRINCIPAL, INTEREST, MERCHANT, NAME, SMKNUM, STATUS, IDNUM,
+    MOBILE
+  </sql>
+  <select id="selectList" resultMap="BaseResultMap" parameterType="com.smk.pay.dal.condtion.EntityCondition" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from OPERATION_DETAIL
+    <if test="_parameter != null" >
+      <include refid="Query_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+
+  <select id="count" parameterType="com.smk.pay.dal.condtion.EntityCondition" resultType="java.lang.Integer" >
+    select count(*) from OPERATION_DETAIL
+    <if test="_parameter != null" >
+      <include refid="Query_Where_Clause" />
+    </if>
+  </select>
+
+  <select id="queryOperationDetail" parameterType="com.smk.pay.dal.condtion.EntityCondition"
+          resultMap="BaseResultMap">
+
+    SELECT * FROM(SELECT ROWNUM rn, s.* FROM (
+    select
+    <include refid="Base_Column_List" />
+    from OPERATION_DETAIL
+    <if test="_parameter != null">
+      <include refid="Query_Where_Clause"/>
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+    ) s WHERE ROWNUM &lt;= (#{offset} + #{limit})) r WHERE r.rn &gt; #{offset}
+  </select>
+
+</mapper>

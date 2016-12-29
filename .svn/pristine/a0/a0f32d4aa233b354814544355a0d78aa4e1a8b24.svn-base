@@ -1,0 +1,28 @@
+package com.smk.pay.core.manager.impl;
+
+import com.smk.pay.core.dto.AccountTaskInfoDto;
+import com.smk.pay.core.manager.IAccountTaskInfoManager;
+
+/**
+ * Project plouto
+ * Created by chuanzhi.macz
+ * Date 2016/10/26 14:40
+ */
+public class AccountTaskInfoManagerImpl implements IAccountTaskInfoManager {
+
+    public AccountTaskInfoDto getByAccountIdType(String accountId, String type) {
+        return null;
+    }
+
+    public void updateById(String id) {
+
+    }
+
+    public void updateByAccountIdType(String accountId, String type) {
+
+    }
+
+    public void add(AccountTaskInfoDto accountTaskInfoDto) {
+
+    }
+}

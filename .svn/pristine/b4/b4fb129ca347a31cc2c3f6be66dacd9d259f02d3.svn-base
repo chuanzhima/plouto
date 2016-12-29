@@ -1,0 +1,13 @@
+package com.smk.pay.core.manager.impl;
+
+import org.springframework.stereotype.Service;
+
+/**
+ * Project plouto
+ * Created by chuanzhi.macz
+ * Date 2016/10/24 9:48
+ */
+@Service("accountOnlineManager")
+public class AccountOnlineManagerImpl extends AbstractAccountCommonManager {
+
+}

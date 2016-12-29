@@ -1,0 +1,117 @@
+package com.smk.pay.core.validator;
+
+import com.smk.pay.account.core.enums.AccountBizEnum;
+import com.smk.pay.account.core.enums.AccountInfoStatusEnum;
+import com.smk.pay.account.core.request.OpenAccountCreditRequest;
+import com.smk.pay.account.core.request.RequestHeader;
+import com.smk.pay.core.constant.ResultCodeConstant;
+import com.smk.pay.core.dto.UserInfoDto;
+import com.smk.pay.core.entity.LnsAcctInfoEntity;
+import com.smk.pay.core.enums.AccountTransTypeEnum;
+import com.smk.pay.core.manager.base.IUserInfoManager;
+import com.smk.pay.core.mapper.LnsAcctInfoEntityMapper;
+import com.smk.pay.core.validator.base.AccountValidator;
+import com.smk.pay.core.validator.base.PrepaidCardValidator;
+import com.smk.pay.core.validator.base.TransValidator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Project plouto
+ * Created by chuanzhi.macz
+ * Date 2016/12/21 14:59
+ */
+@Component("creditValidator")
+public class CreditValidator {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(CreditValidator.class);
+    @Autowired
+    private AccountValidator accountValidator;
+    @Autowired
+    private TransValidator transValidator;
+    @Autowired
+    private PrepaidCardValidator prepaidCardValidator;
+    @Autowired
+    private LnsAcctInfoEntityMapper lnsAcctInfoEntityMapper;
+    @Autowired
+    private IUserInfoManager userInfoManager;
+
+    public Map<Boolean, List<String>> validate(RequestHeader header, OpenAccountCreditRequest request) {
+
+        Map<Boolean, List<String>> validateMap = new HashMap<Boolean, List<String>>() {{
+            put(Boolean.TRUE, Arrays.asList(ResultCodeConstant.SUCCESS));
+        }};
+
+        // 校验重复交易
+        Boolean isRepeat = transValidator.isRepeatTrans(header.getReqSeq(), header.getTxDate
+                (), header.getTxTime(), AccountTransTypeEnum.CREDIT_OPEN.key(), AccountInfoStatusEnum
+                .NORMAL.value());
+        if (isRepeat) {
+            LOGGER.warn("CreditValidator validate result: sequence-no repeat,no=" + header.getReqSeq());
+            return new HashMap<Boolean, List<String>>() {{
+                put(Boolean.FALSE, Arrays.asList(ResultCodeConstant.REPEAT_TRANS_SEQUENCE_NO));
+            }};
+        }
+
+        String custId = request.getCustId();
+        final Map<Boolean, List<String>> cardMap = prepaidCardValidator.isBindCard(custId);
+        if (cardMap.containsKey(Boolean.FALSE)) {
+            return new HashMap<Boolean, List<String>>() {{
+                put(Boolean.FALSE, Arrays.asList(cardMap.get(Boolean.FALSE).get(0)));
+            }};
+        }
+        String cardNo = cardMap.get(Boolean.TRUE).get(0);
+        String userId = cardMap.get(Boolean.TRUE).get(1);
+
+        final Map<Boolean, List<String>> accountMap = accountValidator.isValidAccountByCustId(custId, null, Arrays.asList
+                (AccountInfoStatusEnum.NORMAL.value()));
+
+        if (accountMap.containsKey(Boolean.FALSE)) {
+            return new HashMap<Boolean, List<String>>() {{
+                put(Boolean.FALSE, Arrays.asList(accountMap.get(Boolean.FALSE).get(0)));
+            }};
+        }
+        String accountId = accountMap.get(Boolean.TRUE).get(0);
+        LnsAcctInfoEntity lnsAcctInfoEntity = lnsAcctInfoEntityMapper.selectByUserIdAndType(userId, AccountBizEnum
+                .CREDIT.getValue());
+
+        if (null == lnsAcctInfoEntity) {
+            return new HashMap<Boolean, List<String>>() {{
+                put(Boolean.FALSE, Arrays.asList(ResultCodeConstant.USER_HAS_OPENED_CREDIT));
+            }};
+        }
+        UserInfoDto userInfoDto = userInfoManager.getUserByPkId(userId);
+        if (userInfoDto == null) {
+            return new HashMap<Boolean, List<String>>() {{
+                put(Boolean.FALSE, Arrays.asList(ResultCodeConstant.USER_NOT_EXIST));
+            }};
+        }
+        if (!request.getCustName().equals(userInfoDto.getUserName())) {
+
+            return new HashMap<Boolean, List<String>>() {{
+                put(Boolean.FALSE, Arrays.asList(ResultCodeConstant.USER_NAME_DIFFERENT_WITH_CARD));
+            }};
+        }
+        if (!request.getMobile().equals(userInfoDto.getPhoneNo())) {
+            return new HashMap<Boolean, List<String>>() {{
+                put(Boolean.FALSE, Arrays.asList(ResultCodeConstant.PHONE_DIFFERENT_WITH_CARD));
+            }};
+        }
+        if (!request.getCustCredentialNo().equals(userInfoDto.getPapersNo())) {
+            return new HashMap<Boolean, List<String>>() {{
+                put(Boolean.FALSE, Arrays.asList(ResultCodeConstant.ID_NO_DIFFERENT_WITH_CARD));
+            }};
+        }
+
+        validateMap.put(Boolean.TRUE, Arrays.asList(cardNo, accountId, userId, lnsAcctInfoEntity.getUserName()));
+        return validateMap;
+    }
+
+}

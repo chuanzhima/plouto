@@ -1,0 +1,154 @@
+package com.smk.pay.core.api;
+
+import com.alibaba.dubbo.config.annotation.Service;
+import com.smk.pay.account.core.enums.AccountInvokerEnum;
+import com.smk.pay.account.core.enums.AccountLevelEnum;
+import com.smk.pay.account.core.enums.AccountTypeEnum;
+import com.smk.pay.account.core.response.RpcResponse;
+import com.smk.pay.account.core.service.IAccountMngService;
+import com.smk.pay.core.constant.ResultCodeConstant;
+import com.smk.pay.core.manager.IAccountMngManager;
+import com.smk.pay.core.utils.PropertiesUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.util.StringUtils;
+
+import java.util.Date;
+
+/**
+ * Project plouto
+ * Created by chuanzhi.macz
+ * Date 2016/10/24 9:57
+ */
+@Service(version = "1.0.0")
+public class AccountMngService implements IAccountMngService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(AccountMngService.class);
+
+    @Autowired
+    @Qualifier("accountOnlineMngManager")
+    private IAccountMngManager accountOnlineMngManager;
+
+    public RpcResponse<String> freeze(String value, Date fromDate, Date toDate,
+                                      AccountTypeEnum typeEnum, AccountInvokerEnum invokerEnum) {
+        RpcResponse<String> rpcResponse;
+        if (StringUtils.isEmpty(value) || typeEnum == null || invokerEnum == null) {
+            rpcResponse = new RpcResponse<String>(Boolean.FALSE, ResultCodeConstant
+                    .PARAMETER_INVALID, PropertiesUtil.LOCALE_PROPERTIES_Map.get(ResultCodeConstant
+                    .PARAMETER_INVALID));
+            return rpcResponse;
+        }
+        // 如果没有设开始时间，默认开始时间为当前时间
+        if (null == fromDate)
+            fromDate = new Date();
+        String resultCode = accountOnlineMngManager.freeze(value, fromDate, toDate, typeEnum, invokerEnum);
+        rpcResponse = new RpcResponse<String>(ResultCodeConstant.SUCCESS.equals(resultCode) ?
+                Boolean.TRUE : Boolean.FALSE, resultCode, PropertiesUtil.LOCALE_PROPERTIES_Map
+                .get(resultCode));
+        return rpcResponse;
+    }
+
+    public RpcResponse<String> unfreeze(String value, AccountTypeEnum typeEnum, AccountInvokerEnum invokerEnum) {
+        RpcResponse<String> rpcResponse;
+        if (StringUtils.isEmpty(value) || typeEnum == null || invokerEnum == null) {
+            rpcResponse = new RpcResponse<String>(Boolean.FALSE, ResultCodeConstant
+                    .PARAMETER_INVALID, PropertiesUtil.LOCALE_PROPERTIES_Map.get(ResultCodeConstant
+                    .PARAMETER_INVALID));
+            return rpcResponse;
+        }
+        String resultCode = accountOnlineMngManager.unfreeze(value, typeEnum, invokerEnum);
+        rpcResponse = new RpcResponse<String>(ResultCodeConstant.SUCCESS.equals(resultCode) ?
+                Boolean.TRUE : Boolean.FALSE, resultCode, PropertiesUtil.LOCALE_PROPERTIES_Map
+                .get(resultCode));
+        return rpcResponse;
+    }
+
+    /**
+     * prolong freeze time, set freeze end date
+     *
+     * @param value
+     * @param toDate
+     * @param invokerEnum
+     * @return
+     */
+    public RpcResponse<String> freezeProlong(String value, Date toDate, AccountTypeEnum typeEnum,
+                                             AccountInvokerEnum invokerEnum) {
+        RpcResponse<String> rpcResponse;
+        if (StringUtils.isEmpty(value) || typeEnum == null || invokerEnum == null) {
+            rpcResponse = new RpcResponse<String>(Boolean.FALSE, ResultCodeConstant
+                    .PARAMETER_INVALID, PropertiesUtil.LOCALE_PROPERTIES_Map.get(ResultCodeConstant
+                    .PARAMETER_INVALID));
+            return rpcResponse;
+        }
+        String resultCode = accountOnlineMngManager.freezeProlong(value, toDate, typeEnum, invokerEnum);
+        rpcResponse = new RpcResponse<String>(ResultCodeConstant.SUCCESS.equals(resultCode) ?
+                Boolean.TRUE : Boolean.FALSE, resultCode, PropertiesUtil.LOCALE_PROPERTIES_Map
+                .get(resultCode));
+        return rpcResponse;
+    }
+
+    /**
+     * stop payment
+     *
+     * @param value
+     * @param fromDate
+     * @param toDate
+     * @param typeEnum
+     * @param invokerEnum @return
+     */
+    public RpcResponse<String> stopPayment(String value, Date fromDate, Date toDate, AccountTypeEnum typeEnum, AccountInvokerEnum invokerEnum) {
+        return null;
+    }
+
+    /**
+     * close stop payment
+     *
+     * @param value
+     * @param typeEnum
+     * @param operatorEnum
+     * @return
+     */
+    public RpcResponse<String> closeStopPayment(String value, AccountTypeEnum typeEnum, AccountInvokerEnum operatorEnum) {
+        return null;
+    }
+
+    /**
+     * prolong stop-payment time, set stop-payment end date
+     *
+     * @param value
+     * @param toDate
+     * @param typeEnum
+     * @param invokerEnum
+     * @return
+     */
+    public RpcResponse<String> stopPaymentProlong(String value, Date toDate, AccountTypeEnum typeEnum, AccountInvokerEnum invokerEnum) {
+        return null;
+    }
+
+    /**
+     * open account for internet
+     *
+     * @param userId
+     * @param userName
+     * @param IdNo
+     * @param invokerEnum
+     * @return
+     */
+    public RpcResponse<String> openAccount(String userId, String userName, String IdNo, AccountInvokerEnum invokerEnum) {
+        return null;
+    }
+
+    /**
+     * alter account level
+     *
+     * @param accountId
+     * @param levelEnum
+     * @param invokerEnum
+     * @return
+     */
+    public RpcResponse<String> alterAccountLevel(String accountId, AccountLevelEnum levelEnum, AccountInvokerEnum invokerEnum) {
+        return null;
+    }
+}

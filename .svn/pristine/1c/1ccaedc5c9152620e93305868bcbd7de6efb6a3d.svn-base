@@ -1,0 +1,44 @@
+package com.smk.pay.core.api;
+
+import com.smk.pay.account.core.enums.AccountBizEnum;
+import com.smk.pay.account.core.enums.AccountChannelEnum;
+import com.smk.pay.account.core.enums.AccountTypeEnum;
+import com.smk.pay.account.core.request.RequestHeader;
+import com.smk.pay.account.core.response.RpcResponse;
+import com.smk.pay.account.core.service.IAccountConsumeService;
+import com.smk.pay.core.annotations.DubboService;
+import com.smk.pay.core.constant.ResultCodeConstant;
+import com.smk.pay.core.manager.IAccountConsumeManager;
+import com.smk.pay.core.utils.PropertiesUtil;
+import com.smk.pay.core.utils.StringUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+import java.util.Map;
+
+/**
+ * Project plouto
+ * Created by chuanzhi.macz
+ * Date 2016/11/29 16:51
+ */
+@Service(value = "accountConsumeService")
+public class AccountConsumeService implements IAccountConsumeService {
+    @Autowired
+    private IAccountConsumeManager accountConsumeManager;
+    @DubboService
+    @Override
+    public RpcResponse<String> consume(RequestHeader header, AccountChannelEnum channelEnum, AccountBizEnum bizEnum,
+                                       String merchantId, AccountTypeEnum typeEnum, String typeValue, BigDecimal amount,
+                                       BigDecimal cost, Map<String, Object> extraParam) {
+        if (StringUtil.isNull(header, channelEnum, typeEnum, bizEnum, amount, cost) ||
+                StringUtil.isEmpty(header.getReqSeq(), header.getTxDate(), header.getTxTime(), merchantId, typeValue)) {
+            return new RpcResponse<>(Boolean.FALSE, ResultCodeConstant
+                    .PARAMETER_INVALID, PropertiesUtil.LOCALE_PROPERTIES_Map.get(ResultCodeConstant
+                    .PARAMETER_INVALID));
+        }
+        accountConsumeManager.consume(header, channelEnum, bizEnum, merchantId, typeEnum, typeValue, amount, cost, extraParam);
+        return new RpcResponse<>(Boolean.TRUE, ResultCodeConstant.SUCCESS, PropertiesUtil.LOCALE_PROPERTIES_Map.get
+                (ResultCodeConstant.SUCCESS));
+    }
+}

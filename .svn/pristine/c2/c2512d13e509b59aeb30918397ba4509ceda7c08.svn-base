@@ -1,0 +1,29 @@
+package com.smk.pay.core.api;
+
+import com.smk.pay.account.core.enums.AccountChannelEnum;
+import com.smk.pay.account.core.enums.AccountFundFlowEnum;
+import com.smk.pay.account.core.enums.AccountTypeEnum;
+import com.smk.pay.account.core.request.RequestHeader;
+import com.smk.pay.account.core.response.RpcResponse;
+import com.smk.pay.account.core.service.IAccountRechargeService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.math.BigDecimal;
+
+/**
+ * Project plouto
+ * Created by chuanzhi.macz
+ * Date 2016/11/8 13:57
+ */
+public class AccountRechargeService implements IAccountRechargeService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(AccountRechargeService.class);
+
+    public RpcResponse<String> recharge(RequestHeader header, AccountChannelEnum channelEnum,
+                                        String merchantId, AccountTypeEnum typeEnum,
+                                        String typeValue, AccountFundFlowEnum fundFlowEnum,
+                                        BigDecimal amount, String bankId, String companyId) {
+        return null;
+    }
+}

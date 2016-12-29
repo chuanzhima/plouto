@@ -1,0 +1,55 @@
+#server config
+server.port=8088
+server.context-path=/plouto
+
+
+# log setting
+logging.path=/home/machuanzhi
+logging.level.org.springframework.web=DEBUG
+logging.config=classpath:logback-spring.xml
+
+# main data source
+spring.datasource.type=com.alibaba.druid.pool.DruidDataSource
+spring.datasource.driver-class-name=oracle.jdbc.driver.OracleDriver
+spring.datasource.url=jdbc:oracle:thin:@192.168.23.52:1521:ORCL
+spring.datasource.username=upscoreuser
+spring.datasource.password=upscoreuser
+
+spring.datasource.initialSize=10
+spring.datasource.minIdle=5
+spring.datasource.maxActive=30
+
+spring.datasource.filters=stat,wall,slf4j
+spring.datasource.connectionProperties=druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
+
+mybatis.mapper-locations=classpath*:com/smk/pay/core/sqlmap/*Mapper.xml
+mybatis.type-aliases-package=com.smk.pay.core.entity
+
+spring.mail.host=smtp.96225.com
+spring.mail.username=macz
+spring.mail.password=Yifan0619
+spring.mail.properties.mail.smtp.auth=true
+
+# dubbo config
+dubbo.application.name=plouto
+dubbo.application.logger=slf4j
+dubbo.annotation.package=com.smk.pay.core
+dubbo.protocol.name=dubbo
+dubbo.protocol.port=20880
+dubbo.protocol.accessLog=true
+dubbo.provider.timeout=3000
+dubbo.provider.retries=1
+dubbo.provider.delay=-1
+dubbo.registry.protocol=zookeeper
+dubbo.registry.address=192.168.23.136:2181
+dubbo.registry.register=true
+dubbo.registry.subscribe=true
+dubbo.registry.timeout=20000
+
+# error mail config
+error.mail.switch=on
+error.mail.to=macz@96225.com,18668200530@163.com
+error.mail.from=macz@96225.com
+error.mail.subject=\u8D26\u6237\u7CFB\u7EDF\u5F02\u5E38\u62A5\u8B66
+
+

@@ -1,0 +1,22 @@
+package com.smk.pay.core.controller;
+
+import com.smk.pay.core.utils.PropertiesUtil;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+/**
+ * Project plouto
+ * Created by chuanzhi.macz
+ * Date 2016/10/17 17:30
+ */
+@RestController
+@RequestMapping("/core")
+public class AccountChargeController {
+
+
+    @GetMapping("/charge")
+    public String charge() {
+        return "charge done!" + PropertiesUtil.LOCALE_PROPERTIES_Map.get("SUCCESS");
+    }
+}

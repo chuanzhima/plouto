@@ -1,0 +1,175 @@
+package com.smk.pay.core.manager.impl;
+
+import com.smk.pay.account.core.constant.AccountConstant;
+import com.smk.pay.account.core.enums.AccountInfoStatusEnum;
+import com.smk.pay.account.core.enums.AccountInvokerEnum;
+import com.smk.pay.account.core.enums.AccountLevelEnum;
+import com.smk.pay.account.core.enums.AccountTypeEnum;
+import com.smk.pay.account.core.request.OpenAccountRequest;
+import com.smk.pay.core.constant.ResultCodeConstant;
+import com.smk.pay.core.dto.*;
+import com.smk.pay.core.enums.AccountTransTypeEnum;
+import com.smk.pay.core.exception.ServiceException;
+import com.smk.pay.core.manager.*;
+import com.smk.pay.core.utils.DateUtil;
+import com.smk.pay.core.utils.StringUtil;
+import com.smk.pay.core.validator.AccountValidator;
+import com.smk.pay.core.validator.UserValidator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
+import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
+
+/**
+ * Project plouto
+ * Created by chuanzhi.macz
+ * Date 2016/10/31 15:55
+ */
+@Service("accountOnlineMngManager")
+public class AccountOnlineMngManagerImpl extends AbstractAccountMngManager {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(AccountOnlineMngManagerImpl.class);
+    @Autowired
+    private IAccountQueryManager accountQueryManager;
+    @Resource(name = "accountBaseManager")
+    private IAccountBaseManager accountBaseManager;
+    @Autowired
+    private UserValidator userValidator;
+    @Autowired
+    private AccountValidator accountValidator;
+    @Autowired
+    private IUserInfoManager userInfoManager;
+    @Autowired
+    private IAccountInfoLogManager accountInfoLogManager;
+    @Resource(name = "merchantAccountManager")
+    private IAccountBaseManager merchantAccountManager;
+    @Autowired
+    private IMerchantAccountInfoLogManager merchantAccountInfoLogManager;
+
+    @Override
+    protected Map<Boolean, List<String>> checkStatus(String value, List<String> invalidStatus,
+                                                     List<String> validStatus) {
+        Map<Boolean, List<String>> validMap;
+        try {
+            if (!userValidator.isUserExistOrNormal(value)) {
+                LOGGER.warn("checkFreeze user not exist or not normal! userId=" + value);
+                return new HashMap<Boolean, List<String>>() {{
+                    put(Boolean.FALSE, Arrays.asList(ResultCodeConstant.USER_INVALID));
+                }};
+            }
+            validMap = accountValidator.isValidAccount(value,
+                    invalidStatus, validStatus);
+            if (validMap.containsKey(Boolean.FALSE)) {
+                return validMap;
+            }
+        } catch (ServiceException e) {
+            LOGGER.error("checkFreeze exception, value=" + value, e);
+            return new HashMap<Boolean, List<String>>() {{
+                put(Boolean.FALSE, Arrays.asList(ResultCodeConstant.SYSTEM_ERROR));
+            }};
+        }
+        return validMap;
+    }
+
+    public Map<Boolean, String> openAccount(OpenAccountRequest openAccountRequest,
+                                            AccountInvokerEnum invokerEnum) {
+
+        Map<Boolean, String> resultMap = new HashMap<Boolean, String>();
+        String type = openAccountRequest.getCustCredentialType();
+        String no = openAccountRequest.getCustCredentialNo();
+        String accountId;
+        try {
+            String createSeqNo = StringUtil.randomSequence();
+            // 个人账户开户
+            if (OpenAccountRequest.OPEN_ACCOUNT_PERSONAL.equals(openAccountRequest.getUserCls())) {
+                UserInfoDto userInfoDto = userInfoManager.getUserByTypeAndNo(type, no);
+                if (userInfoDto == null) {
+                    userInfoManager.addUser(userInfoDto);
+                } else {
+                    userInfoDto = new UserInfoDto(openAccountRequest.getCustId(), openAccountRequest
+                            .getCustName(), null, null);
+                    userInfoManager.updateByTypeAndNo(type, no, userInfoDto);
+                }
+                AccountInfoDto accountInfoDto = accountQueryManager.getAccountByUserId(openAccountRequest
+                        .getCustId());
+                if (null == accountInfoDto) {
+                    accountInfoDto = new AccountInfoDto(null, openAccountRequest.getCustId(),
+                            AccountTypeEnum.ONLINE.value(), "", AccountLevelEnum.FIRST.value(),
+                            AccountConstant.CARD_CATEGORY_HZSMK, AccountInfoStatusEnum.UNACTIVATED.value(),
+                            createSeqNo, new Date(), new Date(), AccountConstant.PARTY_MARK_NO_0001, "");
+                    accountId = accountBaseManager.addAccount(accountInfoDto);
+                    AccountInfoLogDto accountInfoLogDto = new AccountInfoLogDto(invokerEnum.name(),
+                            new Date(), accountId, invokerEnum.name(), AccountTransTypeEnum
+                            .OPEN_ACCOUNT.key(), String.format("互联网个人账户开户：用户名={}，身份证号={}",
+                            openAccountRequest.getCustName(), openAccountRequest.getCustCredentialNo()));
+                    accountInfoLogManager.addAccountInfoLog(accountInfoLogDto);
+                } else {
+                    accountId = accountInfoDto.getAccountId();
+                }
+            } else {
+                // 商户开户
+                MerchantAccountInfoDto merchantAccountInfoDto = (MerchantAccountInfoDto) merchantAccountManager.queryOne
+                        (openAccountRequest.getMerchantNo());
+                if (null == merchantAccountInfoDto) {
+                    merchantAccountInfoDto = new MerchantAccountInfoDto(null, openAccountRequest
+                            .getMerchantNo(), openAccountRequest.getMerchantName(),
+                            MerchantAccountInfoDto.MERCHANT_ACCOUNT_TYPE_1,
+                            MerchantAccountInfoDto.MERCHANT_ACCOUNT_STATUS_1, createSeqNo, new
+                            Date(), new Date(), AccountConstant.PARTY_MARK_NO_0001);
+                    accountId = merchantAccountManager.addAccount(merchantAccountInfoDto);
+                    MerchantAccountInfoLogDto accountInfoLogDto = new
+                            MerchantAccountInfoLogDto(invokerEnum.name(), new Date(), accountId, invokerEnum.name(),
+                            AccountTransTypeEnum.OPEN_ACCOUNT.key(), String.format
+                            ("互联网商户开户：商户名={}，商户号={}",
+                                    openAccountRequest.getMerchantName(), openAccountRequest.getMerchantNo()));
+                    merchantAccountInfoLogManager.addMerchantAccountInfoLog(accountInfoLogDto);
+                } else {
+                    accountId = merchantAccountInfoDto.getMerAccountId();
+                }
+            }
+        } catch (ServiceException e) {
+            LOGGER.error("openAccount exception, openAccountInfo=" + openAccountRequest, e);
+            return new HashMap<Boolean, String>() {{
+                put(Boolean.FALSE, ResultCodeConstant.SYSTEM_ERROR);
+            }};
+        }
+        resultMap.put(Boolean.TRUE, accountId);
+        return resultMap;
+    }
+
+    public String alterAccountLevel(String value, AccountLevelEnum levelEnum, AccountInvokerEnum invokerEnum) {
+
+        Map<Boolean, List<String>> checkResult = this.checkStatus(value, null, Arrays.asList
+                (AccountInfoStatusEnum.NORMAL.value()));
+        if (checkResult.containsKey(Boolean.FALSE))
+            return checkResult.get(Boolean.FALSE).get(0);
+        try {
+            String accountId = checkResult.get(Boolean.TRUE).get(0);
+            String oldLevel = checkResult.get(Boolean.TRUE).get(2);
+            if (oldLevel.equals(levelEnum.value()))
+                return ResultCodeConstant.ACCOUNT_LEVEL_NOCHANGE;
+
+            accountBaseManager.updateAccountLevel(accountId, new Date(), oldLevel, levelEnum.value());
+            AccountInfoLogDto accountInfoLogDto = new AccountInfoLogDto(invokerEnum.name(), new
+                    Date(), accountId, invokerEnum.name(), AccountTransTypeEnum
+                    .ALTER_ACCOUNT_LEVEL.key(), String.format("账户变更等级: 由{}级变更为{}级", oldLevel,
+                    levelEnum.value()));
+            accountInfoLogManager.addAccountInfoLog(accountInfoLogDto);
+            return ResultCodeConstant.SUCCESS;
+        } catch (Exception e) {
+            LOGGER.error(String.format("alterAccountLevel exception, value={},level={}", value,
+                    levelEnum.value()), e);
+            return ResultCodeConstant.SYSTEM_ERROR;
+        }
+    }
+
+    public String closeAccount(String value, AccountInvokerEnum invokerEnum) {
+        // TODO
+        // when close account, how to deal with his money in account
+        return null;
+    }
+}

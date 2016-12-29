@@ -1,0 +1,32 @@
+package com.smk.pay.core.api;
+
+import com.smk.pay.account.core.enums.AccountBizEnum;
+import com.smk.pay.account.core.enums.AccountChannelEnum;
+import com.smk.pay.account.core.enums.AccountFundFlowEnum;
+import com.smk.pay.account.core.enums.AccountTypeEnum;
+import com.smk.pay.account.core.request.RequestHeader;
+import com.smk.pay.account.core.response.RpcResponse;
+import com.smk.pay.account.core.service.IAccountCommonService;
+
+import java.math.BigDecimal;
+
+/**
+ * Project plouto
+ * Created by chuanzhi.macz
+ * Date 2016/10/24 9:59
+ */
+public class AccountCommonService implements IAccountCommonService {
+
+    public RpcResponse<String> withdraw(RequestHeader header, String cardNumber,
+                                        AccountFundFlowEnum fundFlowEnum, BigDecimal amount,
+                                        String bankId) {
+        return null;
+    }
+
+    public RpcResponse<String> consume(RequestHeader header, AccountChannelEnum channelEnum,
+                                       String merchantId, String reqSeq, AccountTypeEnum typeEnum,
+                                       String typeValue, BigDecimal amount, BigDecimal tipCost,
+                                       AccountBizEnum bizEnum) {
+        return null;
+    }
+}

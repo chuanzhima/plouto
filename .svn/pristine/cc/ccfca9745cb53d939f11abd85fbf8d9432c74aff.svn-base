@@ -1,0 +1,34 @@
+package com.smk.pay.core.controller;
+
+import com.smk.pay.account.core.constant.AccountConstant;
+import com.smk.pay.account.core.enums.AccountTypeEnum;
+import com.smk.pay.account.core.request.OpenAccountRequest;
+import com.smk.pay.account.core.response.RpcResponse;
+import com.smk.pay.account.core.service.IAccountMngService;
+import com.smk.pay.core.utils.PropertiesUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+/**
+ * Project plouto
+ * Created by chuanzhi.macz
+ * Date 2016/10/17 17:30
+ */
+@RestController
+@RequestMapping("/core")
+public class AccountChargeController {
+    @Autowired
+    private IAccountMngService accountMngService;
+
+    @GetMapping("/charge")
+    public RpcResponse<String> charge() {
+        OpenAccountRequest openAccountRequest = new OpenAccountRequest("123450", "猪刚鬣23",
+                AccountConstant.CREDENTIAL_TYPE_ID, "370881199612311230");
+        openAccountRequest.setUserCls(OpenAccountRequest.OPEN_ACCOUNT_PERSONAL);
+        RpcResponse<String> response = accountMngService.openAccount(openAccountRequest,
+                AccountTypeEnum.ONLINE);
+        return response;
+    }
+}

@@ -1,0 +1,20 @@
+package com.smk.pay.core.manager;
+
+import com.smk.pay.account.core.enums.AccountChannelEnum;
+import com.smk.pay.account.core.enums.AccountFundFlowEnum;
+import com.smk.pay.account.core.request.RequestHeader;
+
+import java.math.BigDecimal;
+
+/**
+ * Project plouto
+ * Created by chuanzhi.macz
+ * Date 2016/11/29 10:08
+ */
+public interface IAccountRechargeManager {
+
+    void recharge(RequestHeader header, AccountChannelEnum channelEnum,
+                  String merchantId, String type, String typeValue,
+                  AccountFundFlowEnum fundFlowEnum, BigDecimal amount,
+                  String bankId, String companyId);
+}

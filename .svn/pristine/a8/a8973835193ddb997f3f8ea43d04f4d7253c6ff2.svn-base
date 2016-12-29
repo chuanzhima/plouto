@@ -1,0 +1,1018 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.smk.pay.core.mapper.TransDetailEntityMapper">
+  <resultMap id="BaseResultMap" type="com.smk.pay.core.entity.TransDetailEntity">
+    <id column="SERIAL_NO" jdbcType="VARCHAR" property="serialNo" />
+    <id column="TRANS_ID" jdbcType="VARCHAR" property="transId" />
+    <result column="TRANS_TYPE" jdbcType="VARCHAR" property="transType" />
+    <result column="USER_ID" jdbcType="VARCHAR" property="userId" />
+    <result column="USER_NAME" jdbcType="VARCHAR" property="userName" />
+    <result column="ORIGINAL_SERIAL_NO" jdbcType="VARCHAR" property="originalSerialNo" />
+    <result column="ORIGINAL_TRANS_DATE" jdbcType="VARCHAR" property="originalTransDate" />
+    <result column="ORIGINAL_TRANS_TIME" jdbcType="VARCHAR" property="originalTransTime" />
+    <result column="SOURCE_OF_FUNDS" jdbcType="VARCHAR" property="sourceOfFunds" />
+    <result column="ACCOUNT_ID" jdbcType="VARCHAR" property="accountId" />
+    <result column="ACCOUNT_CLASS" jdbcType="VARCHAR" property="accountClass" />
+    <result column="ACCOUNT_CL" jdbcType="VARCHAR" property="accountCl" />
+    <result column="RIVAL_ACCOUNT" jdbcType="VARCHAR" property="rivalAccount" />
+    <result column="RIVAL_ACCOUNT_CLASS" jdbcType="VARCHAR" property="rivalAccountClass" />
+    <result column="RIVAL_ACCOUNT_CL" jdbcType="VARCHAR" property="rivalAccountCl" />
+    <result column="RIVAL_USER_ID" jdbcType="VARCHAR" property="rivalUserId" />
+    <result column="RIVAL_USER_NAME" jdbcType="VARCHAR" property="rivalUserName" />
+    <result column="REQ_SERIAL_NO" jdbcType="VARCHAR" property="reqSerialNo" />
+    <result column="REQ_TRANS_DATE" jdbcType="VARCHAR" property="reqTransDate" />
+    <result column="REQ_TRANS_TIME" jdbcType="VARCHAR" property="reqTransTime" />
+    <result column="COST" jdbcType="DECIMAL" property="cost" />
+    <result column="TRANS_DATE" jdbcType="TIMESTAMP" property="transDate" />
+    <result column="STATUS" jdbcType="VARCHAR" property="status" />
+    <result column="CHANNEL" jdbcType="VARCHAR" property="channel" />
+    <result column="PARTY_MARK_NO" jdbcType="VARCHAR" property="partyMarkNo" />
+    <result column="ACCOUNT_TYPE_ITEM" jdbcType="VARCHAR" property="accountTypeItem" />
+    <result column="MERCHANT_ID" jdbcType="VARCHAR" property="merchantId" />
+    <result column="USER_DEFIND_MARK" jdbcType="VARCHAR" property="userDefindMark" />
+    <result column="INTEGRAL" jdbcType="DECIMAL" property="integral" />
+    <result column="GUARANTEE_DEPOSIT" jdbcType="DECIMAL" property="guaranteeDeposit" />
+    <result column="ACCOUNT_TYPE" jdbcType="VARCHAR" property="accountType" />
+    <result column="TIME" jdbcType="DECIMAL" property="time" />
+    <result column="ACC_DATE" jdbcType="VARCHAR" property="accDate" />
+    <result column="REPLACEMENT_FLAG" jdbcType="VARCHAR" property="replacementFlag" />
+    <result column="AMOUNT1" jdbcType="DECIMAL" property="amount1" />
+    <result column="AMOUNT2" jdbcType="DECIMAL" property="amount2" />
+    <result column="AMOUNT3" jdbcType="DECIMAL" property="amount3" />
+    <result column="AMOUNT4" jdbcType="DECIMAL" property="amount4" />
+    <result column="AMOUNT5" jdbcType="DECIMAL" property="amount5" />
+    <result column="AMOUNT6" jdbcType="DECIMAL" property="amount6" />
+    <result column="AMOUNT7" jdbcType="DECIMAL" property="amount7" />
+    <result column="AMOUNT8" jdbcType="DECIMAL" property="amount8" />
+    <result column="AMOUNT9" jdbcType="DECIMAL" property="amount9" />
+    <result column="AMOUNT10" jdbcType="DECIMAL" property="amount10" />
+    <result column="AMOUNT11" jdbcType="DECIMAL" property="amount11" />
+    <result column="AMOUNT12" jdbcType="DECIMAL" property="amount12" />
+    <result column="AMOUNT13" jdbcType="DECIMAL" property="amount13" />
+    <result column="AMOUNT14" jdbcType="DECIMAL" property="amount14" />
+    <result column="AMOUNT15" jdbcType="DECIMAL" property="amount15" />
+    <result column="AMOUNT16" jdbcType="DECIMAL" property="amount16" />
+    <result column="AMOUNT17" jdbcType="DECIMAL" property="amount17" />
+    <result column="AMOUNT18" jdbcType="DECIMAL" property="amount18" />
+    <result column="AMOUNT19" jdbcType="DECIMAL" property="amount19" />
+    <result column="AMOUNT20" jdbcType="DECIMAL" property="amount20" />
+    <result column="ACCOUNTING_TRANS" jdbcType="VARCHAR" property="accountingTrans" />
+    <result column="BUSINESS_TYPE" jdbcType="VARCHAR" property="businessType" />
+  </resultMap>
+  <sql id="Query_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_Where_Clause">
+    <where>
+      <foreach collection="condition.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    SERIAL_NO, TRANS_ID, TRANS_TYPE, USER_ID, USER_NAME, ORIGINAL_SERIAL_NO, ORIGINAL_TRANS_DATE, 
+    ORIGINAL_TRANS_TIME, SOURCE_OF_FUNDS, ACCOUNT_ID, ACCOUNT_CLASS, ACCOUNT_CL, RIVAL_ACCOUNT, 
+    RIVAL_ACCOUNT_CLASS, RIVAL_ACCOUNT_CL, RIVAL_USER_ID, RIVAL_USER_NAME, REQ_SERIAL_NO, 
+    REQ_TRANS_DATE, REQ_TRANS_TIME, COST, TRANS_DATE, STATUS, CHANNEL, PARTY_MARK_NO, 
+    ACCOUNT_TYPE_ITEM, MERCHANT_ID, USER_DEFIND_MARK, INTEGRAL, GUARANTEE_DEPOSIT, ACCOUNT_TYPE, 
+    TIME, ACC_DATE, REPLACEMENT_FLAG, AMOUNT1, AMOUNT2, AMOUNT3, AMOUNT4, AMOUNT5, AMOUNT6, 
+    AMOUNT7, AMOUNT8, AMOUNT9, AMOUNT10, AMOUNT11, AMOUNT12, AMOUNT13, AMOUNT14, AMOUNT15, 
+    AMOUNT16, AMOUNT17, AMOUNT18, AMOUNT19, AMOUNT20, ACCOUNTING_TRANS, BUSINESS_TYPE
+  </sql>
+  <select id="selectList" parameterType="com.smk.pay.dal.condtion.EntityCondition" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from TRANS_DETAIL
+    <if test="_parameter != null">
+      <include refid="Query_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="com.smk.pay.core.entity.TransDetailEntityKey" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from TRANS_DETAIL
+    where SERIAL_NO = #{serialNo,jdbcType=VARCHAR}
+      and TRANS_ID = #{transId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="com.smk.pay.core.entity.TransDetailEntityKey">
+    delete from TRANS_DETAIL
+    where SERIAL_NO = #{serialNo,jdbcType=VARCHAR}
+      and TRANS_ID = #{transId,jdbcType=VARCHAR}
+  </delete>
+  <delete id="delete" parameterType="com.smk.pay.dal.condtion.EntityCondition">
+    delete from TRANS_DETAIL
+    <if test="_parameter != null">
+      <include refid="Query_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.smk.pay.core.entity.TransDetailEntity">
+    insert into TRANS_DETAIL (SERIAL_NO, TRANS_ID, TRANS_TYPE, 
+      USER_ID, USER_NAME, ORIGINAL_SERIAL_NO, 
+      ORIGINAL_TRANS_DATE, ORIGINAL_TRANS_TIME, SOURCE_OF_FUNDS, 
+      ACCOUNT_ID, ACCOUNT_CLASS, ACCOUNT_CL, 
+      RIVAL_ACCOUNT, RIVAL_ACCOUNT_CLASS, RIVAL_ACCOUNT_CL, 
+      RIVAL_USER_ID, RIVAL_USER_NAME, REQ_SERIAL_NO, 
+      REQ_TRANS_DATE, REQ_TRANS_TIME, COST, 
+      TRANS_DATE, STATUS, CHANNEL, 
+      PARTY_MARK_NO, ACCOUNT_TYPE_ITEM, MERCHANT_ID, 
+      USER_DEFIND_MARK, INTEGRAL, GUARANTEE_DEPOSIT, 
+      ACCOUNT_TYPE, TIME, ACC_DATE, 
+      REPLACEMENT_FLAG, AMOUNT1, AMOUNT2, 
+      AMOUNT3, AMOUNT4, AMOUNT5, 
+      AMOUNT6, AMOUNT7, AMOUNT8, 
+      AMOUNT9, AMOUNT10, AMOUNT11, 
+      AMOUNT12, AMOUNT13, AMOUNT14, 
+      AMOUNT15, AMOUNT16, AMOUNT17, 
+      AMOUNT18, AMOUNT19, AMOUNT20, 
+      ACCOUNTING_TRANS, BUSINESS_TYPE)
+    values (#{serialNo,jdbcType=VARCHAR}, #{transId,jdbcType=VARCHAR}, #{transType,jdbcType=VARCHAR}, 
+      #{userId,jdbcType=VARCHAR}, #{userName,jdbcType=VARCHAR}, #{originalSerialNo,jdbcType=VARCHAR}, 
+      #{originalTransDate,jdbcType=VARCHAR}, #{originalTransTime,jdbcType=VARCHAR}, #{sourceOfFunds,jdbcType=VARCHAR}, 
+      #{accountId,jdbcType=VARCHAR}, #{accountClass,jdbcType=VARCHAR}, #{accountCl,jdbcType=VARCHAR}, 
+      #{rivalAccount,jdbcType=VARCHAR}, #{rivalAccountClass,jdbcType=VARCHAR}, #{rivalAccountCl,jdbcType=VARCHAR}, 
+      #{rivalUserId,jdbcType=VARCHAR}, #{rivalUserName,jdbcType=VARCHAR}, #{reqSerialNo,jdbcType=VARCHAR}, 
+      #{reqTransDate,jdbcType=VARCHAR}, #{reqTransTime,jdbcType=VARCHAR}, #{cost,jdbcType=DECIMAL}, 
+      #{transDate,jdbcType=TIMESTAMP}, #{status,jdbcType=VARCHAR}, #{channel,jdbcType=VARCHAR}, 
+      #{partyMarkNo,jdbcType=VARCHAR}, #{accountTypeItem,jdbcType=VARCHAR}, #{merchantId,jdbcType=VARCHAR}, 
+      #{userDefindMark,jdbcType=VARCHAR}, #{integral,jdbcType=DECIMAL}, #{guaranteeDeposit,jdbcType=DECIMAL}, 
+      #{accountType,jdbcType=VARCHAR}, #{time,jdbcType=DECIMAL}, #{accDate,jdbcType=VARCHAR}, 
+      #{replacementFlag,jdbcType=VARCHAR}, #{amount1,jdbcType=DECIMAL}, #{amount2,jdbcType=DECIMAL}, 
+      #{amount3,jdbcType=DECIMAL}, #{amount4,jdbcType=DECIMAL}, #{amount5,jdbcType=DECIMAL}, 
+      #{amount6,jdbcType=DECIMAL}, #{amount7,jdbcType=DECIMAL}, #{amount8,jdbcType=DECIMAL}, 
+      #{amount9,jdbcType=DECIMAL}, #{amount10,jdbcType=DECIMAL}, #{amount11,jdbcType=DECIMAL}, 
+      #{amount12,jdbcType=DECIMAL}, #{amount13,jdbcType=DECIMAL}, #{amount14,jdbcType=DECIMAL}, 
+      #{amount15,jdbcType=DECIMAL}, #{amount16,jdbcType=DECIMAL}, #{amount17,jdbcType=DECIMAL}, 
+      #{amount18,jdbcType=DECIMAL}, #{amount19,jdbcType=DECIMAL}, #{amount20,jdbcType=DECIMAL}, 
+      #{accountingTrans,jdbcType=VARCHAR}, #{businessType,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.smk.pay.core.entity.TransDetailEntity">
+    insert into TRANS_DETAIL
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="serialNo != null">
+        SERIAL_NO,
+      </if>
+      <if test="transId != null">
+        TRANS_ID,
+      </if>
+      <if test="transType != null">
+        TRANS_TYPE,
+      </if>
+      <if test="userId != null">
+        USER_ID,
+      </if>
+      <if test="userName != null">
+        USER_NAME,
+      </if>
+      <if test="originalSerialNo != null">
+        ORIGINAL_SERIAL_NO,
+      </if>
+      <if test="originalTransDate != null">
+        ORIGINAL_TRANS_DATE,
+      </if>
+      <if test="originalTransTime != null">
+        ORIGINAL_TRANS_TIME,
+      </if>
+      <if test="sourceOfFunds != null">
+        SOURCE_OF_FUNDS,
+      </if>
+      <if test="accountId != null">
+        ACCOUNT_ID,
+      </if>
+      <if test="accountClass != null">
+        ACCOUNT_CLASS,
+      </if>
+      <if test="accountCl != null">
+        ACCOUNT_CL,
+      </if>
+      <if test="rivalAccount != null">
+        RIVAL_ACCOUNT,
+      </if>
+      <if test="rivalAccountClass != null">
+        RIVAL_ACCOUNT_CLASS,
+      </if>
+      <if test="rivalAccountCl != null">
+        RIVAL_ACCOUNT_CL,
+      </if>
+      <if test="rivalUserId != null">
+        RIVAL_USER_ID,
+      </if>
+      <if test="rivalUserName != null">
+        RIVAL_USER_NAME,
+      </if>
+      <if test="reqSerialNo != null">
+        REQ_SERIAL_NO,
+      </if>
+      <if test="reqTransDate != null">
+        REQ_TRANS_DATE,
+      </if>
+      <if test="reqTransTime != null">
+        REQ_TRANS_TIME,
+      </if>
+      <if test="cost != null">
+        COST,
+      </if>
+      <if test="transDate != null">
+        TRANS_DATE,
+      </if>
+      <if test="status != null">
+        STATUS,
+      </if>
+      <if test="channel != null">
+        CHANNEL,
+      </if>
+      <if test="partyMarkNo != null">
+        PARTY_MARK_NO,
+      </if>
+      <if test="accountTypeItem != null">
+        ACCOUNT_TYPE_ITEM,
+      </if>
+      <if test="merchantId != null">
+        MERCHANT_ID,
+      </if>
+      <if test="userDefindMark != null">
+        USER_DEFIND_MARK,
+      </if>
+      <if test="integral != null">
+        INTEGRAL,
+      </if>
+      <if test="guaranteeDeposit != null">
+        GUARANTEE_DEPOSIT,
+      </if>
+      <if test="accountType != null">
+        ACCOUNT_TYPE,
+      </if>
+      <if test="time != null">
+        TIME,
+      </if>
+      <if test="accDate != null">
+        ACC_DATE,
+      </if>
+      <if test="replacementFlag != null">
+        REPLACEMENT_FLAG,
+      </if>
+      <if test="amount1 != null">
+        AMOUNT1,
+      </if>
+      <if test="amount2 != null">
+        AMOUNT2,
+      </if>
+      <if test="amount3 != null">
+        AMOUNT3,
+      </if>
+      <if test="amount4 != null">
+        AMOUNT4,
+      </if>
+      <if test="amount5 != null">
+        AMOUNT5,
+      </if>
+      <if test="amount6 != null">
+        AMOUNT6,
+      </if>
+      <if test="amount7 != null">
+        AMOUNT7,
+      </if>
+      <if test="amount8 != null">
+        AMOUNT8,
+      </if>
+      <if test="amount9 != null">
+        AMOUNT9,
+      </if>
+      <if test="amount10 != null">
+        AMOUNT10,
+      </if>
+      <if test="amount11 != null">
+        AMOUNT11,
+      </if>
+      <if test="amount12 != null">
+        AMOUNT12,
+      </if>
+      <if test="amount13 != null">
+        AMOUNT13,
+      </if>
+      <if test="amount14 != null">
+        AMOUNT14,
+      </if>
+      <if test="amount15 != null">
+        AMOUNT15,
+      </if>
+      <if test="amount16 != null">
+        AMOUNT16,
+      </if>
+      <if test="amount17 != null">
+        AMOUNT17,
+      </if>
+      <if test="amount18 != null">
+        AMOUNT18,
+      </if>
+      <if test="amount19 != null">
+        AMOUNT19,
+      </if>
+      <if test="amount20 != null">
+        AMOUNT20,
+      </if>
+      <if test="accountingTrans != null">
+        ACCOUNTING_TRANS,
+      </if>
+      <if test="businessType != null">
+        BUSINESS_TYPE,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="serialNo != null">
+        #{serialNo,jdbcType=VARCHAR},
+      </if>
+      <if test="transId != null">
+        #{transId,jdbcType=VARCHAR},
+      </if>
+      <if test="transType != null">
+        #{transType,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="userName != null">
+        #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="originalSerialNo != null">
+        #{originalSerialNo,jdbcType=VARCHAR},
+      </if>
+      <if test="originalTransDate != null">
+        #{originalTransDate,jdbcType=VARCHAR},
+      </if>
+      <if test="originalTransTime != null">
+        #{originalTransTime,jdbcType=VARCHAR},
+      </if>
+      <if test="sourceOfFunds != null">
+        #{sourceOfFunds,jdbcType=VARCHAR},
+      </if>
+      <if test="accountId != null">
+        #{accountId,jdbcType=VARCHAR},
+      </if>
+      <if test="accountClass != null">
+        #{accountClass,jdbcType=VARCHAR},
+      </if>
+      <if test="accountCl != null">
+        #{accountCl,jdbcType=VARCHAR},
+      </if>
+      <if test="rivalAccount != null">
+        #{rivalAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="rivalAccountClass != null">
+        #{rivalAccountClass,jdbcType=VARCHAR},
+      </if>
+      <if test="rivalAccountCl != null">
+        #{rivalAccountCl,jdbcType=VARCHAR},
+      </if>
+      <if test="rivalUserId != null">
+        #{rivalUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="rivalUserName != null">
+        #{rivalUserName,jdbcType=VARCHAR},
+      </if>
+      <if test="reqSerialNo != null">
+        #{reqSerialNo,jdbcType=VARCHAR},
+      </if>
+      <if test="reqTransDate != null">
+        #{reqTransDate,jdbcType=VARCHAR},
+      </if>
+      <if test="reqTransTime != null">
+        #{reqTransTime,jdbcType=VARCHAR},
+      </if>
+      <if test="cost != null">
+        #{cost,jdbcType=DECIMAL},
+      </if>
+      <if test="transDate != null">
+        #{transDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="channel != null">
+        #{channel,jdbcType=VARCHAR},
+      </if>
+      <if test="partyMarkNo != null">
+        #{partyMarkNo,jdbcType=VARCHAR},
+      </if>
+      <if test="accountTypeItem != null">
+        #{accountTypeItem,jdbcType=VARCHAR},
+      </if>
+      <if test="merchantId != null">
+        #{merchantId,jdbcType=VARCHAR},
+      </if>
+      <if test="userDefindMark != null">
+        #{userDefindMark,jdbcType=VARCHAR},
+      </if>
+      <if test="integral != null">
+        #{integral,jdbcType=DECIMAL},
+      </if>
+      <if test="guaranteeDeposit != null">
+        #{guaranteeDeposit,jdbcType=DECIMAL},
+      </if>
+      <if test="accountType != null">
+        #{accountType,jdbcType=VARCHAR},
+      </if>
+      <if test="time != null">
+        #{time,jdbcType=DECIMAL},
+      </if>
+      <if test="accDate != null">
+        #{accDate,jdbcType=VARCHAR},
+      </if>
+      <if test="replacementFlag != null">
+        #{replacementFlag,jdbcType=VARCHAR},
+      </if>
+      <if test="amount1 != null">
+        #{amount1,jdbcType=DECIMAL},
+      </if>
+      <if test="amount2 != null">
+        #{amount2,jdbcType=DECIMAL},
+      </if>
+      <if test="amount3 != null">
+        #{amount3,jdbcType=DECIMAL},
+      </if>
+      <if test="amount4 != null">
+        #{amount4,jdbcType=DECIMAL},
+      </if>
+      <if test="amount5 != null">
+        #{amount5,jdbcType=DECIMAL},
+      </if>
+      <if test="amount6 != null">
+        #{amount6,jdbcType=DECIMAL},
+      </if>
+      <if test="amount7 != null">
+        #{amount7,jdbcType=DECIMAL},
+      </if>
+      <if test="amount8 != null">
+        #{amount8,jdbcType=DECIMAL},
+      </if>
+      <if test="amount9 != null">
+        #{amount9,jdbcType=DECIMAL},
+      </if>
+      <if test="amount10 != null">
+        #{amount10,jdbcType=DECIMAL},
+      </if>
+      <if test="amount11 != null">
+        #{amount11,jdbcType=DECIMAL},
+      </if>
+      <if test="amount12 != null">
+        #{amount12,jdbcType=DECIMAL},
+      </if>
+      <if test="amount13 != null">
+        #{amount13,jdbcType=DECIMAL},
+      </if>
+      <if test="amount14 != null">
+        #{amount14,jdbcType=DECIMAL},
+      </if>
+      <if test="amount15 != null">
+        #{amount15,jdbcType=DECIMAL},
+      </if>
+      <if test="amount16 != null">
+        #{amount16,jdbcType=DECIMAL},
+      </if>
+      <if test="amount17 != null">
+        #{amount17,jdbcType=DECIMAL},
+      </if>
+      <if test="amount18 != null">
+        #{amount18,jdbcType=DECIMAL},
+      </if>
+      <if test="amount19 != null">
+        #{amount19,jdbcType=DECIMAL},
+      </if>
+      <if test="amount20 != null">
+        #{amount20,jdbcType=DECIMAL},
+      </if>
+      <if test="accountingTrans != null">
+        #{accountingTrans,jdbcType=VARCHAR},
+      </if>
+      <if test="businessType != null">
+        #{businessType,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="count" parameterType="com.smk.pay.dal.condtion.EntityCondition" resultType="java.lang.Integer">
+    select count(*) from TRANS_DETAIL
+    <if test="_parameter != null">
+      <include refid="Query_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateSelective" parameterType="map">
+    update TRANS_DETAIL
+    <set>
+      <if test="record.serialNo != null">
+        SERIAL_NO = #{record.serialNo,jdbcType=VARCHAR},
+      </if>
+      <if test="record.transId != null">
+        TRANS_ID = #{record.transId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.transType != null">
+        TRANS_TYPE = #{record.transType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.userId != null">
+        USER_ID = #{record.userId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.userName != null">
+        USER_NAME = #{record.userName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.originalSerialNo != null">
+        ORIGINAL_SERIAL_NO = #{record.originalSerialNo,jdbcType=VARCHAR},
+      </if>
+      <if test="record.originalTransDate != null">
+        ORIGINAL_TRANS_DATE = #{record.originalTransDate,jdbcType=VARCHAR},
+      </if>
+      <if test="record.originalTransTime != null">
+        ORIGINAL_TRANS_TIME = #{record.originalTransTime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.sourceOfFunds != null">
+        SOURCE_OF_FUNDS = #{record.sourceOfFunds,jdbcType=VARCHAR},
+      </if>
+      <if test="record.accountId != null">
+        ACCOUNT_ID = #{record.accountId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.accountClass != null">
+        ACCOUNT_CLASS = #{record.accountClass,jdbcType=VARCHAR},
+      </if>
+      <if test="record.accountCl != null">
+        ACCOUNT_CL = #{record.accountCl,jdbcType=VARCHAR},
+      </if>
+      <if test="record.rivalAccount != null">
+        RIVAL_ACCOUNT = #{record.rivalAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="record.rivalAccountClass != null">
+        RIVAL_ACCOUNT_CLASS = #{record.rivalAccountClass,jdbcType=VARCHAR},
+      </if>
+      <if test="record.rivalAccountCl != null">
+        RIVAL_ACCOUNT_CL = #{record.rivalAccountCl,jdbcType=VARCHAR},
+      </if>
+      <if test="record.rivalUserId != null">
+        RIVAL_USER_ID = #{record.rivalUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.rivalUserName != null">
+        RIVAL_USER_NAME = #{record.rivalUserName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.reqSerialNo != null">
+        REQ_SERIAL_NO = #{record.reqSerialNo,jdbcType=VARCHAR},
+      </if>
+      <if test="record.reqTransDate != null">
+        REQ_TRANS_DATE = #{record.reqTransDate,jdbcType=VARCHAR},
+      </if>
+      <if test="record.reqTransTime != null">
+        REQ_TRANS_TIME = #{record.reqTransTime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.cost != null">
+        COST = #{record.cost,jdbcType=DECIMAL},
+      </if>
+      <if test="record.transDate != null">
+        TRANS_DATE = #{record.transDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.status != null">
+        STATUS = #{record.status,jdbcType=VARCHAR},
+      </if>
+      <if test="record.channel != null">
+        CHANNEL = #{record.channel,jdbcType=VARCHAR},
+      </if>
+      <if test="record.partyMarkNo != null">
+        PARTY_MARK_NO = #{record.partyMarkNo,jdbcType=VARCHAR},
+      </if>
+      <if test="record.accountTypeItem != null">
+        ACCOUNT_TYPE_ITEM = #{record.accountTypeItem,jdbcType=VARCHAR},
+      </if>
+      <if test="record.merchantId != null">
+        MERCHANT_ID = #{record.merchantId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.userDefindMark != null">
+        USER_DEFIND_MARK = #{record.userDefindMark,jdbcType=VARCHAR},
+      </if>
+      <if test="record.integral != null">
+        INTEGRAL = #{record.integral,jdbcType=DECIMAL},
+      </if>
+      <if test="record.guaranteeDeposit != null">
+        GUARANTEE_DEPOSIT = #{record.guaranteeDeposit,jdbcType=DECIMAL},
+      </if>
+      <if test="record.accountType != null">
+        ACCOUNT_TYPE = #{record.accountType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.time != null">
+        TIME = #{record.time,jdbcType=DECIMAL},
+      </if>
+      <if test="record.accDate != null">
+        ACC_DATE = #{record.accDate,jdbcType=VARCHAR},
+      </if>
+      <if test="record.replacementFlag != null">
+        REPLACEMENT_FLAG = #{record.replacementFlag,jdbcType=VARCHAR},
+      </if>
+      <if test="record.amount1 != null">
+        AMOUNT1 = #{record.amount1,jdbcType=DECIMAL},
+      </if>
+      <if test="record.amount2 != null">
+        AMOUNT2 = #{record.amount2,jdbcType=DECIMAL},
+      </if>
+      <if test="record.amount3 != null">
+        AMOUNT3 = #{record.amount3,jdbcType=DECIMAL},
+      </if>
+      <if test="record.amount4 != null">
+        AMOUNT4 = #{record.amount4,jdbcType=DECIMAL},
+      </if>
+      <if test="record.amount5 != null">
+        AMOUNT5 = #{record.amount5,jdbcType=DECIMAL},
+      </if>
+      <if test="record.amount6 != null">
+        AMOUNT6 = #{record.amount6,jdbcType=DECIMAL},
+      </if>
+      <if test="record.amount7 != null">
+        AMOUNT7 = #{record.amount7,jdbcType=DECIMAL},
+      </if>
+      <if test="record.amount8 != null">
+        AMOUNT8 = #{record.amount8,jdbcType=DECIMAL},
+      </if>
+      <if test="record.amount9 != null">
+        AMOUNT9 = #{record.amount9,jdbcType=DECIMAL},
+      </if>
+      <if test="record.amount10 != null">
+        AMOUNT10 = #{record.amount10,jdbcType=DECIMAL},
+      </if>
+      <if test="record.amount11 != null">
+        AMOUNT11 = #{record.amount11,jdbcType=DECIMAL},
+      </if>
+      <if test="record.amount12 != null">
+        AMOUNT12 = #{record.amount12,jdbcType=DECIMAL},
+      </if>
+      <if test="record.amount13 != null">
+        AMOUNT13 = #{record.amount13,jdbcType=DECIMAL},
+      </if>
+      <if test="record.amount14 != null">
+        AMOUNT14 = #{record.amount14,jdbcType=DECIMAL},
+      </if>
+      <if test="record.amount15 != null">
+        AMOUNT15 = #{record.amount15,jdbcType=DECIMAL},
+      </if>
+      <if test="record.amount16 != null">
+        AMOUNT16 = #{record.amount16,jdbcType=DECIMAL},
+      </if>
+      <if test="record.amount17 != null">
+        AMOUNT17 = #{record.amount17,jdbcType=DECIMAL},
+      </if>
+      <if test="record.amount18 != null">
+        AMOUNT18 = #{record.amount18,jdbcType=DECIMAL},
+      </if>
+      <if test="record.amount19 != null">
+        AMOUNT19 = #{record.amount19,jdbcType=DECIMAL},
+      </if>
+      <if test="record.amount20 != null">
+        AMOUNT20 = #{record.amount20,jdbcType=DECIMAL},
+      </if>
+      <if test="record.accountingTrans != null">
+        ACCOUNTING_TRANS = #{record.accountingTrans,jdbcType=VARCHAR},
+      </if>
+      <if test="record.businessType != null">
+        BUSINESS_TYPE = #{record.businessType,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_Where_Clause" />
+    </if>
+  </update>
+  <update id="update" parameterType="map">
+    update TRANS_DETAIL
+    set SERIAL_NO = #{record.serialNo,jdbcType=VARCHAR},
+      TRANS_ID = #{record.transId,jdbcType=VARCHAR},
+      TRANS_TYPE = #{record.transType,jdbcType=VARCHAR},
+      USER_ID = #{record.userId,jdbcType=VARCHAR},
+      USER_NAME = #{record.userName,jdbcType=VARCHAR},
+      ORIGINAL_SERIAL_NO = #{record.originalSerialNo,jdbcType=VARCHAR},
+      ORIGINAL_TRANS_DATE = #{record.originalTransDate,jdbcType=VARCHAR},
+      ORIGINAL_TRANS_TIME = #{record.originalTransTime,jdbcType=VARCHAR},
+      SOURCE_OF_FUNDS = #{record.sourceOfFunds,jdbcType=VARCHAR},
+      ACCOUNT_ID = #{record.accountId,jdbcType=VARCHAR},
+      ACCOUNT_CLASS = #{record.accountClass,jdbcType=VARCHAR},
+      ACCOUNT_CL = #{record.accountCl,jdbcType=VARCHAR},
+      RIVAL_ACCOUNT = #{record.rivalAccount,jdbcType=VARCHAR},
+      RIVAL_ACCOUNT_CLASS = #{record.rivalAccountClass,jdbcType=VARCHAR},
+      RIVAL_ACCOUNT_CL = #{record.rivalAccountCl,jdbcType=VARCHAR},
+      RIVAL_USER_ID = #{record.rivalUserId,jdbcType=VARCHAR},
+      RIVAL_USER_NAME = #{record.rivalUserName,jdbcType=VARCHAR},
+      REQ_SERIAL_NO = #{record.reqSerialNo,jdbcType=VARCHAR},
+      REQ_TRANS_DATE = #{record.reqTransDate,jdbcType=VARCHAR},
+      REQ_TRANS_TIME = #{record.reqTransTime,jdbcType=VARCHAR},
+      COST = #{record.cost,jdbcType=DECIMAL},
+      TRANS_DATE = #{record.transDate,jdbcType=TIMESTAMP},
+      STATUS = #{record.status,jdbcType=VARCHAR},
+      CHANNEL = #{record.channel,jdbcType=VARCHAR},
+      PARTY_MARK_NO = #{record.partyMarkNo,jdbcType=VARCHAR},
+      ACCOUNT_TYPE_ITEM = #{record.accountTypeItem,jdbcType=VARCHAR},
+      MERCHANT_ID = #{record.merchantId,jdbcType=VARCHAR},
+      USER_DEFIND_MARK = #{record.userDefindMark,jdbcType=VARCHAR},
+      INTEGRAL = #{record.integral,jdbcType=DECIMAL},
+      GUARANTEE_DEPOSIT = #{record.guaranteeDeposit,jdbcType=DECIMAL},
+      ACCOUNT_TYPE = #{record.accountType,jdbcType=VARCHAR},
+      TIME = #{record.time,jdbcType=DECIMAL},
+      ACC_DATE = #{record.accDate,jdbcType=VARCHAR},
+      REPLACEMENT_FLAG = #{record.replacementFlag,jdbcType=VARCHAR},
+      AMOUNT1 = #{record.amount1,jdbcType=DECIMAL},
+      AMOUNT2 = #{record.amount2,jdbcType=DECIMAL},
+      AMOUNT3 = #{record.amount3,jdbcType=DECIMAL},
+      AMOUNT4 = #{record.amount4,jdbcType=DECIMAL},
+      AMOUNT5 = #{record.amount5,jdbcType=DECIMAL},
+      AMOUNT6 = #{record.amount6,jdbcType=DECIMAL},
+      AMOUNT7 = #{record.amount7,jdbcType=DECIMAL},
+      AMOUNT8 = #{record.amount8,jdbcType=DECIMAL},
+      AMOUNT9 = #{record.amount9,jdbcType=DECIMAL},
+      AMOUNT10 = #{record.amount10,jdbcType=DECIMAL},
+      AMOUNT11 = #{record.amount11,jdbcType=DECIMAL},
+      AMOUNT12 = #{record.amount12,jdbcType=DECIMAL},
+      AMOUNT13 = #{record.amount13,jdbcType=DECIMAL},
+      AMOUNT14 = #{record.amount14,jdbcType=DECIMAL},
+      AMOUNT15 = #{record.amount15,jdbcType=DECIMAL},
+      AMOUNT16 = #{record.amount16,jdbcType=DECIMAL},
+      AMOUNT17 = #{record.amount17,jdbcType=DECIMAL},
+      AMOUNT18 = #{record.amount18,jdbcType=DECIMAL},
+      AMOUNT19 = #{record.amount19,jdbcType=DECIMAL},
+      AMOUNT20 = #{record.amount20,jdbcType=DECIMAL},
+      ACCOUNTING_TRANS = #{record.accountingTrans,jdbcType=VARCHAR},
+      BUSINESS_TYPE = #{record.businessType,jdbcType=VARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.smk.pay.core.entity.TransDetailEntity">
+    update TRANS_DETAIL
+    <set>
+      <if test="transType != null">
+        TRANS_TYPE = #{transType,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null">
+        USER_ID = #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="userName != null">
+        USER_NAME = #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="originalSerialNo != null">
+        ORIGINAL_SERIAL_NO = #{originalSerialNo,jdbcType=VARCHAR},
+      </if>
+      <if test="originalTransDate != null">
+        ORIGINAL_TRANS_DATE = #{originalTransDate,jdbcType=VARCHAR},
+      </if>
+      <if test="originalTransTime != null">
+        ORIGINAL_TRANS_TIME = #{originalTransTime,jdbcType=VARCHAR},
+      </if>
+      <if test="sourceOfFunds != null">
+        SOURCE_OF_FUNDS = #{sourceOfFunds,jdbcType=VARCHAR},
+      </if>
+      <if test="accountId != null">
+        ACCOUNT_ID = #{accountId,jdbcType=VARCHAR},
+      </if>
+      <if test="accountClass != null">
+        ACCOUNT_CLASS = #{accountClass,jdbcType=VARCHAR},
+      </if>
+      <if test="accountCl != null">
+        ACCOUNT_CL = #{accountCl,jdbcType=VARCHAR},
+      </if>
+      <if test="rivalAccount != null">
+        RIVAL_ACCOUNT = #{rivalAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="rivalAccountClass != null">
+        RIVAL_ACCOUNT_CLASS = #{rivalAccountClass,jdbcType=VARCHAR},
+      </if>
+      <if test="rivalAccountCl != null">
+        RIVAL_ACCOUNT_CL = #{rivalAccountCl,jdbcType=VARCHAR},
+      </if>
+      <if test="rivalUserId != null">
+        RIVAL_USER_ID = #{rivalUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="rivalUserName != null">
+        RIVAL_USER_NAME = #{rivalUserName,jdbcType=VARCHAR},
+      </if>
+      <if test="reqSerialNo != null">
+        REQ_SERIAL_NO = #{reqSerialNo,jdbcType=VARCHAR},
+      </if>
+      <if test="reqTransDate != null">
+        REQ_TRANS_DATE = #{reqTransDate,jdbcType=VARCHAR},
+      </if>
+      <if test="reqTransTime != null">
+        REQ_TRANS_TIME = #{reqTransTime,jdbcType=VARCHAR},
+      </if>
+      <if test="cost != null">
+        COST = #{cost,jdbcType=DECIMAL},
+      </if>
+      <if test="transDate != null">
+        TRANS_DATE = #{transDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null">
+        STATUS = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="channel != null">
+        CHANNEL = #{channel,jdbcType=VARCHAR},
+      </if>
+      <if test="partyMarkNo != null">
+        PARTY_MARK_NO = #{partyMarkNo,jdbcType=VARCHAR},
+      </if>
+      <if test="accountTypeItem != null">
+        ACCOUNT_TYPE_ITEM = #{accountTypeItem,jdbcType=VARCHAR},
+      </if>
+      <if test="merchantId != null">
+        MERCHANT_ID = #{merchantId,jdbcType=VARCHAR},
+      </if>
+      <if test="userDefindMark != null">
+        USER_DEFIND_MARK = #{userDefindMark,jdbcType=VARCHAR},
+      </if>
+      <if test="integral != null">
+        INTEGRAL = #{integral,jdbcType=DECIMAL},
+      </if>
+      <if test="guaranteeDeposit != null">
+        GUARANTEE_DEPOSIT = #{guaranteeDeposit,jdbcType=DECIMAL},
+      </if>
+      <if test="accountType != null">
+        ACCOUNT_TYPE = #{accountType,jdbcType=VARCHAR},
+      </if>
+      <if test="time != null">
+        TIME = #{time,jdbcType=DECIMAL},
+      </if>
+      <if test="accDate != null">
+        ACC_DATE = #{accDate,jdbcType=VARCHAR},
+      </if>
+      <if test="replacementFlag != null">
+        REPLACEMENT_FLAG = #{replacementFlag,jdbcType=VARCHAR},
+      </if>
+      <if test="amount1 != null">
+        AMOUNT1 = #{amount1,jdbcType=DECIMAL},
+      </if>
+      <if test="amount2 != null">
+        AMOUNT2 = #{amount2,jdbcType=DECIMAL},
+      </if>
+      <if test="amount3 != null">
+        AMOUNT3 = #{amount3,jdbcType=DECIMAL},
+      </if>
+      <if test="amount4 != null">
+        AMOUNT4 = #{amount4,jdbcType=DECIMAL},
+      </if>
+      <if test="amount5 != null">
+        AMOUNT5 = #{amount5,jdbcType=DECIMAL},
+      </if>
+      <if test="amount6 != null">
+        AMOUNT6 = #{amount6,jdbcType=DECIMAL},
+      </if>
+      <if test="amount7 != null">
+        AMOUNT7 = #{amount7,jdbcType=DECIMAL},
+      </if>
+      <if test="amount8 != null">
+        AMOUNT8 = #{amount8,jdbcType=DECIMAL},
+      </if>
+      <if test="amount9 != null">
+        AMOUNT9 = #{amount9,jdbcType=DECIMAL},
+      </if>
+      <if test="amount10 != null">
+        AMOUNT10 = #{amount10,jdbcType=DECIMAL},
+      </if>
+      <if test="amount11 != null">
+        AMOUNT11 = #{amount11,jdbcType=DECIMAL},
+      </if>
+      <if test="amount12 != null">
+        AMOUNT12 = #{amount12,jdbcType=DECIMAL},
+      </if>
+      <if test="amount13 != null">
+        AMOUNT13 = #{amount13,jdbcType=DECIMAL},
+      </if>
+      <if test="amount14 != null">
+        AMOUNT14 = #{amount14,jdbcType=DECIMAL},
+      </if>
+      <if test="amount15 != null">
+        AMOUNT15 = #{amount15,jdbcType=DECIMAL},
+      </if>
+      <if test="amount16 != null">
+        AMOUNT16 = #{amount16,jdbcType=DECIMAL},
+      </if>
+      <if test="amount17 != null">
+        AMOUNT17 = #{amount17,jdbcType=DECIMAL},
+      </if>
+      <if test="amount18 != null">
+        AMOUNT18 = #{amount18,jdbcType=DECIMAL},
+      </if>
+      <if test="amount19 != null">
+        AMOUNT19 = #{amount19,jdbcType=DECIMAL},
+      </if>
+      <if test="amount20 != null">
+        AMOUNT20 = #{amount20,jdbcType=DECIMAL},
+      </if>
+      <if test="accountingTrans != null">
+        ACCOUNTING_TRANS = #{accountingTrans,jdbcType=VARCHAR},
+      </if>
+      <if test="businessType != null">
+        BUSINESS_TYPE = #{businessType,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where SERIAL_NO = #{serialNo,jdbcType=VARCHAR}
+      and TRANS_ID = #{transId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.smk.pay.core.entity.TransDetailEntity">
+    update TRANS_DETAIL
+    set TRANS_TYPE = #{transType,jdbcType=VARCHAR},
+      USER_ID = #{userId,jdbcType=VARCHAR},
+      USER_NAME = #{userName,jdbcType=VARCHAR},
+      ORIGINAL_SERIAL_NO = #{originalSerialNo,jdbcType=VARCHAR},
+      ORIGINAL_TRANS_DATE = #{originalTransDate,jdbcType=VARCHAR},
+      ORIGINAL_TRANS_TIME = #{originalTransTime,jdbcType=VARCHAR},
+      SOURCE_OF_FUNDS = #{sourceOfFunds,jdbcType=VARCHAR},
+      ACCOUNT_ID = #{accountId,jdbcType=VARCHAR},
+      ACCOUNT_CLASS = #{accountClass,jdbcType=VARCHAR},
+      ACCOUNT_CL = #{accountCl,jdbcType=VARCHAR},
+      RIVAL_ACCOUNT = #{rivalAccount,jdbcType=VARCHAR},
+      RIVAL_ACCOUNT_CLASS = #{rivalAccountClass,jdbcType=VARCHAR},
+      RIVAL_ACCOUNT_CL = #{rivalAccountCl,jdbcType=VARCHAR},
+      RIVAL_USER_ID = #{rivalUserId,jdbcType=VARCHAR},
+      RIVAL_USER_NAME = #{rivalUserName,jdbcType=VARCHAR},
+      REQ_SERIAL_NO = #{reqSerialNo,jdbcType=VARCHAR},
+      REQ_TRANS_DATE = #{reqTransDate,jdbcType=VARCHAR},
+      REQ_TRANS_TIME = #{reqTransTime,jdbcType=VARCHAR},
+      COST = #{cost,jdbcType=DECIMAL},
+      TRANS_DATE = #{transDate,jdbcType=TIMESTAMP},
+      STATUS = #{status,jdbcType=VARCHAR},
+      CHANNEL = #{channel,jdbcType=VARCHAR},
+      PARTY_MARK_NO = #{partyMarkNo,jdbcType=VARCHAR},
+      ACCOUNT_TYPE_ITEM = #{accountTypeItem,jdbcType=VARCHAR},
+      MERCHANT_ID = #{merchantId,jdbcType=VARCHAR},
+      USER_DEFIND_MARK = #{userDefindMark,jdbcType=VARCHAR},
+      INTEGRAL = #{integral,jdbcType=DECIMAL},
+      GUARANTEE_DEPOSIT = #{guaranteeDeposit,jdbcType=DECIMAL},
+      ACCOUNT_TYPE = #{accountType,jdbcType=VARCHAR},
+      TIME = #{time,jdbcType=DECIMAL},
+      ACC_DATE = #{accDate,jdbcType=VARCHAR},
+      REPLACEMENT_FLAG = #{replacementFlag,jdbcType=VARCHAR},
+      AMOUNT1 = #{amount1,jdbcType=DECIMAL},
+      AMOUNT2 = #{amount2,jdbcType=DECIMAL},
+      AMOUNT3 = #{amount3,jdbcType=DECIMAL},
+      AMOUNT4 = #{amount4,jdbcType=DECIMAL},
+      AMOUNT5 = #{amount5,jdbcType=DECIMAL},
+      AMOUNT6 = #{amount6,jdbcType=DECIMAL},
+      AMOUNT7 = #{amount7,jdbcType=DECIMAL},
+      AMOUNT8 = #{amount8,jdbcType=DECIMAL},
+      AMOUNT9 = #{amount9,jdbcType=DECIMAL},
+      AMOUNT10 = #{amount10,jdbcType=DECIMAL},
+      AMOUNT11 = #{amount11,jdbcType=DECIMAL},
+      AMOUNT12 = #{amount12,jdbcType=DECIMAL},
+      AMOUNT13 = #{amount13,jdbcType=DECIMAL},
+      AMOUNT14 = #{amount14,jdbcType=DECIMAL},
+      AMOUNT15 = #{amount15,jdbcType=DECIMAL},
+      AMOUNT16 = #{amount16,jdbcType=DECIMAL},
+      AMOUNT17 = #{amount17,jdbcType=DECIMAL},
+      AMOUNT18 = #{amount18,jdbcType=DECIMAL},
+      AMOUNT19 = #{amount19,jdbcType=DECIMAL},
+      AMOUNT20 = #{amount20,jdbcType=DECIMAL},
+      ACCOUNTING_TRANS = #{accountingTrans,jdbcType=VARCHAR},
+      BUSINESS_TYPE = #{businessType,jdbcType=VARCHAR}
+    where SERIAL_NO = #{serialNo,jdbcType=VARCHAR}
+      and TRANS_ID = #{transId,jdbcType=VARCHAR}
+  </update>
+
+</mapper>

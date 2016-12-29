@@ -1,0 +1,40 @@
+package com.smk.pay.core.enums;
+
+/**
+ * 参考trans_function表
+ *
+ * Project plouto
+ * Created by chuanzhi.macz
+ * Date 2016/11/10 17:27
+ */
+public enum AccountTransTypeEnum {
+
+    OPEN_ACCOUNT("09", "开户"),
+
+    ALTER_ACCOUNT_LEVEL("11", "变更账户等级"),
+
+    RECHARGE("01", "账户充值"),
+
+    CONSUME("04", "消费"),
+
+    WITHDRAW("10", "提现"),
+
+    INTERNAL_TRANSFER("23", "内部转账");
+
+    private String key;
+
+    private String value;
+
+    AccountTransTypeEnum(String key, String value) {
+        this.key = key;
+        this.value = value;
+    }
+
+    public String key() {
+        return this.key;
+    }
+
+    public String value() {
+        return this.value;
+    }
+}

@@ -1,0 +1,13 @@
+package com.smk.pay.core.mapper;
+
+import com.smk.pay.core.entity.AccountInfoEntity ;
+import org.apache.ibatis.annotations.Mapper;
+
+/**
+ * 账户信息Mapper接口类
+ */
+@Mapper
+public interface AccountInfoEntityMapper extends BaseEntityMapper<AccountInfoEntity> {
+
+    AccountInfoEntity selectCardAccountByCardNo(String cardNo);
+}

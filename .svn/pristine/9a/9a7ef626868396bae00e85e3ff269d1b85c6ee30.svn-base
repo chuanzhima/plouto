@@ -1,0 +1,43 @@
+package com.smk.pay.core.api;
+
+import com.smk.pay.account.core.enums.AccountChannelEnum;
+import com.smk.pay.account.core.enums.AccountFundFlowEnum;
+import com.smk.pay.account.core.enums.AccountTypeEnum;
+import com.smk.pay.account.core.request.RequestHeader;
+import com.smk.pay.account.core.response.RpcResponse;
+import com.smk.pay.account.core.service.IAccountRechargeService;
+import com.smk.pay.core.base.BaseServiceTest;
+import org.junit.Assert;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.math.BigDecimal;
+
+/**
+ * AccountRechargeService Tester.
+ *
+ * @author <Authors name>
+ * @version 1.0
+ * @since <pre>11/29/2016</pre>
+ */
+public class AccountRechargeServiceTest extends BaseServiceTest {
+
+    @Autowired
+    private IAccountRechargeService accountRechargeService;
+
+    @org.junit.Test
+    public void testRecharge() {
+
+        RequestHeader header = new RequestHeader("20161129", "143223", "201611291432231233");
+        String merchantId = "123";
+        String userId = "123457";
+        String cardNumber = "A123456";
+        BigDecimal amount = new BigDecimal(1111);
+        String bankId = "0001";
+        String companyId = "111";
+
+        RpcResponse<String> response = accountRechargeService.recharge(header, AccountChannelEnum.INTERNET, merchantId,
+                AccountTypeEnum.OFFLINE, cardNumber, AccountFundFlowEnum.GGK, amount, bankId, companyId);
+        Assert.assertNotNull(response);
+    }
+
+}

@@ -1,0 +1,26 @@
+package com.smk.pay.core.manager;
+
+import com.smk.pay.core.dto.AccountInfoDto;
+
+/**
+ * Project plouto
+ * Created by chuanzhi.macz
+ * Date 2016/10/23 19:26
+ */
+public interface IAccountQueryManager {
+
+
+    /**
+     * 查询互联网账户信息
+     * @param userId
+     * @return
+     */
+    AccountInfoDto getAccountByUserId(final String userId);
+
+    /**
+     * 根据账户id查询账户信息
+     * @param accountId
+     * @return
+     */
+    AccountInfoDto queryAccountById(String accountId);
+}

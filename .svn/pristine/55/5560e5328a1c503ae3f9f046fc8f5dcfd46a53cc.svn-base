@@ -1,0 +1,9 @@
+package com.smk.pay.core.manager;
+
+/**
+ * Project plouto
+ * Created by chuanzhi.macz
+ * Date 2016/10/23 19:27
+ */
+public interface IAccountCommonManager {
+}

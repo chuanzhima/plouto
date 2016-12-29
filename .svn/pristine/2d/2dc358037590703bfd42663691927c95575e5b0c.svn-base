@@ -1,0 +1,23 @@
+package com.smk.pay.core.validator.base;
+
+import com.smk.pay.core.manager.ITransDetailManager;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+/**
+ * Project plouto
+ * Created by chuanzhi.macz
+ * Date 2016/11/15 11:44
+ */
+@Component(value = "transValidator")
+public class TransValidator {
+
+    @Autowired
+    private ITransDetailManager transDetailManager;
+
+    public Boolean isRepeatTrans(String ... params) {
+        return transDetailManager.isRepeatTrans(params);
+    }
+
+
+}

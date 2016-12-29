@@ -1,0 +1,23 @@
+package com.smk.pay.core.api;
+
+import com.smk.pay.account.core.service.IAccountQueryService;
+import com.smk.pay.core.base.BaseServiceTest;
+import org.springframework.beans.factory.annotation.Autowired;
+
+/**
+ * AccountQueryService Tester.
+ *
+ * @author <Authors name>
+ * @version 1.0
+ * @since <pre>11/08/2016</pre>
+ */
+public class AccountQueryServiceTest extends BaseServiceTest {
+
+    @Autowired
+    private IAccountQueryService accountQueryService;
+
+    @org.junit.Test
+    public void testQueryAccountByIdNo() {
+        // TODO
+    }
+}

@@ -1,0 +1,25 @@
+package com.smk.pay.core.manager;
+
+import com.smk.pay.core.dto.AccountInfoDto;
+import com.smk.pay.dal.condtion.EntityCondition;
+
+import java.util.Date;
+import java.util.List;
+
+/**
+ * Project plouto
+ * Created by chuanzhi.macz
+ * Date 2016/11/3 14:06
+ */
+public interface IAccountBaseManager<T> {
+
+    String addAccount(T t);
+
+    int updateAccountStatus(String accountId, Date lastUpdateDate, String oldStatus, String
+            newStatus);
+
+    int updateAccountLevel(String accountId, Date lastUpdateDate, String oldLevel, String newLevel);
+
+    int updateAccountAmount(String accountId, AccountInfoDto oldAmount, AccountInfoDto newAmount);
+
+}

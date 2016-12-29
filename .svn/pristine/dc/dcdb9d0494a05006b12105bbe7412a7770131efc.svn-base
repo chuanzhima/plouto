@@ -1,0 +1,83 @@
+package com.smk.pay.core.manager.impl;
+
+import com.smk.pay.account.core.constant.AccountConstant;
+import com.smk.pay.account.core.enums.AccountTypeEnum;
+import com.smk.pay.core.constant.AccountSysConstant;
+import com.smk.pay.core.dto.AccountInfoDto;
+import com.smk.pay.core.dto.AccountTaskInfoDto;
+import com.smk.pay.core.entity.AccountInfoEntity;
+import com.smk.pay.core.entity.AccountTaskInfoEntity;
+import com.smk.pay.core.exception.ServiceException;
+import com.smk.pay.core.manager.IAccountTaskInfoManager;
+import com.smk.pay.core.mapper.AccountTaskInfoEntityMapper;
+import com.smk.pay.core.utils.BeanCopierCacheUtil;
+import com.smk.pay.dal.condtion.Criteria;
+import com.smk.pay.dal.condtion.EntityCondition;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
+
+import java.util.Date;
+import java.util.List;
+
+/**
+ * Project plouto
+ * Created by chuanzhi.macz
+ * Date 2016/10/26 14:40
+ */
+public class AccountTaskInfoManagerImpl implements IAccountTaskInfoManager {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(AccountTaskInfoManagerImpl.class);
+    @Autowired
+    private AccountTaskInfoEntityMapper accountTaskInfoEntityMapper;
+
+    public AccountTaskInfoDto getByAccountIdType(String accountId, String type) {
+
+        AccountTaskInfoDto accountTaskInfoDto;
+        try {
+            List<AccountTaskInfoEntity> accountTaskInfoEntityList = accountTaskInfoEntityMapper.selectList(new
+                    EntityCondition()
+                    .addCriteria(new Criteria().addCriterion("IS_DELETED = ", AccountSysConstant
+                            .IS_DELETED_N, AccountSysConstant.COLUMN_IS_DELETED)
+                            .addCriterion("ACCOUNT_ID = ", accountId, "ACCOUNT_ID")
+                            .addCriterion("TYPE = ", type, "TYPE")));
+            if (CollectionUtils.isEmpty(accountTaskInfoEntityList)) {
+                return null;
+            }
+            accountTaskInfoDto = new AccountTaskInfoDto();
+            AccountTaskInfoEntity accountTaskInfoEntity = accountTaskInfoEntityList.get(0);
+            BeanCopierCacheUtil.copy(accountTaskInfoEntity, accountTaskInfoDto, null);
+        } catch (Exception e) {
+            throw new ServiceException(e);
+        }
+        return accountTaskInfoDto;
+    }
+
+    public void updateStatusByAccountIdType(String accountId, String type, String status, String
+            modifier) {
+        AccountTaskInfoEntity accountTaskInfoEntity = new AccountTaskInfoEntity(modifier, new
+                Date(), status, null, null);
+        try {
+            accountTaskInfoEntityMapper.updateSelective(accountTaskInfoEntity, new EntityCondition()
+                    .addCriteria(new Criteria().addCriterion("ACCOUNT_ID = ", accountId,
+                            "ACCOUNT_ID").addCriterion("TYPE = ", type, "TYPE").addCriterion
+                            ("IS_DELETED = ", AccountSysConstant
+                                    .IS_DELETED_N, AccountSysConstant.COLUMN_IS_DELETED)));
+        } catch (Exception e) {
+            throw new ServiceException(e);
+        }
+    }
+
+    public void add(AccountTaskInfoDto accountTaskInfoDto) {
+
+        try {
+            AccountTaskInfoEntity accountTaskInfoEntity = new AccountTaskInfoEntity();
+            BeanCopierCacheUtil.copy(accountTaskInfoDto, accountTaskInfoEntity, null);
+            accountTaskInfoEntityMapper.insertSelective(accountTaskInfoEntity);
+        } catch (Exception e) {
+            throw new ServiceException(e);
+        }
+
+    }
+}

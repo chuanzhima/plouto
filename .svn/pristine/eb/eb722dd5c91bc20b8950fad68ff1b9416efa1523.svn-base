@@ -1,0 +1,50 @@
+package com.smk.pay.core.manager.impl;
+
+import com.smk.pay.core.dto.AccountImpostorInfo;
+import com.smk.pay.core.entity.ImpostorEntity;
+import com.smk.pay.core.manager.IAccountImpostorManager;
+import com.smk.pay.core.mapper.ImpostorEntityMapper;
+import com.smk.pay.core.utils.BeanCopierCacheUtil;
+import com.smk.pay.dal.condtion.Criteria;
+import com.smk.pay.dal.condtion.EntityCondition;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.Date;
+import java.util.List;
+
+/**
+ * Project plouto
+ * Created by chuanzhi.macz
+ * Date 2016/11/2 15:03
+ */
+@Service("accountImpostorManager")
+public class AccountImpostorManagerImpl implements IAccountImpostorManager {
+
+    @Autowired
+    private ImpostorEntityMapper impostorEntityMapper;
+
+    public void add(AccountImpostorInfo impostorInfo) {
+        ImpostorEntity impostorEntity = new ImpostorEntity("backoffice", new Date(),
+                "backoffice", new Date(), "n");
+        BeanCopierCacheUtil.copy(impostorInfo, impostorEntity, null);
+        impostorEntityMapper.insert(impostorEntity);
+    }
+
+    public List<AccountImpostorInfo> query() {
+        return null;
+    }
+
+    public void update(String credentialNo, AccountImpostorInfo impostorInfo) {
+
+        ImpostorEntity impostorEntity = new ImpostorEntity("backoffice", new Date());
+        BeanCopierCacheUtil.copy(impostorInfo, impostorEntity, null);
+        impostorEntityMapper.updateSelective(impostorEntity, new EntityCondition().addCriteria
+                (new Criteria().addCriterion("CREDENTIAL_NO = ", credentialNo, "CREDENTIAL_NO")));
+    }
+
+    public void delete(String credentialNo) {
+        impostorEntityMapper.delete(new EntityCondition().addCriteria
+                (new Criteria().addCriterion("CREDENTIAL_NO = ", credentialNo, "CREDENTIAL_NO")));
+    }
+}

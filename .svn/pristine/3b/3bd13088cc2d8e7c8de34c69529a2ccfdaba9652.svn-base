@@ -1,0 +1,51 @@
+package com.smk.pay.core.api;
+
+import com.smk.pay.account.core.enums.AccountChannelEnum;
+import com.smk.pay.account.core.enums.AccountFundFlowEnum;
+import com.smk.pay.account.core.enums.AccountTypeEnum;
+import com.smk.pay.account.core.request.RequestHeader;
+import com.smk.pay.account.core.response.RpcResponse;
+import com.smk.pay.account.core.service.IAccountRechargeService;
+import com.smk.pay.core.annotations.DubboServiceLog;
+import com.smk.pay.core.constant.ResultCodeConstant;
+import com.smk.pay.core.manager.IAccountRechargeManager;
+import com.smk.pay.core.utils.PropertiesUtil;
+import com.smk.pay.core.utils.StringUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+
+/**
+ * Project plouto
+ * Created by chuanzhi.macz
+ * Date 2016/11/8 13:57
+ */
+@Service(value = "accountRechargeService")
+public class AccountRechargeService implements IAccountRechargeService {
+
+    @Autowired
+    private IAccountRechargeManager accountRechargeManager;
+
+    @DubboServiceLog
+    public RpcResponse<String> recharge(RequestHeader header, AccountChannelEnum channelEnum,
+                                        String merchantId, AccountTypeEnum typeEnum,
+                                        String typeValue, AccountFundFlowEnum fundFlowEnum,
+                                        BigDecimal amount, String bankId, String companyId) {
+
+        if (header == null || channelEnum == null || typeEnum == null || amount ==  null || fundFlowEnum == null ||
+                StringUtil.isEmpty(header.getReqSeq(), header.getTxDate(), header.getTxTime(), merchantId, typeValue,
+                        bankId, companyId)) {
+            return new RpcResponse<>(Boolean.FALSE, ResultCodeConstant
+                    .PARAMETER_INVALID, PropertiesUtil.LOCALE_PROPERTIES_Map.get(ResultCodeConstant
+                    .PARAMETER_INVALID));
+        }
+        accountRechargeManager.recharge(header, channelEnum, merchantId, typeEnum.value(), typeValue, fundFlowEnum,
+                amount, bankId, companyId);
+
+        return new RpcResponse<>(Boolean.TRUE, ResultCodeConstant.SUCCESS, PropertiesUtil.LOCALE_PROPERTIES_Map.get
+                (ResultCodeConstant.SUCCESS));
+    }
+}

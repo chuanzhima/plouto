@@ -1,0 +1,47 @@
+package com.smk.pay.core.api;
+
+import com.smk.pay.account.core.constant.AccountConstant;
+import com.smk.pay.account.core.enums.AccountTypeEnum;
+import com.smk.pay.account.core.request.OpenAccountRequest;
+import com.smk.pay.account.core.response.RpcResponse;
+import com.smk.pay.account.core.service.IAccountMngService;
+import com.smk.pay.core.base.BaseServiceTest;
+import org.junit.*;
+import org.springframework.beans.factory.annotation.Autowired;
+
+/**
+ * AccountMngService Tester.
+ *
+ * @author <Authors name>
+ * @version 1.0
+ * @since <pre>11/08/2016</pre>
+ */
+public class AccountMngServiceTest extends BaseServiceTest {
+
+    @Autowired
+    private IAccountMngService accountMngService;
+
+    @Before
+    public void before() {
+        // TODO
+    }
+
+    @After
+    public void after() {
+        // TODO
+    }
+
+
+    @org.junit.Test
+    public void testOpenAccount() {
+
+        OpenAccountRequest openAccountRequest = new OpenAccountRequest("123457", "猪刚鬣1",
+                AccountConstant.CREDENTIAL_TYPE_ID, "370881199612311235");
+        openAccountRequest.setUserCls(OpenAccountRequest.OPEN_ACCOUNT_PERSONAL);
+        RpcResponse<String> response = accountMngService.openAccount(openAccountRequest,
+                AccountTypeEnum.ONLINE);
+        Assert.assertTrue(response.getIsSucc());
+    }
+
+
+}

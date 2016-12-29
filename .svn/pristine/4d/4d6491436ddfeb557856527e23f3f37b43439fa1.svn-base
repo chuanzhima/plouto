@@ -1,0 +1,154 @@
+package com.smk.pay.core.manager.impl;
+
+import com.smk.pay.account.core.enums.AccountLevelEnum;
+import com.smk.pay.account.core.enums.AccountTypeEnum;
+import com.smk.pay.core.constant.AccountBizConstant;
+import com.smk.pay.core.dto.AccountInfoDto;
+import com.smk.pay.core.dto.TransDetailDto;
+import com.smk.pay.core.entity.AccountInfoEntity;
+import com.smk.pay.core.entity.LimitsEntity;
+import com.smk.pay.core.enums.AccountTransTypeEnum;
+import com.smk.pay.core.exception.ServiceException;
+import com.smk.pay.core.manager.IAccountQueryManager;
+import com.smk.pay.core.mapper.AccountInfoEntityMapper;
+import com.smk.pay.core.mapper.LimitsEntityMapper;
+import com.smk.pay.core.utils.BeanCopierCacheUtil;
+import com.smk.pay.core.utils.DateUtil;
+import com.smk.pay.dal.condtion.Criteria;
+import com.smk.pay.dal.condtion.EntityCondition;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+
+/**
+ * Project plouto
+ * Created by chuanzhi.macz
+ * Date 2016/10/24 9:49
+ */
+@Service("accountQueryManager")
+public class AccountQueryManagerImpl implements IAccountQueryManager {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(AccountQueryManagerImpl.class);
+    @Autowired
+    private AccountInfoEntityMapper accountInfoEntityMapper;
+    @Autowired
+    private LimitsEntityMapper limitsEntityMapper;
+    @Autowired
+    private TransDetailManager transDetailManager;
+
+    public List<AccountInfoDto> queryAccountByUserId(String userId, boolean isIncludeMerged) {
+
+        if (!isIncludeMerged)
+            return Arrays.asList(queryMainAccountByUserId(userId));
+
+        List<AccountInfoDto> accountInfoDtoList = new ArrayList<AccountInfoDto>();
+        try {
+            List<AccountInfoEntity> accountInfoEntityList = accountInfoEntityMapper.selectList(new
+                    EntityCondition()
+                    .addCriteria(new Criteria().addCriterion("USER_ID = ", userId, "USER_ID")));
+            if (CollectionUtils.isEmpty(accountInfoEntityList)) {
+                return null;
+            }
+            for (AccountInfoEntity infoEntity : accountInfoEntityList) {
+                AccountInfoDto accountInfoDto = new AccountInfoDto.Builder().build();
+                BeanCopierCacheUtil.copy(infoEntity, accountInfoDto, null);
+                accountInfoDtoList.add(accountInfoDto);
+            }
+        } catch (Exception e) {
+            throw new ServiceException(e);
+        }
+        return accountInfoDtoList;
+    }
+
+    public AccountInfoDto queryMainAccountByUserId(String userId) {
+
+        Criteria criteria = new Criteria();
+        criteria.addCriterion("USER_ID = ", userId, "USER_ID")
+                .addCriterion("ACCOUNT_TYPE = ", AccountTypeEnum.ONLINE.value(), "ACCOUNT_TYPE");
+
+        AccountInfoDto accountInfoDto = null;
+        try {
+            List<AccountInfoEntity> accountInfoEntityList = accountInfoEntityMapper.selectList(new
+                    EntityCondition()
+                    .addCriteria(criteria));
+            if (CollectionUtils.isEmpty(accountInfoEntityList)) {
+                return accountInfoDto;
+            }
+            accountInfoDto = new AccountInfoDto.Builder().build();
+            AccountInfoEntity accountInfoEntity = accountInfoEntityList.get(0);
+            BeanCopierCacheUtil.copy(accountInfoEntity, accountInfoDto, null);
+        } catch (Exception e) {
+            throw new ServiceException(e);
+        }
+        return accountInfoDto;
+    }
+
+    public List<BigDecimal> queryAvailableAmount(String value, AccountTypeEnum typeEnum) {
+
+        List<BigDecimal> amountList = new ArrayList<BigDecimal>();
+        LimitsEntity entity = limitsEntityMapper.selectOne();
+        BigDecimal firstLevelLimit = entity.getYlzhLimit();
+        BigDecimal secondLevelLimit = entity.getElzhLimit();
+        BigDecimal thirdLevelLimit = entity.getSlzhLimit();
+        String totalType = entity.getTotalType();
+
+        String accountId = "";
+        Date toDate = new Date();
+        Date fromDate = null;
+        if (AccountBizConstant.LIMITS_TOTAL_TYPE_1.equals(totalType)) {
+            fromDate = DateUtil.thisYear();
+        } else {
+            fromDate = DateUtil.addMonth(toDate, -12);
+        }
+        // TODO validate
+        if (AccountTypeEnum.ONLINE == typeEnum) {
+            AccountInfoDto accountInfoDto = queryMainAccountByUserId(value);
+            String accountLevel = accountInfoDto.getAccountClass();
+            if (AccountLevelEnum.FIRST.value().equals(accountLevel)) {
+                fromDate = toDate = null;
+            }
+            accountId = accountInfoDto.getAccountId();
+            TransDetailDto  transDetailDto = transDetailManager.querySumAccount(Arrays.asList
+                            (AccountTransTypeEnum.CONSUME.key(), AccountTransTypeEnum.WITHDRAW.key(),
+                                    AccountTransTypeEnum
+                                            .PRIVATE_2_PUBLIC_TRANSFER.key()), accountId, fromDate, toDate,
+                    AccountBizConstant.TRANS_DETAIL_STATUS_1);
+        } else {
+
+        }
+
+        return amountList;
+
+    }
+
+    public AccountInfoDto queryAccountById(String accountId) {
+        try {
+            AccountInfoEntity accountInfoEntity = accountInfoEntityMapper.selectByPrimaryKey(accountId);
+            AccountInfoDto accountInfoDto = new AccountInfoDto.Builder().build();
+            BeanCopierCacheUtil.copy(accountInfoEntity, accountInfoDto, null);
+            return accountInfoDto;
+        } catch (Exception e) {
+            throw new ServiceException(e);
+        }
+    }
+
+    public AccountInfoDto queryCardAccountByCardNo(String cardNo) {
+
+        try {
+            AccountInfoDto accountInfoDto = new AccountInfoDto.Builder().build();
+            AccountInfoEntity accountInfoEntity = accountInfoEntityMapper.selectCardAccountByCardNo(cardNo);
+            BeanCopierCacheUtil.copy(accountInfoEntity, accountInfoDto, null);
+            return accountInfoDto;
+        } catch (Exception e) {
+            throw new ServiceException(e);
+        }
+    }
+}

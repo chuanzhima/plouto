@@ -1,0 +1,294 @@
+package com.smk.pay.core.manager.impl;
+
+import com.smk.pay.account.core.constant.AccountConstant;
+import com.smk.pay.account.core.enums.*;
+import com.smk.pay.account.core.request.MigrateAccountRequest;
+import com.smk.pay.account.core.request.OpenAccountRequest;
+import com.smk.pay.account.core.request.RequestHeader;
+import com.smk.pay.core.constant.AccountBizConstant;
+import com.smk.pay.core.constant.ResultCodeConstant;
+import com.smk.pay.core.dto.AccountInfoDto;
+import com.smk.pay.core.dto.TransDetailDto;
+import com.smk.pay.core.dto.UserInfoDto;
+import com.smk.pay.core.entity.AccSystemEntity;
+import com.smk.pay.core.entity.PrepaidCardGroupEntity;
+import com.smk.pay.core.entity.PrepaidCardInfoEntity;
+import com.smk.pay.core.enums.AccountTransTypeEnum;
+import com.smk.pay.core.exception.ServiceException;
+import com.smk.pay.core.manager.*;
+import com.smk.pay.core.mapper.AccSystemEntityMapper;
+import com.smk.pay.core.mapper.PrepaidCardGroupEntityMapper;
+import com.smk.pay.core.mapper.PrepaidCardInfoEntityMapper;
+import com.smk.pay.core.utils.StringUtil;
+import com.smk.pay.core.validator.base.AccountValidator;
+import com.smk.pay.core.validator.base.UserValidator;
+import com.smk.pay.dal.condtion.Criteria;
+import com.smk.pay.dal.condtion.EntityCondition;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
+
+import javax.annotation.Resource;
+import java.math.BigDecimal;
+import java.util.*;
+
+/**
+ * Project plouto
+ * Created by chuanzhi.macz
+ * Date 2016/10/31 15:55
+ */
+@Service("accountOnlineMngManager")
+public class AccountOnlineMngManagerImpl extends AbstractAccountMngManager {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(AccountOnlineMngManagerImpl.class);
+    @Autowired
+    private IAccountQueryManager accountQueryManager;
+    @Resource(name = "accountBaseManager")
+    private IAccountBaseCommonManager accountBaseCommonManager;
+    @Resource(name = "accountBaseManager")
+    private IAccountBaseManager accountBaseManager;
+
+    @Autowired
+    private UserValidator userValidator;
+    @Autowired
+    private AccountValidator accountValidator;
+    @Autowired
+    private IUserInfoManager userInfoManager;
+    @Autowired
+    private IInternalAccountManager internalAccountManager;
+    @Autowired
+    private AccSystemEntityMapper accSystemEntityMapper;
+    @Autowired
+    private PrepaidCardInfoEntityMapper prepaidCardInfoEntityMapper;
+    @Autowired
+    private PrepaidCardGroupEntityMapper prepaidCardGroupEntityMapper;
+    @Autowired
+    private ITransDetailManager transDetailManager;
+
+    @Override
+    protected Map<Boolean, List<String>> checkStatus(String value, List<String> invalidStatus,
+                                                     List<String> validStatus) {
+        Map<Boolean, List<String>> validMap;
+        try {
+            if (!userValidator.isUserExistOrNormal(value)) {
+                LOGGER.warn("checkFreeze user not exist or not normal! userId=" + value);
+                return new HashMap<Boolean, List<String>>() {{
+                    put(Boolean.FALSE, Arrays.asList(ResultCodeConstant.USER_INVALID));
+                }};
+            }
+            validMap = accountValidator.isValidAccount(value,
+                    invalidStatus, validStatus);
+            if (validMap.containsKey(Boolean.FALSE)) {
+                return validMap;
+            }
+        } catch (ServiceException e) {
+            LOGGER.error("checkFreeze exception, value=" + value, e);
+            return new HashMap<Boolean, List<String>>() {{
+                put(Boolean.FALSE, Arrays.asList(ResultCodeConstant.SYSTEM_ERROR));
+            }};
+        }
+        return validMap;
+    }
+
+    @Transactional
+    public Map<Boolean, String> openAccount(OpenAccountRequest openAccountRequest) {
+
+        Map<Boolean, String> resultMap = new HashMap<Boolean, String>();
+        String type = openAccountRequest.getCustCredentialType();
+        String no = openAccountRequest.getCustCredentialNo();
+        String accountId = StringUtil.EMPTY;
+
+        String createSeqNo = StringUtil.randomSequence();
+        if (OpenAccountRequest.OPEN_ACCOUNT_PERSONAL.equals(openAccountRequest.getUserCls())) {
+            UserInfoDto userInfoDto = userInfoManager.getUserByTypeAndNo(type, no);
+            if (userInfoDto == null) {
+                userInfoDto = new UserInfoDto(openAccountRequest.getCustId(),
+                        openAccountRequest.getCustName(), openAccountRequest
+                        .getCustCredentialType(), openAccountRequest.getCustCredentialNo(), AccountConstant.USER_INFO_STATUS_NORMAL);
+                userInfoManager.addUser(userInfoDto);
+            } else {
+                userInfoDto = new UserInfoDto(openAccountRequest.getCustId(), openAccountRequest
+                        .getCustName(), null, null, AccountConstant.USER_INFO_STATUS_NORMAL);
+                userInfoManager.updateByTypeAndNo(type, no, userInfoDto);
+            }
+            AccountInfoDto accountInfoDto = accountQueryManager.queryMainAccountByUserId
+                    (openAccountRequest.getCustId());
+            if (null == accountInfoDto) {
+                Date createDate = new Date();
+                accountInfoDto = new AccountInfoDto.Builder().userId
+                        (openAccountRequest.getCustId()).accountClass(AccountLevelEnum.FIRST
+                        .value()).productId(AccountConstant.CARD_CATEGORY_HZSMK).status
+                        (AccountInfoStatusEnum.UNACTIVATED.value()).accountType(AccountTypeEnum
+                        .ONLINE.value()).createSerialNo
+                                (createSeqNo).createDate(createDate).lastUpdateDate(createDate)
+                        .partyMarkNo(AccountConstant.PARTY_MARK_NO_0001).build();
+
+                accountId = accountBaseCommonManager.addAccount(accountInfoDto);
+            } else {
+                accountId = accountInfoDto.getAccountId();
+            }
+        }
+        TransDetailDto transDetailDto = new TransDetailDto.Builder().serialNo(StringUtil
+                .randomSequence()).transId(AccountBizConstant.TRANS_DETAIL_TRANS_ID_1)
+                .transType(AccountTransTypeEnum.ONLINE_USER_OPEN_ACCOUNT.value()).userId
+                        (openAccountRequest.getCustId()).userName(openAccountRequest
+                        .getCustName()).transDate(new Date()).status(AccountBizConstant
+                        .TRANS_DETAIL_STATUS_1).partyMarkNo(AccountConstant
+                        .PARTY_MARK_NO_0001).accountingTrans(AccountBizConstant
+                        .TRANS_DETAIL_ACCOUNT_TRANS_0).accountId(accountId).accountClass
+                        (AccountLevelEnum.FIRST.value()).build();
+        transDetailManager.addTransDetail(transDetailDto);
+        resultMap.put(Boolean.TRUE, accountId);
+        return resultMap;
+    }
+
+    public String alterAccountLevel(String value, AccountLevelEnum levelEnum) {
+
+        Map<Boolean, List<String>> checkResult = this.checkStatus(value, null, Arrays.asList
+                (AccountInfoStatusEnum.NORMAL.value()));
+        if (checkResult.containsKey(Boolean.FALSE))
+            return checkResult.get(Boolean.FALSE).get(0);
+        try {
+            String accountId = checkResult.get(Boolean.TRUE).get(0);
+            String oldLevel = checkResult.get(Boolean.TRUE).get(2);
+            if (oldLevel.equals(levelEnum.value()))
+                return ResultCodeConstant.ACCOUNT_LEVEL_NOCHANGE;
+
+            accountBaseCommonManager.updateAccountLevel(accountId, oldLevel, levelEnum.value());
+            return ResultCodeConstant.SUCCESS;
+        } catch (Exception e) {
+            LOGGER.error(String.format("alterAccountLevel exception, value={},level={}", value,
+                    levelEnum.value()), e);
+            return ResultCodeConstant.SYSTEM_ERROR;
+        }
+    }
+
+    public String closeAccount(String value, AccountInvokerEnum invokerEnum) {
+        // TODO
+        // when close account, how to deal with his money in account
+        return null;
+    }
+
+    /**
+     * migrate account
+     *
+     * @param header
+     * @param channelEnum
+     * @param merchantId
+     * @param accountRequest
+     */
+    @Override
+    public void migrateAccount(RequestHeader header, AccountChannelEnum channelEnum,
+                               String merchantId, MigrateAccountRequest
+                                       accountRequest) {
+        super.migrateAccount(header, channelEnum, merchantId, accountRequest);
+        // TODO validate card no is unique , select from prepaid_card_info
+        List<AccSystemEntity> list = accSystemEntityMapper.selectList(new EntityCondition());
+        if (!CollectionUtils.isEmpty(list)) {
+            throw new ServiceException(ResultCodeConstant.ACC_SYSTEM_NO_DATA);
+        }
+        BigDecimal cardLimit = list.get(0).getCardLimite();
+        String accDate = list.get(0).getAccDate();
+
+        BigDecimal moreAmount = new BigDecimal(0);
+        BigDecimal xjAmount = accountRequest.getXjAmount();
+        BigDecimal cgAmount = accountRequest.getCgAmount();
+        BigDecimal zxzjAmount = accountRequest.getZxzjAmount();
+        BigDecimal ggkAmount = accountRequest.getGgkAmount();
+
+        if (xjAmount.compareTo(cardLimit) > 0)
+            moreAmount = xjAmount.subtract(cardLimit);
+
+        xjAmount = cardLimit;
+        String createSeqNo = StringUtil.randomSequence();
+        Date createDate = new Date();
+        AccountInfoDto accountInfoDto = new AccountInfoDto.Builder().accountType(AccountTypeEnum
+                .OFFLINE.value()).accountTypeItem(AccountBizConstant
+                .ACCOUNT_INFO_ACCOUNT_TYPE_ITEM_1).status(AccountInfoStatusEnum.NORMAL.value())
+                .createSerialNo(createSeqNo).createDate(createDate).lastUpdateDate(createDate)
+                .partyMarkNo(AccountConstant.PARTY_MARK_NO_0001).amount1(cgAmount.add(moreAmount)
+                ).amount2(xjAmount).amount3(zxzjAmount).amount4(ggkAmount).productId
+                        (accountRequest.getCardType().name()).build();
+        String accountId = accountBaseCommonManager.addAccount(accountInfoDto);
+
+        internalAccountManager.updateAmountByTypeIdAndBankId(accountRequest.getGuaranteeAmount(),
+                AccountBizConstant.ACCOUNT_TYPE_KEY_XJZH, AccountBizConstant.BANK_INFO_ABC);
+
+        PrepaidCardInfoEntity cardInfoEntity = new PrepaidCardInfoEntity(null, accountRequest
+                .getCardNumber(), accountRequest.getCardType().name(), null, AccountBizConstant
+                .PREPAID_CARD_INFO_STATUS_NORMAL, accountRequest.getCustCredentialType(),
+                accountRequest.getCustCredentialNo(), new Date());
+        prepaidCardInfoEntityMapper.insertSelective(cardInfoEntity);
+
+        PrepaidCardGroupEntity cardGroupEntity = new PrepaidCardGroupEntity(cardInfoEntity
+                .getPrepaidCardId(), null, accountId, AccountBizConstant.PREPAID_CARD_GROUP_STATUS_NORMAL);
+        prepaidCardGroupEntityMapper.insertSelective(cardGroupEntity);
+
+        Date transDate = new Date();
+        TransDetailDto transDetailDto = new TransDetailDto.Builder().serialNo(StringUtil.randomSequence())
+                .transId(AccountBizConstant.TRANS_DETAIL_TRANS_ID_1).transType
+                        (AccountTransTypeEnum.PREPAID_CARD_MOVE.key()).accountId(accountId).reqSerialNo(header.getReqSeq()).reqTransDate
+                        (header.getTxDate()).reqTransTime(header.getTxTime()).amount1(cgAmount
+                        .add(moreAmount)).amount2(xjAmount).transDate(transDate).status
+                        (AccountBizConstant.TRANS_DETAIL_STATUS_1).channel(channelEnum.name())
+                .partyMarkNo(AccountConstant.PARTY_MARK_NO_0001).guaranteeDeposit(accountRequest
+                        .getGuaranteeAmount()).amount3(zxzjAmount).amount4(ggkAmount).accDate
+                        (accDate).build();
+        transDetailManager.addTransDetail(transDetailDto);
+    }
+
+    /**
+     * bind account
+     *
+     * @param header
+     * @param userId
+     * @param cardNo
+     * @param merchantId
+     * @param channelEnum
+     */
+    @Override
+    public void bindAccount(RequestHeader header, String userId, String cardNo, String merchantId,
+                            AccountChannelEnum channelEnum) {
+        super.bindAccount(header, userId, cardNo, merchantId, channelEnum);
+
+        // TODO validate card and account info and consistence of card and user
+
+        List<AccSystemEntity> list = accSystemEntityMapper.selectList(new EntityCondition());
+        if (!CollectionUtils.isEmpty(list)) {
+            throw new ServiceException(ResultCodeConstant.ACC_SYSTEM_NO_DATA);
+        }
+        String accDate = list.get(0).getAccDate();
+
+        String accountId = "";
+
+        String cardKind = "";
+        accountBaseManager.updateUserId(accountId, userId);
+
+        PrepaidCardInfoEntity cardInfoEntity = new PrepaidCardInfoEntity();
+        cardInfoEntity.setUserId(userId);
+        cardInfoEntity.setBindingFlag(AccountBizConstant.PREPAID_CARD_INFO_BIND_FLAG_YES);
+        prepaidCardInfoEntityMapper.updateSelective(cardInfoEntity, new EntityCondition()
+                .addCriteria(new Criteria().addCriterion("PREPAID_CARD_NO=", cardNo,
+                        "PREPAID_CARD_NO")));
+        Date transDate = new Date();
+        String sequence = StringUtil.randomSequence();
+        TransDetailDto transDetailDto = new TransDetailDto.Builder().serialNo(sequence)
+                .transId(AccountBizConstant.TRANS_DETAIL_TRANS_ID_1).transType
+                        (AccountTransTypeEnum.PREPAID_CARD_BIND.key()).userId(userId).accountId
+                        (accountId).reqSerialNo(header.getReqSeq()).reqTransDate(header.getTxDate
+                        ()).reqTransTime(header.getTxTime()).transDate(transDate).status
+                        (AccountBizConstant.TRANS_DETAIL_STATUS_1).partyMarkNo(AccountConstant
+                        .PARTY_MARK_NO_0001).accDate(accDate).accountingTrans(AccountBizConstant
+                        .TRANS_DETAIL_ACCOUNT_TRANS_0).channel(channelEnum.name()).build();
+        transDetailManager.addTransDetail(transDetailDto);
+
+        if (AccountCardTypeEnum.HZSMK.name().equals(cardKind)) {
+            // TODO 关联
+        }
+    }
+
+
+}

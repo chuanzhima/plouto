@@ -1,0 +1,57 @@
+package com.smk.pay.core.api;
+
+import com.alibaba.dubbo.config.annotation.Service;
+import com.smk.pay.account.core.request.ImpostorRequest;
+import com.smk.pay.account.core.response.ImpostorInfo;
+import com.smk.pay.account.core.response.RpcResponse;
+import com.smk.pay.account.core.service.IAccountImpostorService;
+import com.smk.pay.core.constant.ResultCodeConstant;
+import com.smk.pay.core.dto.AccountImpostorDto;
+import com.smk.pay.core.manager.IAccountImpostorManager;
+import com.smk.pay.core.utils.BeanCopierCacheUtil;
+import com.smk.pay.core.utils.PropertiesUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+
+/**
+ * Project plouto
+ * Created by chuanzhi.macz
+ * Date 2016/11/2 14:18
+ */
+@Service(version = "1.0.0")
+public class AccountImposterService implements IAccountImpostorService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(AccountImposterService.class);
+    @Autowired
+    private IAccountImpostorManager accountImpostorManager;
+
+    public RpcResponse<String> add(ImpostorRequest impostorRequest) {
+        LOGGER.info("add impostor, param= " + impostorRequest);
+        AccountImpostorDto accountImpostorInfo = new AccountImpostorDto();
+        BeanCopierCacheUtil.copy(impostorRequest, accountImpostorInfo, null);
+        accountImpostorManager.add(accountImpostorInfo);
+        return new RpcResponse<String>(Boolean.TRUE, ResultCodeConstant.SUCCESS, PropertiesUtil
+                .LOCALE_PROPERTIES_Map.get(ResultCodeConstant.SUCCESS));
+    }
+
+    public RpcResponse<String> delete(String credentialNo) {
+        LOGGER.info("delete impostor, param=" + credentialNo);
+        accountImpostorManager.delete(credentialNo);
+        return new RpcResponse<String>(Boolean.TRUE, ResultCodeConstant.SUCCESS, PropertiesUtil
+                .LOCALE_PROPERTIES_Map.get(ResultCodeConstant.SUCCESS));
+    }
+
+    public RpcResponse<ImpostorInfo> query(String credentialNo) {
+        return null;
+    }
+
+    public RpcResponse<String> update(String credentialNo, ImpostorRequest impostorRequest) {
+        LOGGER.info("update impostor, credentialNo={},impostor={}", credentialNo, impostorRequest);
+        AccountImpostorDto accountImpostorInfo = new AccountImpostorDto();
+        BeanCopierCacheUtil.copy(impostorRequest, accountImpostorInfo, null);
+        accountImpostorManager.update(credentialNo, accountImpostorInfo);
+        return new RpcResponse<String>(Boolean.TRUE, ResultCodeConstant.SUCCESS, PropertiesUtil
+                .LOCALE_PROPERTIES_Map.get(ResultCodeConstant.SUCCESS));
+    }
+}

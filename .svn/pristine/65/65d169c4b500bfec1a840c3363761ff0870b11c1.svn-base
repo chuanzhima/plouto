@@ -1,0 +1,13 @@
+package com.smk.pay.core.manager;
+
+import com.smk.pay.core.dto.AccountInfoLogDto;
+
+/**
+ * Project plouto
+ * Created by chuanzhi.macz
+ * Date 2016/11/10 16:44
+ */
+public interface IAccountInfoLogManager {
+
+    void addAccountInfoLog(AccountInfoLogDto accountInfoLogDto);
+}

@@ -1,0 +1,115 @@
+package com.smk.pay.core.manager.impl;
+
+import com.smk.pay.account.core.enums.AccountCardTypeEnum;
+import com.smk.pay.account.core.enums.AccountChannelEnum;
+import com.smk.pay.core.dto.AccountInfoDto;
+import com.smk.pay.core.entity.AccountInfoEntity;
+import com.smk.pay.core.exception.ServiceException;
+import com.smk.pay.core.manager.IAccountBaseCommonManager;
+import com.smk.pay.core.manager.IAccountBaseManager;
+import com.smk.pay.core.mapper.AccountInfoEntityMapper;
+import com.smk.pay.core.utils.BeanCopierCacheUtil;
+import com.smk.pay.dal.condtion.Criteria;
+import com.smk.pay.dal.condtion.EntityCondition;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import java.util.Date;
+
+/**
+ * Project plouto
+ * Created by chuanzhi.macz
+ * Date 2016/11/3 14:07
+ */
+@Component("accountBaseManager")
+public class AccountBaseManagerImpl implements IAccountBaseCommonManager<AccountInfoDto>, IAccountBaseManager {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(AccountBaseManagerImpl.class);
+
+    @Autowired
+    private AccountInfoEntityMapper accountInfoEntityMapper;
+
+    public String addAccount(AccountInfoDto accountInfoDto) {
+
+        AccountInfoEntity accountInfoEntity = new AccountInfoEntity();
+        try {
+            BeanCopierCacheUtil.copy(accountInfoEntity, accountInfoDto, null);
+            accountInfoEntityMapper.insertSelective(accountInfoEntity);
+            return accountInfoEntity.getAccountId();
+        } catch (Exception e) {
+            LOGGER.error("addAccount exception!accountInfo = " + accountInfoDto, e);
+            throw new ServiceException(e);
+        }
+    }
+
+    public int updateAccountStatus(String accountId, String oldStatus, String newStatus) {
+        return 0;
+    }
+
+    public int updateAccountLevel(String accountId, String oldLevel, String newLevel) {
+        try {
+            AccountInfoEntity accountInfoEntity = new AccountInfoEntity();
+            accountInfoEntity.setLastUpdateDate(new Date());
+            accountInfoEntity.setAccountClass(newLevel);
+            return accountInfoEntityMapper.updateSelective(accountInfoEntity, new EntityCondition
+                    ().addCriteria(new Criteria().addCriterion("ACCOUNT_ID=", accountId,
+                    "ACCOUNT_ID").addCriterion("ACCOUNT_CLASS=", newLevel, "ACCOUNT_CLASS")));
+        } catch (Exception e) {
+            LOGGER.error(String.format("updateAccountLevel exception! accountId={},oldLevel={}," +
+                    "newLevel={}", accountId, oldLevel, newLevel), e);
+            throw new ServiceException(e);
+        }
+    }
+
+    public int updateAccountAmount(String accountId, AccountInfoDto oldAmount, AccountInfoDto
+            newAmount) {
+        try {
+            AccountInfoEntity accountInfoEntity = new AccountInfoEntity();
+            Criteria criteria = new Criteria().addCriterion("ACCOUNT_ID=", accountId,
+                    "ACCOUNT_ID");
+            if (oldAmount.getAmount1() != null)
+                criteria.addCriterion("AMOUNT1=", oldAmount.getAmount1(), "AMOUNT1");
+            else if (oldAmount.getAmount2() != null)
+                criteria.addCriterion("AMOUNT2=", oldAmount.getAmount2(), "AMOUNT2");
+            else if (oldAmount.getAmount3() != null)
+                criteria.addCriterion("AMOUNT3=", oldAmount.getAmount3(), "AMOUNT3");
+            else if (oldAmount.getAmount4() != null)
+                criteria.addCriterion("AMOUNT4=", oldAmount.getAmount4(), "AMOUNT4");
+            else if (oldAmount.getAmount5() != null)
+                criteria.addCriterion("AMOUNT5=", oldAmount.getAmount5(), "AMOUNT5");
+            else if (oldAmount.getAmount6() != null)
+                criteria.addCriterion("AMOUNT6=", oldAmount.getAmount6(), "AMOUNT6");
+
+            BeanCopierCacheUtil.copy(newAmount, accountInfoEntity, null);
+            return accountInfoEntityMapper.updateSelective(accountInfoEntity, new EntityCondition
+                    ().addCriteria(criteria));
+        } catch (Exception e) {
+            LOGGER.error(String.format("updateAccountAmount exception! accountId={}," +
+                    "oldAmount={},newAmount={}", accountId, oldAmount, newAmount), e);
+            throw new ServiceException(e);
+        }
+    }
+
+    public int updateUserId(String accountId, String newUserId) {
+        try {
+            AccountInfoEntity accountInfoEntity = new AccountInfoEntity();
+            accountInfoEntity.setLastUpdateDate(new Date());
+            accountInfoEntity.setUserId(newUserId);
+            return accountInfoEntityMapper.updateSelective(accountInfoEntity, new EntityCondition
+                    ().addCriteria(new Criteria().addCriterion("ACCOUNT_ID=", accountId,
+                    "ACCOUNT_ID")));
+        } catch (Exception e) {
+            LOGGER.error(String.format("updateUserId exception! accountId={},userId={}",
+                    accountId, newUserId), e);
+            throw new ServiceException(e);
+        }
+    }
+
+    public void merge(String reqSeq, String txtDate, String txtTime, String merchantId,
+                      String cardNo, AccountCardTypeEnum cardTypeEnum, String userId,
+                      AccountChannelEnum channelEnum) {
+        // TODO
+    }
+}

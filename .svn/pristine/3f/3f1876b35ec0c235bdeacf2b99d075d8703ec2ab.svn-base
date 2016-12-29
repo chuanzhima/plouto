@@ -1,0 +1,42 @@
+package com.smk.pay.core.factory;
+
+import com.smk.pay.account.core.enums.AccountFundFlowEnum;
+
+import com.smk.pay.core.manager.atom.IRecharge;
+import com.smk.pay.core.manager.atom.impl.RechargeGGK;
+import com.smk.pay.core.manager.atom.impl.RechargeYHK;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.stereotype.Component;
+
+import java.util.concurrent.ConcurrentHashMap;
+
+/**
+ * Project plouto
+ * Created by chuanzhi.macz
+ * Date 2016/11/8 14:42
+ */
+@Component(value = "rechargeFactory")
+public class RechargeFactory implements InitializingBean, ApplicationContextAware {
+
+    private static ConcurrentHashMap<AccountFundFlowEnum, IRecharge> rechargeMap =
+            new ConcurrentHashMap<AccountFundFlowEnum, IRecharge>();
+
+    private ApplicationContext context;
+
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.context = applicationContext;
+    }
+
+    public IRecharge getRechargeBean(AccountFundFlowEnum fundFlowEnum) {
+        return rechargeMap.get(fundFlowEnum);
+    }
+
+    public void afterPropertiesSet() throws Exception {
+        rechargeMap.put(AccountFundFlowEnum.YHK, context.getBean(RechargeYHK.class));
+        rechargeMap.put(AccountFundFlowEnum.TPP, context.getBean(RechargeYHK.class));
+        rechargeMap.put(AccountFundFlowEnum.GGK, context.getBean(RechargeGGK.class));
+    }
+}

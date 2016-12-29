@@ -1,0 +1,29 @@
+package com.smk.pay.core.result;
+
+import com.smk.pay.account.core.response.RpcResponse;
+
+import java.io.Serializable;
+
+/**
+ * Project plouto
+ * Created by chuanzhi.macz
+ * Date 2016/10/20 15:10
+ */
+public class ServiceResultResponse extends RpcResponse {
+
+    public ServiceResultResponse() {
+        super();
+    }
+
+    public ServiceResultResponse(Boolean isSucc) {
+        super(isSucc);
+    }
+
+    public ServiceResultResponse(Serializable serializable, Boolean isSucc) {
+        super(serializable, isSucc);
+    }
+
+    public ServiceResultResponse(Boolean isSucc, String resultCode, String resultMsg) {
+        super(isSucc, resultCode, resultMsg);
+    }
+}

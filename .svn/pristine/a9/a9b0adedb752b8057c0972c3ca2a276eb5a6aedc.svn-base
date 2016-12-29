@@ -1,0 +1,25 @@
+package com.smk.pay.core;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.quartz.SchedulerFactoryBean;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
+
+/**
+ * Project plouto
+ * Created by chuanzhi.macz
+ * Date 2016/10/17 15:42
+ */
+@SpringBootApplication
+//@ServletComponentScan
+@EnableTransactionManagement
+public class PloutoApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(PloutoApplication.class, args);
+
+    }
+}

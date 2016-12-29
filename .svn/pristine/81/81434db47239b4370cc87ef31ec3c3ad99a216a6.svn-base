@@ -1,0 +1,20 @@
+package com.smk.pay.core;
+
+import com.smk.pay.core.config.PloutoConfig;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+
+/**
+ * Project plouto
+ * Created by chuanzhi.macz
+ * Date 2016/10/17 15:42
+ */
+@SpringBootApplication
+//@EnableConfigurationProperties({PloutoConfig.class})
+public class PloutoApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(PloutoApplication.class, args);
+    }
+}

@@ -1,0 +1,59 @@
+package com.smk.pay.core.api;
+
+import com.smk.pay.account.core.enums.AccountBizEnum;
+import com.smk.pay.account.core.enums.AccountChannelEnum;
+import com.smk.pay.account.core.enums.AccountFundFlowEnum;
+import com.smk.pay.account.core.request.RequestHeader;
+import com.smk.pay.account.core.response.RpcResponse;
+import com.smk.pay.account.core.service.IAccountSettleService;
+import com.smk.pay.core.base.BaseServiceTest;
+import org.junit.Assert;
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.math.BigDecimal;
+
+/**
+ * AccountSettleService Tester.
+ *
+ * @author <Authors name>
+ * @version 1.0
+ * @since <pre>12/23/2016</pre>
+ */
+public class AccountSettleServiceTest extends BaseServiceTest {
+
+    @Autowired
+    private IAccountSettleService accountSettleService;
+
+    @Test
+    public void testSettle4Merchant() {
+
+        RequestHeader header = new RequestHeader("20161226", "1802", "2016122618021111");
+        String merchantId = "330100600021";
+        BigDecimal amount = new BigDecimal(99);
+        String bankId = "0001";
+
+        RpcResponse<String> response = accountSettleService.settle4Merchant(header, AccountChannelEnum.INTERNET,
+                merchantId,
+                AccountFundFlowEnum
+                .YHK, amount, bankId, AccountBizEnum.NORMAL);
+
+        Assert.assertNotNull(response);
+    }
+
+    @Test
+    public void testAgentPay() {
+
+        RequestHeader header = new RequestHeader();
+        String merchantId = "1234567";
+        BigDecimal amount = new BigDecimal(9527);
+        String bankId = "0001";
+
+        RpcResponse<String> response = accountSettleService.agentPay(header, AccountChannelEnum.INTERNET, merchantId,
+                AccountFundFlowEnum
+                .YHK, amount, bankId, AccountBizEnum.NORMAL);
+
+        Assert.assertNotNull(response);
+    }
+
+}

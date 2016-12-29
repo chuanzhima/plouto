@@ -1,0 +1,16 @@
+package com.smk.pay.core.mapper;
+
+import com.smk.pay.core.entity.LimitsEntity;
+import org.apache.ibatis.annotations.Mapper;
+
+/**
+ * Project plouto
+ * Created by chuanzhi.macz
+ * Date 2016/11/24 17:29
+ */
+@Mapper
+public interface LimitsEntityMapper extends BaseEntityMapper<LimitsEntity> {
+
+    LimitsEntity selectOne();
+
+}

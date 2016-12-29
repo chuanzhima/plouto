@@ -1,0 +1,146 @@
+package com.smk.pay.core.manager;
+
+import com.smk.pay.account.core.enums.AccountInvokerEnum;
+import com.smk.pay.account.core.enums.AccountLevelEnum;
+import com.smk.pay.account.core.enums.AccountTypeEnum;
+import com.smk.pay.account.core.request.OpenAccountRequest;
+import com.smk.pay.account.core.response.RpcResponse;
+
+import java.util.Date;
+import java.util.Map;
+
+/**
+ * Project plouto
+ * Created by chuanzhi.macz
+ * Date 2016/10/23 19:26
+ */
+public interface IAccountMngManager {
+
+    /**
+     * free account
+     *
+     * @param value
+     * @param fromDate
+     * @param toDate
+     * @param invokerEnum
+     */
+    String freeze(final String value, final Date fromDate, final Date toDate,
+                  AccountInvokerEnum invokerEnum, final String operator);
+
+    /**
+     * unfreeze account
+     *
+     * @param value
+     * @param invokerEnum
+     * @return
+     */
+    String unfreeze(final String value, AccountInvokerEnum invokerEnum, final String operator);
+
+    /**
+     * prolong freeze date
+     *
+     * @param value
+     * @param toDate
+     * @param invokerEnum
+     * @return
+     */
+    String freezeProlong(final String value, final Date toDate,
+                         AccountInvokerEnum invokerEnum, final String operator);
+
+
+    /**
+     * stop payment
+     *
+     * @param value
+     * @param fromDate
+     * @param toDate
+     * @param invokerEnum
+     */
+    String stopPayment(final String value, final Date fromDate, final Date toDate,
+                  AccountInvokerEnum invokerEnum, final String operator);
+
+    /**
+     * close stop payment
+     *
+     * @param value
+     * @param invokerEnum
+     * @return
+     */
+    String closeStopPayment(final String value, AccountInvokerEnum
+            invokerEnum, final String operator);
+
+    /**
+     * prolong stop payment date
+     *
+     * @param value
+     * @param toDate
+     * @param invokerEnum
+     * @return
+     */
+    String stopPaymentProlong(final String value, final Date toDate,
+                          AccountInvokerEnum invokerEnum, final String operator);
+
+
+    /**
+     * suspend account
+     *
+     * @param value
+     * @param fromDate
+     * @param toDate
+     * @param invokerEnum
+     */
+    String suspend(final String value, final Date fromDate, final Date toDate,
+                        AccountInvokerEnum invokerEnum, final String operator);
+
+    /**
+     * close suspend account
+     *
+     * @param value
+     * @param invokerEnum
+     * @return
+     */
+    String closeSuspend(final String value, AccountInvokerEnum
+            invokerEnum, final String operator);
+
+    /**
+     * prolong suspend date
+     *
+     * @param value
+     * @param toDate
+     * @param invokerEnum
+     * @return
+     */
+    String suspendProlong(final String value, final Date toDate,
+                              AccountInvokerEnum invokerEnum, final String operator);
+
+    /**
+     * open account
+     *
+     * @param openAccountRequest
+     * @param invokerEnum
+     * @return
+     */
+    Map<Boolean, String> openAccount(OpenAccountRequest openAccountRequest,
+                                    AccountInvokerEnum invokerEnum);
+
+    /**
+     * alter account level
+     *
+     * @param value when type = 2 value is userId otherwise value is cardNumber
+     * @param levelEnum
+     * @param invokerEnum
+     * @return
+     */
+    String alterAccountLevel(final String value, AccountLevelEnum levelEnum,
+                                          AccountInvokerEnum invokerEnum);
+
+    /**
+     * close account
+     *
+     * @param value when type = 2 value is userId otherwise value is cardNumber
+     * @param invokerEnum
+     * @return
+     */
+    String closeAccount(final String value,
+                                     AccountInvokerEnum invokerEnum);
+}

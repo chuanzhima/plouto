@@ -1,0 +1,111 @@
+package com.smk.pay.core.dto;
+
+import java.io.Serializable;
+import java.math.BigDecimal;
+
+/**
+ * Project plouto
+ * Created by chuanzhi.macz
+ * Date 2016/11/2 14:20
+ */
+public class AccountImpostorDto implements Serializable {
+
+    private static final long serialVersionUID = 1327092784322048491L;
+
+
+    private String name;
+
+    private String credentialType;
+
+    private String credentialNo;
+
+    private String phone;
+
+    private String email;
+
+    private String address;
+
+    private String gender;
+
+    private BigDecimal age;
+
+    public AccountImpostorDto() {
+        super();
+    }
+
+    public AccountImpostorDto(String name, String credentialType, String credentialNo, String phone,
+                              String email, String address, String gender, BigDecimal age) {
+        this.name = name;
+        this.credentialType = credentialType;
+        this.credentialNo = credentialNo;
+        this.phone = phone;
+        this.email = email;
+        this.address = address;
+        this.gender = gender;
+        this.age = age;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getCredentialType() {
+        return credentialType;
+    }
+
+    public void setCredentialType(String credentialType) {
+        this.credentialType = credentialType;
+    }
+
+    public String getCredentialNo() {
+        return credentialNo;
+    }
+
+    public void setCredentialNo(String credentialNo) {
+        this.credentialNo = credentialNo;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public BigDecimal getAge() {
+        return age;
+    }
+
+    public void setAge(BigDecimal age) {
+        this.age = age;
+    }
+}

@@ -1,0 +1,48 @@
+package com.smk.pay.core.manager.impl;
+
+import com.smk.pay.core.dto.AccountInfoDto;
+import com.smk.pay.core.dto.MerchantAccountInfoDto;
+import com.smk.pay.core.entity.MerchantAccountInfoEntity;
+import com.smk.pay.core.exception.ServiceException;
+import com.smk.pay.core.manager.IAccountBaseManager;
+import com.smk.pay.core.mapper.MerchantAccountInfoEntityMapper;
+import com.smk.pay.core.utils.BeanCopierCacheUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import java.util.Date;
+import java.util.List;
+
+/**
+ * Project plouto
+ * Created by chuanzhi.macz
+ * Date 2016/11/10 19:15
+ */
+@Component(value = "merchantAccountManager")
+public class MerchantAccountManager implements IAccountBaseManager<MerchantAccountInfoDto> {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(MerchantAccountManager.class);
+    @Autowired
+    private MerchantAccountInfoEntityMapper merchantAccountInfoEntityMapper;
+
+    public String addAccount(MerchantAccountInfoDto merchantAccountInfoDto) {
+        return null;
+    }
+
+    public int updateAccountStatus(String accountId, Date lastUpdateDate, String oldStatus,
+                                   String newStatus) {
+        return 0;
+    }
+
+    public int updateAccountLevel(String accountId, Date lastUpdateDate, String oldLevel, String
+            newLevel) {
+        return 0;
+    }
+
+    public int updateAccountAmount(String accountId, AccountInfoDto oldAmount, AccountInfoDto newAmount) {
+        return 0;
+    }
+
+}

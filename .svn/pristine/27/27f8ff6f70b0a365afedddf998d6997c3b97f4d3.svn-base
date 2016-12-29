@@ -1,0 +1,468 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.smk.pay.core.mapper.PrepaidCardInfoEntityMapper">
+  <resultMap id="BaseResultMap" type="com.smk.pay.core.entity.PrepaidCardInfoEntity">
+    <id column="PREPAID_CARD_ID" jdbcType="VARCHAR" property="prepaidCardId" />
+    <result column="PREPAID_CARD_NO" jdbcType="VARCHAR" property="prepaidCardNo" />
+    <result column="PREPAID_CARD_PWD" jdbcType="VARCHAR" property="prepaidCardPwd" />
+    <result column="PREPAID_CARD_TYPE" jdbcType="VARCHAR" property="prepaidCardType" />
+    <result column="PAPERS_TYPE" jdbcType="VARCHAR" property="papersType" />
+    <result column="PAPERS_NO" jdbcType="VARCHAR" property="papersNo" />
+    <result column="COST" jdbcType="DECIMAL" property="cost" />
+    <result column="START_DATE" jdbcType="TIMESTAMP" property="startDate" />
+    <result column="END_DATE" jdbcType="TIMESTAMP" property="endDate" />
+    <result column="USER_ID" jdbcType="VARCHAR" property="userId" />
+    <result column="STATUS" jdbcType="VARCHAR" property="status" />
+    <result column="RECHARGE_FLAG" jdbcType="VARCHAR" property="rechargeFlag" />
+    <result column="REAL_NAME_FLAG" jdbcType="VARCHAR" property="realNameFlag" />
+    <result column="CAN_BE_BINDING" jdbcType="VARCHAR" property="canBeBinding" />
+    <result column="BINDING_FLAG" jdbcType="VARCHAR" property="bindingFlag" />
+    <result column="CAN_BE_REPEATEDLY_BINDING" jdbcType="VARCHAR" property="canBeRepeatedlyBinding" />
+    <result column="CAN_BE_MEANWHILE_BINDING" jdbcType="VARCHAR" property="canBeMeanwhileBinding" />
+    <result column="MAIN_CARD" jdbcType="VARCHAR" property="mainCard" />
+    <result column="CREATE_DATE" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="CANCEL_DATE" jdbcType="TIMESTAMP" property="cancelDate" />
+  </resultMap>
+  <sql id="Query_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_Where_Clause">
+    <where>
+      <foreach collection="condition.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    PREPAID_CARD_ID, PREPAID_CARD_NO, PREPAID_CARD_PWD, PREPAID_CARD_TYPE, PAPERS_TYPE, 
+    PAPERS_NO, COST, START_DATE, END_DATE, USER_ID, STATUS, RECHARGE_FLAG, REAL_NAME_FLAG, 
+    CAN_BE_BINDING, BINDING_FLAG, CAN_BE_REPEATEDLY_BINDING, CAN_BE_MEANWHILE_BINDING, 
+    MAIN_CARD, CREATE_DATE, CANCEL_DATE
+  </sql>
+  <select id="selectList" parameterType="com.smk.pay.dal.condtion.EntityCondition" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from PREPAID_CARD_INFO
+    <if test="_parameter != null">
+      <include refid="Query_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from PREPAID_CARD_INFO
+    where PREPAID_CARD_ID = #{prepaidCardId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from PREPAID_CARD_INFO
+    where PREPAID_CARD_ID = #{prepaidCardId,jdbcType=VARCHAR}
+  </delete>
+  <delete id="delete" parameterType="com.smk.pay.dal.condtion.EntityCondition">
+    delete from PREPAID_CARD_INFO
+    <if test="_parameter != null">
+      <include refid="Query_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.smk.pay.core.entity.PrepaidCardInfoEntity">
+
+    <selectKey keyProperty="prepaidCardId" resultType="long" order="BEFORE">SELECT
+      PREPAID_CARD_ID_SEQ.NEXTVAL FROM DUAL
+    </selectKey>
+    insert into PREPAID_CARD_INFO (PREPAID_CARD_ID, PREPAID_CARD_NO, PREPAID_CARD_PWD, 
+      PREPAID_CARD_TYPE, PAPERS_TYPE, PAPERS_NO, 
+      COST, START_DATE, END_DATE, 
+      USER_ID, STATUS, RECHARGE_FLAG, 
+      REAL_NAME_FLAG, CAN_BE_BINDING, BINDING_FLAG, 
+      CAN_BE_REPEATEDLY_BINDING, CAN_BE_MEANWHILE_BINDING, 
+      MAIN_CARD, CREATE_DATE, CANCEL_DATE
+      )
+    values (#{prepaidCardId,jdbcType=VARCHAR}, #{prepaidCardNo,jdbcType=VARCHAR}, #{prepaidCardPwd,jdbcType=VARCHAR}, 
+      #{prepaidCardType,jdbcType=VARCHAR}, #{papersType,jdbcType=VARCHAR}, #{papersNo,jdbcType=VARCHAR}, 
+      #{cost,jdbcType=DECIMAL}, #{startDate,jdbcType=TIMESTAMP}, #{endDate,jdbcType=TIMESTAMP}, 
+      #{userId,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR}, #{rechargeFlag,jdbcType=VARCHAR}, 
+      #{realNameFlag,jdbcType=VARCHAR}, #{canBeBinding,jdbcType=VARCHAR}, #{bindingFlag,jdbcType=VARCHAR}, 
+      #{canBeRepeatedlyBinding,jdbcType=VARCHAR}, #{canBeMeanwhileBinding,jdbcType=VARCHAR}, 
+      #{mainCard,jdbcType=VARCHAR}, #{createDate,jdbcType=TIMESTAMP}, #{cancelDate,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.smk.pay.core.entity.PrepaidCardInfoEntity">
+
+    <selectKey keyProperty="prepaidCardId" resultType="long" order="BEFORE">SELECT
+      PREPAID_CARD_ID_SEQ.NEXTVAL FROM DUAL
+    </selectKey>
+
+    insert into PREPAID_CARD_INFO
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="prepaidCardId != null">
+        PREPAID_CARD_ID,
+      </if>
+      <if test="prepaidCardNo != null">
+        PREPAID_CARD_NO,
+      </if>
+      <if test="prepaidCardPwd != null">
+        PREPAID_CARD_PWD,
+      </if>
+      <if test="prepaidCardType != null">
+        PREPAID_CARD_TYPE,
+      </if>
+      <if test="papersType != null">
+        PAPERS_TYPE,
+      </if>
+      <if test="papersNo != null">
+        PAPERS_NO,
+      </if>
+      <if test="cost != null">
+        COST,
+      </if>
+      <if test="startDate != null">
+        START_DATE,
+      </if>
+      <if test="endDate != null">
+        END_DATE,
+      </if>
+      <if test="userId != null">
+        USER_ID,
+      </if>
+      <if test="status != null">
+        STATUS,
+      </if>
+      <if test="rechargeFlag != null">
+        RECHARGE_FLAG,
+      </if>
+      <if test="realNameFlag != null">
+        REAL_NAME_FLAG,
+      </if>
+      <if test="canBeBinding != null">
+        CAN_BE_BINDING,
+      </if>
+      <if test="bindingFlag != null">
+        BINDING_FLAG,
+      </if>
+      <if test="canBeRepeatedlyBinding != null">
+        CAN_BE_REPEATEDLY_BINDING,
+      </if>
+      <if test="canBeMeanwhileBinding != null">
+        CAN_BE_MEANWHILE_BINDING,
+      </if>
+      <if test="mainCard != null">
+        MAIN_CARD,
+      </if>
+      <if test="createDate != null">
+        CREATE_DATE,
+      </if>
+      <if test="cancelDate != null">
+        CANCEL_DATE,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="prepaidCardId != null">
+        #{prepaidCardId,jdbcType=VARCHAR},
+      </if>
+      <if test="prepaidCardNo != null">
+        #{prepaidCardNo,jdbcType=VARCHAR},
+      </if>
+      <if test="prepaidCardPwd != null">
+        #{prepaidCardPwd,jdbcType=VARCHAR},
+      </if>
+      <if test="prepaidCardType != null">
+        #{prepaidCardType,jdbcType=VARCHAR},
+      </if>
+      <if test="papersType != null">
+        #{papersType,jdbcType=VARCHAR},
+      </if>
+      <if test="papersNo != null">
+        #{papersNo,jdbcType=VARCHAR},
+      </if>
+      <if test="cost != null">
+        #{cost,jdbcType=DECIMAL},
+      </if>
+      <if test="startDate != null">
+        #{startDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endDate != null">
+        #{endDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="rechargeFlag != null">
+        #{rechargeFlag,jdbcType=VARCHAR},
+      </if>
+      <if test="realNameFlag != null">
+        #{realNameFlag,jdbcType=VARCHAR},
+      </if>
+      <if test="canBeBinding != null">
+        #{canBeBinding,jdbcType=VARCHAR},
+      </if>
+      <if test="bindingFlag != null">
+        #{bindingFlag,jdbcType=VARCHAR},
+      </if>
+      <if test="canBeRepeatedlyBinding != null">
+        #{canBeRepeatedlyBinding,jdbcType=VARCHAR},
+      </if>
+      <if test="canBeMeanwhileBinding != null">
+        #{canBeMeanwhileBinding,jdbcType=VARCHAR},
+      </if>
+      <if test="mainCard != null">
+        #{mainCard,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="cancelDate != null">
+        #{cancelDate,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <select id="count" parameterType="com.smk.pay.dal.condtion.EntityCondition" resultType="java.lang.Integer">
+    select count(*) from PREPAID_CARD_INFO
+    <if test="_parameter != null">
+      <include refid="Query_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateSelective" parameterType="map">
+    update PREPAID_CARD_INFO
+    <set>
+      <if test="record.prepaidCardId != null">
+        PREPAID_CARD_ID = #{record.prepaidCardId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.prepaidCardNo != null">
+        PREPAID_CARD_NO = #{record.prepaidCardNo,jdbcType=VARCHAR},
+      </if>
+      <if test="record.prepaidCardPwd != null">
+        PREPAID_CARD_PWD = #{record.prepaidCardPwd,jdbcType=VARCHAR},
+      </if>
+      <if test="record.prepaidCardType != null">
+        PREPAID_CARD_TYPE = #{record.prepaidCardType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.papersType != null">
+        PAPERS_TYPE = #{record.papersType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.papersNo != null">
+        PAPERS_NO = #{record.papersNo,jdbcType=VARCHAR},
+      </if>
+      <if test="record.cost != null">
+        COST = #{record.cost,jdbcType=DECIMAL},
+      </if>
+      <if test="record.startDate != null">
+        START_DATE = #{record.startDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.endDate != null">
+        END_DATE = #{record.endDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.userId != null">
+        USER_ID = #{record.userId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.status != null">
+        STATUS = #{record.status,jdbcType=VARCHAR},
+      </if>
+      <if test="record.rechargeFlag != null">
+        RECHARGE_FLAG = #{record.rechargeFlag,jdbcType=VARCHAR},
+      </if>
+      <if test="record.realNameFlag != null">
+        REAL_NAME_FLAG = #{record.realNameFlag,jdbcType=VARCHAR},
+      </if>
+      <if test="record.canBeBinding != null">
+        CAN_BE_BINDING = #{record.canBeBinding,jdbcType=VARCHAR},
+      </if>
+      <if test="record.bindingFlag != null">
+        BINDING_FLAG = #{record.bindingFlag,jdbcType=VARCHAR},
+      </if>
+      <if test="record.canBeRepeatedlyBinding != null">
+        CAN_BE_REPEATEDLY_BINDING = #{record.canBeRepeatedlyBinding,jdbcType=VARCHAR},
+      </if>
+      <if test="record.canBeMeanwhileBinding != null">
+        CAN_BE_MEANWHILE_BINDING = #{record.canBeMeanwhileBinding,jdbcType=VARCHAR},
+      </if>
+      <if test="record.mainCard != null">
+        MAIN_CARD = #{record.mainCard,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createDate != null">
+        CREATE_DATE = #{record.createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.cancelDate != null">
+        CANCEL_DATE = #{record.cancelDate,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_Where_Clause" />
+    </if>
+  </update>
+  <update id="update" parameterType="map">
+    update PREPAID_CARD_INFO
+    set PREPAID_CARD_ID = #{record.prepaidCardId,jdbcType=VARCHAR},
+      PREPAID_CARD_NO = #{record.prepaidCardNo,jdbcType=VARCHAR},
+      PREPAID_CARD_PWD = #{record.prepaidCardPwd,jdbcType=VARCHAR},
+      PREPAID_CARD_TYPE = #{record.prepaidCardType,jdbcType=VARCHAR},
+      PAPERS_TYPE = #{record.papersType,jdbcType=VARCHAR},
+      PAPERS_NO = #{record.papersNo,jdbcType=VARCHAR},
+      COST = #{record.cost,jdbcType=DECIMAL},
+      START_DATE = #{record.startDate,jdbcType=TIMESTAMP},
+      END_DATE = #{record.endDate,jdbcType=TIMESTAMP},
+      USER_ID = #{record.userId,jdbcType=VARCHAR},
+      STATUS = #{record.status,jdbcType=VARCHAR},
+      RECHARGE_FLAG = #{record.rechargeFlag,jdbcType=VARCHAR},
+      REAL_NAME_FLAG = #{record.realNameFlag,jdbcType=VARCHAR},
+      CAN_BE_BINDING = #{record.canBeBinding,jdbcType=VARCHAR},
+      BINDING_FLAG = #{record.bindingFlag,jdbcType=VARCHAR},
+      CAN_BE_REPEATEDLY_BINDING = #{record.canBeRepeatedlyBinding,jdbcType=VARCHAR},
+      CAN_BE_MEANWHILE_BINDING = #{record.canBeMeanwhileBinding,jdbcType=VARCHAR},
+      MAIN_CARD = #{record.mainCard,jdbcType=VARCHAR},
+      CREATE_DATE = #{record.createDate,jdbcType=TIMESTAMP},
+      CANCEL_DATE = #{record.cancelDate,jdbcType=TIMESTAMP}
+    <if test="_parameter != null">
+      <include refid="Update_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.smk.pay.core.entity.PrepaidCardInfoEntity">
+    update PREPAID_CARD_INFO
+    <set>
+      <if test="prepaidCardNo != null">
+        PREPAID_CARD_NO = #{prepaidCardNo,jdbcType=VARCHAR},
+      </if>
+      <if test="prepaidCardPwd != null">
+        PREPAID_CARD_PWD = #{prepaidCardPwd,jdbcType=VARCHAR},
+      </if>
+      <if test="prepaidCardType != null">
+        PREPAID_CARD_TYPE = #{prepaidCardType,jdbcType=VARCHAR},
+      </if>
+      <if test="papersType != null">
+        PAPERS_TYPE = #{papersType,jdbcType=VARCHAR},
+      </if>
+      <if test="papersNo != null">
+        PAPERS_NO = #{papersNo,jdbcType=VARCHAR},
+      </if>
+      <if test="cost != null">
+        COST = #{cost,jdbcType=DECIMAL},
+      </if>
+      <if test="startDate != null">
+        START_DATE = #{startDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endDate != null">
+        END_DATE = #{endDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="userId != null">
+        USER_ID = #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        STATUS = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="rechargeFlag != null">
+        RECHARGE_FLAG = #{rechargeFlag,jdbcType=VARCHAR},
+      </if>
+      <if test="realNameFlag != null">
+        REAL_NAME_FLAG = #{realNameFlag,jdbcType=VARCHAR},
+      </if>
+      <if test="canBeBinding != null">
+        CAN_BE_BINDING = #{canBeBinding,jdbcType=VARCHAR},
+      </if>
+      <if test="bindingFlag != null">
+        BINDING_FLAG = #{bindingFlag,jdbcType=VARCHAR},
+      </if>
+      <if test="canBeRepeatedlyBinding != null">
+        CAN_BE_REPEATEDLY_BINDING = #{canBeRepeatedlyBinding,jdbcType=VARCHAR},
+      </if>
+      <if test="canBeMeanwhileBinding != null">
+        CAN_BE_MEANWHILE_BINDING = #{canBeMeanwhileBinding,jdbcType=VARCHAR},
+      </if>
+      <if test="mainCard != null">
+        MAIN_CARD = #{mainCard,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        CREATE_DATE = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="cancelDate != null">
+        CANCEL_DATE = #{cancelDate,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where PREPAID_CARD_ID = #{prepaidCardId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.smk.pay.core.entity.PrepaidCardInfoEntity">
+    update PREPAID_CARD_INFO
+    set PREPAID_CARD_NO = #{prepaidCardNo,jdbcType=VARCHAR},
+      PREPAID_CARD_PWD = #{prepaidCardPwd,jdbcType=VARCHAR},
+      PREPAID_CARD_TYPE = #{prepaidCardType,jdbcType=VARCHAR},
+      PAPERS_TYPE = #{papersType,jdbcType=VARCHAR},
+      PAPERS_NO = #{papersNo,jdbcType=VARCHAR},
+      COST = #{cost,jdbcType=DECIMAL},
+      START_DATE = #{startDate,jdbcType=TIMESTAMP},
+      END_DATE = #{endDate,jdbcType=TIMESTAMP},
+      USER_ID = #{userId,jdbcType=VARCHAR},
+      STATUS = #{status,jdbcType=VARCHAR},
+      RECHARGE_FLAG = #{rechargeFlag,jdbcType=VARCHAR},
+      REAL_NAME_FLAG = #{realNameFlag,jdbcType=VARCHAR},
+      CAN_BE_BINDING = #{canBeBinding,jdbcType=VARCHAR},
+      BINDING_FLAG = #{bindingFlag,jdbcType=VARCHAR},
+      CAN_BE_REPEATEDLY_BINDING = #{canBeRepeatedlyBinding,jdbcType=VARCHAR},
+      CAN_BE_MEANWHILE_BINDING = #{canBeMeanwhileBinding,jdbcType=VARCHAR},
+      MAIN_CARD = #{mainCard,jdbcType=VARCHAR},
+      CREATE_DATE = #{createDate,jdbcType=TIMESTAMP},
+      CANCEL_DATE = #{cancelDate,jdbcType=TIMESTAMP}
+    where PREPAID_CARD_ID = #{prepaidCardId,jdbcType=VARCHAR}
+  </update>
+
+  <select id="selectByCardNo" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from PREPAID_CARD_INFO
+    where PREPAID_CARD_NO = #{0}
+  </select>
+
+</mapper>

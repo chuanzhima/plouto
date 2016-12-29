@@ -1,0 +1,28 @@
+package com.smk.pay.core.manager.impl;
+
+import com.smk.pay.account.core.request.RequestHeader;
+import com.smk.pay.core.manager.IAccountReverseManager;
+
+import java.util.Map;
+
+/**
+ * Project plouto
+ * Created by chuanzhi.macz
+ * Date 2016/12/14 15:09
+ */
+public class AccountReverseManagerImpl implements IAccountReverseManager{
+
+    @Override
+    public void reverse(RequestHeader header, String originalSeq, String originalDate, String originalTime,
+                        Map<String, Object> extraParam) {
+
+        // TODO
+        /**
+         * 校验流水号, 原订单是否存在，原交易是否已冲正， 原交易状态是否正常
+         */
+
+        // 查询主账户id
+
+        return;
+    }
+}

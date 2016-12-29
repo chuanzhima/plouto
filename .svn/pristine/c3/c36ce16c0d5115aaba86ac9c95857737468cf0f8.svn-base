@@ -1,0 +1,238 @@
+package com.smk.pay.core.entity;
+
+import java.math.BigDecimal;
+import java.util.Date;
+
+public class InvoiceInfoEntity {
+    private String invoiceId;
+
+    private String debitAccountType;
+
+    private String creditAccountType;
+
+    private String transType;
+
+    private String serialNo;
+
+    private String debitAccountId;
+
+    private String creditAccountId;
+
+    private String creditAccountTypeItem;
+
+    private String debitAccountTypeItem2;
+
+    private String debitUserDefindMark;
+
+    private String creditUserDefindMark;
+
+    private String debitOrgId;
+
+    private String creditOrgId;
+
+    private Date transDate;
+
+    private BigDecimal amount;
+
+    private String status;
+
+    private String partyMarkNo;
+
+    private String userDefindMark;
+
+    private BigDecimal integral;
+
+    private String sourceOfFunds;
+
+    private String accDate;
+
+    public InvoiceInfoEntity() {
+
+    }
+
+    public InvoiceInfoEntity(String invoiceId, String debitAccountType, String creditAccountType, String transType, String serialNo, String debitAccountId, String creditAccountId, String debitOrgId, String creditOrgId, Date transDate, String sourceOfFunds, BigDecimal amount, String status, String partyMarkNo, String accDate) {
+        this.invoiceId = invoiceId;
+        this.debitAccountType = debitAccountType;
+        this.creditAccountType = creditAccountType;
+        this.transType = transType;
+        this.serialNo = serialNo;
+        this.debitAccountId = debitAccountId;
+        this.creditAccountId = creditAccountId;
+        this.debitOrgId = debitOrgId;
+        this.creditOrgId = creditOrgId;
+        this.transDate = transDate;
+        this.sourceOfFunds = sourceOfFunds;
+        this.amount = amount;
+        this.status = status;
+        this.partyMarkNo = partyMarkNo;
+        this.accDate = accDate;
+    }
+
+    public String getInvoiceId() {
+        return invoiceId;
+    }
+
+    public void setInvoiceId(String invoiceId) {
+        this.invoiceId = invoiceId == null ? null : invoiceId.trim();
+    }
+
+    public String getDebitAccountType() {
+        return debitAccountType;
+    }
+
+    public void setDebitAccountType(String debitAccountType) {
+        this.debitAccountType = debitAccountType == null ? null : debitAccountType.trim();
+    }
+
+    public String getCreditAccountType() {
+        return creditAccountType;
+    }
+
+    public void setCreditAccountType(String creditAccountType) {
+        this.creditAccountType = creditAccountType == null ? null : creditAccountType.trim();
+    }
+
+    public String getTransType() {
+        return transType;
+    }
+
+    public void setTransType(String transType) {
+        this.transType = transType == null ? null : transType.trim();
+    }
+
+    public String getSerialNo() {
+        return serialNo;
+    }
+
+    public void setSerialNo(String serialNo) {
+        this.serialNo = serialNo == null ? null : serialNo.trim();
+    }
+
+    public String getDebitAccountId() {
+        return debitAccountId;
+    }
+
+    public void setDebitAccountId(String debitAccountId) {
+        this.debitAccountId = debitAccountId == null ? null : debitAccountId.trim();
+    }
+
+    public String getCreditAccountId() {
+        return creditAccountId;
+    }
+
+    public void setCreditAccountId(String creditAccountId) {
+        this.creditAccountId = creditAccountId == null ? null : creditAccountId.trim();
+    }
+
+    public String getCreditAccountTypeItem() {
+        return creditAccountTypeItem;
+    }
+
+    public void setCreditAccountTypeItem(String creditAccountTypeItem) {
+        this.creditAccountTypeItem = creditAccountTypeItem == null ? null : creditAccountTypeItem.trim();
+    }
+
+    public String getDebitAccountTypeItem2() {
+        return debitAccountTypeItem2;
+    }
+
+    public void setDebitAccountTypeItem2(String debitAccountTypeItem2) {
+        this.debitAccountTypeItem2 = debitAccountTypeItem2 == null ? null : debitAccountTypeItem2.trim();
+    }
+
+    public String getDebitUserDefindMark() {
+        return debitUserDefindMark;
+    }
+
+    public void setDebitUserDefindMark(String debitUserDefindMark) {
+        this.debitUserDefindMark = debitUserDefindMark == null ? null : debitUserDefindMark.trim();
+    }
+
+    public String getCreditUserDefindMark() {
+        return creditUserDefindMark;
+    }
+
+    public void setCreditUserDefindMark(String creditUserDefindMark) {
+        this.creditUserDefindMark = creditUserDefindMark == null ? null : creditUserDefindMark.trim();
+    }
+
+    public String getDebitOrgId() {
+        return debitOrgId;
+    }
+
+    public void setDebitOrgId(String debitOrgId) {
+        this.debitOrgId = debitOrgId == null ? null : debitOrgId.trim();
+    }
+
+    public String getCreditOrgId() {
+        return creditOrgId;
+    }
+
+    public void setCreditOrgId(String creditOrgId) {
+        this.creditOrgId = creditOrgId == null ? null : creditOrgId.trim();
+    }
+
+    public Date getTransDate() {
+        return transDate;
+    }
+
+    public void setTransDate(Date transDate) {
+        this.transDate = transDate;
+    }
+
+    public BigDecimal getAmount() {
+        return amount;
+    }
+
+    public void setAmount(BigDecimal amount) {
+        this.amount = amount;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status == null ? null : status.trim();
+    }
+
+    public String getPartyMarkNo() {
+        return partyMarkNo;
+    }
+
+    public void setPartyMarkNo(String partyMarkNo) {
+        this.partyMarkNo = partyMarkNo == null ? null : partyMarkNo.trim();
+    }
+
+    public String getUserDefindMark() {
+        return userDefindMark;
+    }
+
+    public void setUserDefindMark(String userDefindMark) {
+        this.userDefindMark = userDefindMark == null ? null : userDefindMark.trim();
+    }
+
+    public BigDecimal getIntegral() {
+        return integral;
+    }
+
+    public void setIntegral(BigDecimal integral) {
+        this.integral = integral;
+    }
+
+    public String getSourceOfFunds() {
+        return sourceOfFunds;
+    }
+
+    public void setSourceOfFunds(String sourceOfFunds) {
+        this.sourceOfFunds = sourceOfFunds == null ? null : sourceOfFunds.trim();
+    }
+
+    public String getAccDate() {
+        return accDate;
+    }
+
+    public void setAccDate(String accDate) {
+        this.accDate = accDate == null ? null : accDate.trim();
+    }
+}

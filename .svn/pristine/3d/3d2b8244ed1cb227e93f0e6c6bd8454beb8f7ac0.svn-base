@@ -1,0 +1,17 @@
+package com.smk.pay.core.manager;
+
+import com.smk.pay.account.core.enums.AccountCardTypeEnum;
+import com.smk.pay.account.core.enums.AccountChannelEnum;
+
+/**
+ * Project plouto
+ * Created by chuanzhi.macz
+ * Date 2016/11/21 17:08
+ */
+public interface IAccountBaseManager {
+
+    int updateUserId(String accountId, String newUserId);
+
+    void merge(String reqSeq, String txtDate, String txtTime, String merchantId, String cardNo,
+               AccountCardTypeEnum cardTypeEnum, String userId, AccountChannelEnum channelEnum);
+}

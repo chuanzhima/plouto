@@ -1,0 +1,87 @@
+package com.smk.pay.core.manager.impl;
+
+import com.smk.pay.account.core.constant.AccountConstant;
+import com.smk.pay.core.dto.UserInfoDto;
+import com.smk.pay.core.entity.UserInfoEntity;
+import com.smk.pay.core.exception.ServiceException;
+import com.smk.pay.core.manager.IUserInfoManager;
+import com.smk.pay.core.mapper.UserInfoEntityMapper;
+import com.smk.pay.core.utils.BeanCopierCacheUtil;
+import com.smk.pay.dal.condtion.Criteria;
+import com.smk.pay.dal.condtion.EntityCondition;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
+
+import java.util.List;
+
+/**
+ * Project plouto
+ * Created by chuanzhi.macz
+ * Date 2016/10/21 10:12
+ */
+@Service(value = "userInfoManager")
+public class UserInfoManagerImpl implements IUserInfoManager {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserInfoManagerImpl.class);
+    @Autowired
+    private UserInfoEntityMapper userInfoEntityMapper;
+
+    public UserInfoDto getUserById(String userId) {
+        UserInfoDto userInfoDto = new UserInfoDto();
+        try {
+            UserInfoEntity userInfoEntity = userInfoEntityMapper.selectByPrimaryKey(userId);
+            if (null == userInfoEntity)
+                return null;
+            BeanCopierCacheUtil.copy(userInfoEntity, userInfoDto, null);
+        } catch (Exception e) {
+            throw new ServiceException(e);
+        }
+        return userInfoDto;
+    }
+
+    public UserInfoDto getUserByTypeAndNo(String type, String no) {
+        UserInfoDto userInfoDto = new UserInfoDto();
+        try {
+            List<UserInfoEntity> userInfoEntityList = userInfoEntityMapper
+                    .selectList(new EntityCondition().addCriteria(new Criteria().addCriterion
+                            ("PAPERS_TYPE=", type, "PAPERS_TYPE").addCriterion("PAPERS_NO=", no,
+                            "PAPERS_NO")));
+
+            if (!CollectionUtils.isEmpty(userInfoEntityList)) {
+                UserInfoEntity userInfoEntity = userInfoEntityList.get(0);
+                BeanCopierCacheUtil.copy(userInfoEntity, userInfoDto, null);
+                return userInfoDto;
+            }
+            return null;
+        } catch (Exception e) {
+            throw new ServiceException(e);
+        }
+    }
+
+    public void addUser(UserInfoDto userInfoDto) {
+        try {
+            UserInfoEntity userInfoEntity = new UserInfoEntity();
+            BeanCopierCacheUtil.copy(userInfoDto, userInfoEntity, null);
+            userInfoEntityMapper.insertSelective(userInfoEntity);
+        } catch (Exception e) {
+            throw new ServiceException(e);
+        }
+
+    }
+
+    public void updateByTypeAndNo(String type, String no, UserInfoDto userInfoDto) {
+        UserInfoEntity userInfoEntity = new UserInfoEntity();
+        try {
+            BeanCopierCacheUtil.copy(userInfoDto, userInfoEntity, null);
+            userInfoEntityMapper.updateSelective(userInfoEntity, new EntityCondition().addCriteria
+                    (new Criteria().addCriterion
+                            ("PAPERS_TYPE=", type, "PAPERS_TYPE").addCriterion("PAPERS_NO=", no,
+                            "PAPERS_NO")));
+        } catch (Exception e) {
+            throw new ServiceException(e);
+        }
+    }
+}

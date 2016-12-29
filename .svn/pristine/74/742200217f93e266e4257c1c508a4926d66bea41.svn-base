@@ -1,0 +1,163 @@
+package com.smk.pay.core.constant;
+
+/**
+ * 参考 account_type表
+ * <p/>
+ * Project plouto
+ * Created by chuanzhi.macz
+ * Date 2016/11/11 15:21
+ */
+public final class AccountBizConstant {
+
+
+    public static final String USER_INFO_STATUS_NORMAL = "1";
+    /**
+     * 收入
+     */
+    public static final String FUND_DIRECTION_IN = "0";
+    /**
+     * 支出
+     */
+    public static final String FUND_DIRECTION_OUT = "1";
+
+    /**
+     * 自然年方式计算账户总额
+     */
+    public static final String ACC_SYSTEM_TOTAL_TYPE_1 = "1";
+
+    /**
+     * O2O_AMOUNT_DETAIL相关
+     */
+    public static final String O2O_AMOUNT_DETAIL_STATUS_1 = "1";
+    public static final String O2O_AMOUNT_DETAIL_STATUS_0 = "0";
+    public static final String O2O_AMOUNT_DETAIL_DIRECTION_1 = "1";
+    public static final String O2O_AMOUNT_DETAIL_DIRECTION_2 = "2";
+    /**
+     * 银行收付款账户 银行收付款账户（中间账户)
+     */
+    public static final String ACCOUNT_TYPE_KEY_YHSFKZH = "1106";
+
+    public static final String ACCOUNT_TYPE_KEY_XJZH = "1104";
+
+    public static final String ACCOUNT_INFO_ACCOUNT_TYPE_ITEM_1 = "1";
+
+    /**
+     * 参考 bank_info
+     * <p/>
+     * 农业银行
+     */
+    public static final String BANK_INFO_ABC = "0001";
+    /**
+     * 商业银行
+     */
+    public static final String BANK_INFO_ICBC = "0002";
+
+
+    /**
+     * 不同类型的子账户对应trans_detail和account_info表中字段
+     */
+    public static final String YHK_AMOUNT_COLUMN = "AMOUNT1";
+    public static final String XJ_AMOUNT_COLUMN = "AMOUNT2";
+    public static final String ZXZJ_AMOUNT_COLUMN = "AMOUNT3";
+    public static final String GGK_AMOUNT_COLUMN = "AMOUNT4";
+    public static final String LN_AMOUNT_COLUMN = "AMOUNT5";
+    public static final String XY_AMOUNT_COLUMN = "AMOUNT6";
+
+
+    /**
+     * trans_detail相关常量
+     */
+    public static final String TRANS_DETAIL_STATUS_1 = "1";
+    // 已冲正
+    public static final String TRANS_DETAIL_STATUS_4 = "4";
+
+
+    /**
+     * 信用用户表状态
+     */
+    public static final String LNSACCTINFO_STATUS_NORMAL = "1";
+
+    public static final String TRANS_DETAIL_REPLACEMENT_FLAG_0 = "0";
+
+    public static final String TRANS_DETAIL_TRANS_ID_1 = "1";
+    public static final String TRANS_DETAIL_TRANS_ID_2 = "2";
+
+    public static final String TRANS_DETAIL_USER_DEFIND_MARK_0 = "0";
+    public static final String TRANS_DETAIL_USER_DEFIND_MARK_1 = "1";
+    /**
+     * 非动账
+     */
+    public static final String TRANS_DETAIL_ACCOUNT_TRANS_0 = "0";
+    /**
+     * 动账
+     */
+    public static final String TRANS_DETAIL_ACCOUNT_TRANS_1 = "1";
+
+    /**
+     * invoice_info相关常量
+     */
+    public static final String INVOICE_INFO_DEBIT_ACCOUNT_TYPE_1106 = "1106";
+    public static final String INVOICE_INFO_DEBIT_ACCOUNT_TYPE_2601 = "2601";
+    public static final String INVOICE_INFO_DEBIT_ACCOUNT_TYPE_2101 = "2101";
+    public static final String INVOICE_INFO_DEBIT_ACCOUNT_TYPE_2102 = "2102";
+    public static final String INVOICE_INFO_DEBIT_ACCOUNT_TYPE_2103 = "2103";
+    public static final String INVOICE_INFO_DEBIT_ACCOUNT_TYPE_2104 = "2104";
+    public static final String INVOICE_INFO_DEBIT_ACCOUNT_TYPE_2901 = "2901";
+
+    public static final String INVOICE_INFO_CREDIT_ACCOUNT_TYPE_2101 = "2101";
+    public static final String INVOICE_INFO_CREDIT_ACCOUNT_TYPE_2104 = "2104";
+    public static final String INVOICE_INFO_CREDIT_ACCOUNT_TYPE_2103 = "2103";
+    public static final String INVOICE_INFO_CREDIT_ACCOUNT_TYPE_2301 = "2301";
+    public static final String INVOICE_INFO_CREDIT_ACCOUNT_TYPE_1106 = "1106";
+    public static final String INVOICE_INFO_CREDIT_ACCOUNT_TYPE_2901 = "2901";
+
+    public static final String INVOICE_INFO_DEBIT_ORG_ID_0001 = "0001";
+    public static final String INVOICE_INFO_CREDIT_ORG_ID_0001 = "0001";
+    public static final String INVOICE_INFO_STATUS_1 = "1";
+    /**
+     * 现金
+     */
+    public static final String INVOICE_INFO_SOURCE_OF_FUNDS_1 = "1";
+    /**
+     * 转账
+     */
+    public static final String INVOICE_INFO_SOURCE_OF_FUNDS_2 = "2";
+
+
+    public static final String PREPAID_CARD_INFO_STATUS_NORMAL = "1";
+
+    public static final String PREPAID_CARD_INFO_BIND_FLAG_YES = "1";
+
+    public static final String PREPAID_CARD_GROUP_STATUS_NORMAL = "1";
+
+    public static final String PREPAID_CARD_GROUP_STATUS_BINDED = "3";
+
+    public static final String PARTY_MARK_NO_0001 = "0001";
+
+    /**
+     * 一二三类账户限额统计方式，1 = 自然年
+     */
+    public static final String LIMITS_TOTAL_TYPE_1 = "1";
+    /**
+     * 单页最大条数
+     */
+    public static final int MAX_PAGE_SIZE = 20;
+
+    /**
+     * 单笔（次）金额限制
+     */
+    public static final String TRANS_LIMITS_SINGLE_TIME_AMOUNT = "1";
+    /**
+     * 单日金额限制
+     */
+    public static final String TRANS_LIMITS_SINGLE_DAY_AMOUNT = "2";
+    /**
+     * 单日次数限制
+     */
+    public static final String TRANS_LIMITS_SINGLE_DAY_TIMES = "3";
+    /**
+     * 累计金额限制
+     */
+    public static final String TRANS_LIMITS_SUM_AMOUNT = "4";
+
+}

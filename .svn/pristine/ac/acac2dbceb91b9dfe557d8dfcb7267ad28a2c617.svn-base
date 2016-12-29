@@ -1,0 +1,13 @@
+package com.smk.pay.core.manager;
+
+import com.smk.pay.core.dto.InternalAccountDto;
+
+/**
+ * Project plouto
+ * Created by chuanzhi.macz
+ * Date 2016/11/11 14:54
+ */
+public interface IInternalAccountManager {
+
+    InternalAccountDto queryByAccountTypeIdBankId(String accountTypeId, String bankId);
+}

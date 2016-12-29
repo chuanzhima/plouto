@@ -1,0 +1,40 @@
+package com.smk.pay.core.manager.atom.impl;
+
+import com.smk.pay.core.constant.AccountBizConstant;
+import com.smk.pay.core.dto.AccountInfoDto;
+import com.smk.pay.core.entity.InternalAccountModifyDetailEntity;
+import com.smk.pay.core.manager.atom.IReverse;
+import com.smk.pay.core.mapper.InternalAccountModifyDetailEntityMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.math.BigDecimal;
+
+/**
+ * 账户实付冲正, 对应原交易trans_type = '06'
+ *
+ * Project plouto
+ * Created by chuanzhi.macz
+ * Date 2016/12/14 15:51
+ */
+public class Reverse4AccountActualPay implements IReverse {
+
+    @Autowired
+    private InternalAccountModifyDetailEntityMapper internalAccountModifyDetailEntityMapper;
+
+    @Override
+    public void reverse(AccountInfoDto accountInfoDto, String transDetailSeq, String originalSeq, String
+            originalDate, String originalTime,
+                        String sequence, String accDate, BigDecimal... amounts) {
+
+        InternalAccountModifyDetailEntity detailEntity = new InternalAccountModifyDetailEntity(sequence,
+                "10000002", amounts[0].add(amounts[1]).add(amounts[2]).add(amounts[3]).add(amounts[4]).add(amounts[5]),
+                AccountBizConstant.FUND_DIRECTION_OUT, accDate);
+        internalAccountModifyDetailEntityMapper.insertSelective(detailEntity);
+
+        detailEntity = new InternalAccountModifyDetailEntity(sequence,
+                "10000001", amounts[0].add(amounts[1]).add(amounts[2]).add(amounts[3]).add(amounts[4]).add(amounts[5]),
+                AccountBizConstant.FUND_DIRECTION_IN, accDate);
+        internalAccountModifyDetailEntityMapper.insertSelective(detailEntity);
+
+    }
+}

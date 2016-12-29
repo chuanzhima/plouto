@@ -1,0 +1,71 @@
+package com.smk.pay.core.manager.atom.impl;
+
+import com.smk.pay.account.core.request.RequestHeader;
+import com.smk.pay.core.constant.AccountBizConstant;
+import com.smk.pay.core.constant.ResultCodeConstant;
+import com.smk.pay.core.dto.AccountInfoDto;
+import com.smk.pay.core.dto.TransDetailDto;
+import com.smk.pay.core.entity.InvoiceInfoEntity;
+import com.smk.pay.core.enums.AccountTransTypeEnum;
+import com.smk.pay.core.exception.DBException;
+import com.smk.pay.core.exception.ServiceException;
+import com.smk.pay.core.manager.atom.IReverse;
+import com.smk.pay.core.manager.base.IAccountInfoManager;
+import com.smk.pay.core.manager.base.ITransDetailManager;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import javax.annotation.Resource;
+import javax.sql.rowset.serial.SerialException;
+import java.math.BigDecimal;
+
+/**
+ * Project plouto
+ * Created by chuanzhi.macz
+ * Date 2016/12/14 20:40
+ */
+@Component("reverse4Withdraw")
+public class Reverse4Withdraw implements IReverse{
+
+    @Resource(name = "accountInfoManager")
+    private IAccountInfoManager accountInfoManager;
+    @Autowired
+    private ITransDetailManager transDetailManager;
+
+    @Override
+    public void reverse(String accountId, String transDetailSeq, RequestHeader header, String sequence, String accDate) {
+        AccountInfoDto accountInfoDto = (AccountInfoDto)accountInfoManager.queryAccountById(accountId);
+        TransDetailDto transDetailDto = transDetailManager.queryById(transDetailSeq, AccountBizConstant
+                .TRANS_DETAIL_TRANS_ID_1);
+
+        BigDecimal xjAmount = accountInfoDto.getAmount2().add(transDetailDto.getAmount2());
+        BigDecimal cgAmount = accountInfoDto.getAmount1().add(transDetailDto.getAmount1());
+        if (xjAmount.compareTo(new BigDecimal(5000)) > 0) {
+            throw new ServiceException(ResultCodeConstant.YEAR_TRANS_AMOUNT_EXCEED);
+        }
+        if (xjAmount.compareTo(new BigDecimal(0)) < 0 || cgAmount.compareTo(new BigDecimal(0)) <0) {
+            throw new ServiceException(ResultCodeConstant.AMOUNT_CAN_NOT_SUPPORT_TRANS);
+        }
+        AccountInfoDto newAccount = new AccountInfoDto.Builder().amount1(accountInfoDto.getAmount1().add
+                (transDetailDto.getAmount1())).amount2(accountInfoDto.getAmount2().add(transDetailDto.getAmount2())).build();
+        accountInfoManager.updateAccountAmount(accountInfoDto.getAccountId().toString(), new AccountInfoDto.Builder().amount1
+                (accountInfoDto.getAmount1()).build(), newAccount);
+
+        transDetailManager.updateStatusByPkId(transDetailSeq, AccountBizConstant.TRANS_DETAIL_TRANS_ID_1);
+
+//        InvoiceInfoEntity invoiceInfoEntity = new InvoiceInfoEntity(null, AccountBizConstant
+//                .INVOICE_INFO_DEBIT_ACCOUNT_TYPE_1106, AccountBizConstant
+//                .INVOICE_INFO_CREDIT_ACCOUNT_TYPE_2101, AccountTransTypeEnum.RECHARGE.key(),
+//                sequence, internalAccountId, accountId, AccountBizConstant
+//                .INVOICE_INFO_DEBIT_ORG_ID_0001, AccountBizConstant
+//                .INVOICE_INFO_CREDIT_ORG_ID_0001, transDate, AccountBizConstant
+//                .INVOICE_INFO_SOURCE_OF_FUNDS_2, amount, AccountBizConstant
+//                .INVOICE_INFO_STATUS_1, AccountBizConstant.PARTY_MARK_NO_0001, accDate);
+//        try {
+//            invoiceInfoEntityMapper.insertSelective(invoiceInfoEntity);
+//        } catch (Exception e) {
+//            throw new DBException(e);
+//        }
+
+    }
+}

@@ -1,0 +1,67 @@
+package com.smk.pay.core.manager.impl;
+
+import com.smk.pay.account.core.enums.AccountTypeEnum;
+import com.smk.pay.core.dto.AccountInfoDto;
+import com.smk.pay.core.entity.AccountInfoEntity;
+import com.smk.pay.core.exception.DBException;
+import com.smk.pay.core.exception.ServiceException;
+import com.smk.pay.core.manager.IAccountQueryManager;
+import com.smk.pay.core.mapper.AccountInfoEntityMapper;
+import com.smk.pay.core.utils.BeanCopierCacheUtil;
+import com.smk.pay.dal.condtion.Criteria;
+import com.smk.pay.dal.condtion.EntityCondition;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
+
+import java.util.List;
+
+/**
+ * Project plouto
+ * Created by chuanzhi.macz
+ * Date 2016/10/24 9:49
+ */
+@Service("accountQueryManager")
+public class AccountQueryManagerImpl implements IAccountQueryManager {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(AccountQueryManagerImpl.class);
+    @Autowired
+    private AccountInfoEntityMapper accountInfoEntityMapper;
+    /**
+     * 查询互联网账户信息
+     *
+     * @param userId
+     * @return
+     */
+    public AccountInfoDto getAccountByUserId(String userId) {
+
+        Criteria criteria = new Criteria();
+        criteria.addCriterion("USER_ID = ", userId, "USER_ID")
+                .addCriterion("ACCOUNT_TYPE = ", AccountTypeEnum.ONLINE.value(), "ACCOUNT_TYPE");
+
+        AccountInfoDto accountInfoDto = null;
+        try {
+            List<AccountInfoEntity> accountInfoEntityList = accountInfoEntityMapper.selectList(new
+                    EntityCondition()
+                    .addCriteria(criteria));
+            if (CollectionUtils.isEmpty(accountInfoEntityList)) {
+                return accountInfoDto;
+            }
+            accountInfoDto = new AccountInfoDto();
+            AccountInfoEntity accountInfoEntity = accountInfoEntityList.get(0);
+            BeanCopierCacheUtil.copy(accountInfoEntity, accountInfoDto, null);
+        } catch (Exception e) {
+            throw new ServiceException(e);
+        }
+        return accountInfoDto;
+    }
+
+    public AccountInfoDto queryAccountById(String accountId) {
+        AccountInfoEntity accountInfoEntity = accountInfoEntityMapper.selectByPrimaryKey(accountId);
+        AccountInfoDto accountInfoDto = new AccountInfoDto();
+        BeanCopierCacheUtil.copy(accountInfoEntity, accountInfoDto, null);
+        return accountInfoDto;
+    }
+}

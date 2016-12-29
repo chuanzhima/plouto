@@ -1,0 +1,157 @@
+package com.smk.pay.core.manager.base.impl;
+
+import com.smk.pay.core.constant.AccountBizConstant;
+import com.smk.pay.core.dto.TransDetailDto;
+import com.smk.pay.core.entity.TransDetailEntity;
+import com.smk.pay.core.exception.DBException;
+import com.smk.pay.core.exception.ServiceException;
+import com.smk.pay.core.manager.base.ITransDetailManager;
+import com.smk.pay.core.mapper.TransDetailEntityMapper;
+import com.smk.pay.core.utils.BeanCopierCacheUtil;
+import com.smk.pay.core.utils.StringUtil;
+import com.smk.pay.dal.condtion.Criteria;
+import com.smk.pay.dal.condtion.EntityCondition;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+/**
+ * Project plouto
+ * Created by chuanzhi.macz
+ * Date 2016/11/11 16:52
+ */
+@Component(value = "transDetailManager")
+public class TransDetailManagerImpl implements ITransDetailManager {
+
+    @Autowired
+    private TransDetailEntityMapper transDetailEntityMapper;
+
+    public int addTransDetail(TransDetailDto transDetailDto) {
+        try {
+            TransDetailEntity transDetailEntity = new TransDetailEntity();
+            BeanCopierCacheUtil.copy(transDetailDto, transDetailEntity, null);
+            return transDetailEntityMapper.insertSelective(transDetailEntity);
+        } catch (Exception e) {
+            throw new DBException(e);
+        }
+    }
+
+    public TransDetailDto querySumAccount(String transType, String transId, String accountId,
+                                          Date fromTransDate, Date toTransDate) {
+
+        TransDetailDto transDetailDto = new TransDetailDto.Builder().build();
+        try {
+            TransDetailEntity transDetailEntity = transDetailEntityMapper.selectSumAmount(new EntityCondition()
+                    .addCriteria(new Criteria()
+                            .addCriterion("TRANS_TYPE=", transType, "TRANS_TYPE").addCriterion("TRANS_ID=",
+                                    transId, "TRANS_ID").addCriterion("ACCOUNT_ID=", accountId, "ACCOUNT_ID")
+                            .addCriterion("TRANS_DATE BETWEEN ", fromTransDate, toTransDate, "TRANS_DATE")));
+            BeanCopierCacheUtil.copy(transDetailEntity, transDetailDto, null);
+        } catch (Exception e) {
+            throw new DBException(e);
+        }
+        return transDetailDto;
+    }
+
+    public TransDetailDto querySumAccount(List<String> transTypes, String accountId,
+                                          Date fromTransDate, Date toTransDate, String status) {
+
+        TransDetailDto transDetailDto = new TransDetailDto.Builder().build();
+        Criteria criteria = new Criteria().addCriterion("STATUS=", status, "STATUS").addCriterion("ACCOUNT_ID=", accountId, "ACCOUNT_ID").addCriterion("TRANS_TYPE IN", transTypes, "TRANS_TYPE");
+        if (fromTransDate != null && toTransDate != null) {
+            criteria.addCriterion("TRANS_DATE BETWEEN ", fromTransDate, toTransDate,
+                    "TRANS_DATE");
+        }
+
+        try {
+            TransDetailEntity transDetailEntity = transDetailEntityMapper.selectSumAmount(new EntityCondition()
+                    .addCriteria(criteria));
+            BeanCopierCacheUtil.copy(transDetailEntity, transDetailDto, null);
+        } catch (Exception e) {
+            throw new DBException(e);
+        }
+        return transDetailDto;
+    }
+
+    @Override
+    public List<TransDetailDto> queryTransDetail(String accountId, String transType, String
+                                                merchantId,
+                                                 Date fromDate, Date toDate, int pageNum, int
+                                                             pageSize) {
+
+        Criteria criteria = new Criteria().addCriterion("ACCOUNT_ID=", accountId, "ACCOUNT_ID")
+                .addCriterion("TRANS_DATE BETWEEN ", fromDate, toDate, "TRANS_DATE");
+        if (!StringUtil.isEmpty(transType))
+            criteria.addCriterion("TRANS_TYPE=", transType, "TRANS_TYPE");
+        if (!StringUtil.isEmpty(merchantId))
+            criteria.addCriterion("MERCHANT_ID=", merchantId, "MERCHANT_ID");
+
+        int pageIndex = (pageNum - 1) * pageSize;
+
+        List<TransDetailEntity> transDetailEntityList = transDetailEntityMapper.queryTransDetail
+                (new EntityCondition()
+                .addCriteria(criteria).addOffsetOpt(pageIndex).addLimitOpt(pageSize)
+                        .addOrderByOpt("TRANS_DATE DESC"));
+
+        List<TransDetailDto> detailDtos = new ArrayList<>();
+        for (TransDetailEntity entity : transDetailEntityList) {
+            TransDetailDto detailDto = new TransDetailDto.Builder().build();
+            BeanCopierCacheUtil.copy(entity, detailDto, null);
+            detailDtos.add(detailDto);
+        }
+        return detailDtos;
+    }
+
+    public int queryTransDetailCount(String accountId, String transType, String merchantId, Date
+            fromDate, Date toDate) {
+        Criteria criteria = new Criteria().addCriterion("ACCOUNT_ID=", accountId, "ACCOUNT_ID")
+                .addCriterion("TRANS_DATE BETWEEN ", fromDate, toDate, "TRANS_DATE");
+        if (!StringUtil.isEmpty(transType))
+            criteria.addCriterion("TRANS_TYPE=", transType, "TRANS_TYPE");
+        if (!StringUtil.isEmpty(merchantId))
+            criteria.addCriterion("MERCHANT_ID=", merchantId, "MERCHANT_ID");
+        return transDetailEntityMapper.count(new EntityCondition().addCriteria(criteria));
+    }
+
+    @Override
+    public TransDetailDto queryTransDetail(String reqseq, String originalDate, String originalTime) {
+        TransDetailDto transDetailDto = new TransDetailDto.Builder().build();
+        try {
+            TransDetailEntity transDetailEntity = transDetailEntityMapper.selectOne(new EntityCondition()
+                    .addCriteria(new Criteria()
+                            .addCriterion("REQ_SERIAL_NO=", reqseq, "REQ_SERIAL_NO").addCriterion("REQ_TRANS_DATE=",
+                                    originalDate, "REQ_TRANS_DATE").addCriterion("REQ_TRANS_TIME=", originalTime, "REQ_TRANS_TIME")
+                            .addCriterion("TRANS_ID", AccountBizConstant.TRANS_DETAIL_TRANS_ID_1, "TRANS_ID")));
+            if (null == transDetailEntity)
+                BeanCopierCacheUtil.copy(transDetailEntity, transDetailDto, null);
+        } catch (Exception e) {
+            throw new DBException(e);
+        }
+        return transDetailDto;
+    }
+
+    public Boolean isRepeatTrans(String... params) {
+
+        String requestSequence = params[0];
+        String requestTransDate = params[1];
+        String requestTransTime = params[2];
+        String transType = params[3];
+        String status = params[4];
+        try {
+            int count = transDetailEntityMapper.count(new
+                    EntityCondition().addCriteria(new Criteria()
+                    .addCriterion("TRANS_TYPE=", transType, "TRANS_TYPE").addCriterion("REQ_SERIAL_NO=",
+                            requestSequence, "REQ_SERIAL_NO").addCriterion("REQ_TRANS_DATE=", requestTransDate, "REQ_TRANS_DATE")
+                    .addCriterion("STATUS=", status, "STATUS")));
+            return count > 0;
+        } catch (Exception e) {
+            throw new DBException(e);
+        }
+
+    }
+}

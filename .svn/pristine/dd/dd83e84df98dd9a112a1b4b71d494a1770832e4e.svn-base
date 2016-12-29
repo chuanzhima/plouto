@@ -1,0 +1,63 @@
+package com.smk.pay.core.api;
+
+import com.alibaba.dubbo.config.annotation.Service;
+import com.smk.pay.account.core.enums.AccountBizEnum;
+import com.smk.pay.account.core.enums.AccountChannelEnum;
+import com.smk.pay.account.core.enums.AccountFundFlowEnum;
+import com.smk.pay.account.core.request.RequestHeader;
+import com.smk.pay.account.core.response.RpcResponse;
+import com.smk.pay.account.core.service.IAccountSettleService;
+import com.smk.pay.core.constant.ResultCodeConstant;
+import com.smk.pay.core.manager.IAccountSettleManager;
+import com.smk.pay.core.meta.ServiceResultCode;
+import com.smk.pay.core.utils.StringUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.math.BigDecimal;
+
+/**
+ * 结算
+ * <p/>
+ * Project plouto
+ * Created by chuanzhi.macz
+ * Date 2016/12/19 20:29
+ */
+@Service(version = "accountSettleService")
+public class AccountSettleService implements IAccountSettleService {
+
+    @Autowired
+    private IAccountSettleManager accountSettleManager;
+
+    @Override
+    public RpcResponse<String> settle4Merchant(RequestHeader header, AccountChannelEnum channelEnum, String merchantId,
+                                               AccountFundFlowEnum fundFlowEnum, BigDecimal amount, String bankId,
+                                               AccountBizEnum bizEnum) {
+        if (StringUtil.isNull(header, channelEnum, amount, fundFlowEnum, bizEnum) ||
+                amount.compareTo(new BigDecimal(0)) < 0 ||
+                StringUtil.isEmpty(header.getReqSeq(), header.getTxDate(), header.getTxTime(), merchantId, bankId)) {
+            return new RpcResponse<>(Boolean.FALSE, ResultCodeConstant
+                    .PARAMETER_INVALID, ServiceResultCode.RESULT_CODE_MAPPING.get(ResultCodeConstant
+                    .PARAMETER_INVALID));
+        }
+        accountSettleManager.settle4Merchant(header, channelEnum, merchantId, fundFlowEnum, amount, bankId, bizEnum);
+
+        return new RpcResponse<>(Boolean.TRUE, ResultCodeConstant.SUCCESS, ServiceResultCode.RESULT_CODE_MAPPING.get
+                (ResultCodeConstant.SUCCESS));
+    }
+
+    @Override
+    public RpcResponse<String> agentPay(RequestHeader header, AccountChannelEnum channelEnum, String merchantId,
+                                        AccountFundFlowEnum fundFlowEnum, BigDecimal amount, String bankId,
+                                        AccountBizEnum bizEnum) {
+        if (StringUtil.isNull(header, channelEnum, amount, fundFlowEnum) || amount.compareTo(new BigDecimal(0)) < 0 ||
+                StringUtil.isEmpty(header.getReqSeq(), header.getTxDate(), header.getTxTime(), merchantId, bankId)) {
+            return new RpcResponse<>(Boolean.FALSE, ResultCodeConstant
+                    .PARAMETER_INVALID, ServiceResultCode.RESULT_CODE_MAPPING.get(ResultCodeConstant
+                    .PARAMETER_INVALID));
+        }
+        accountSettleManager.agentPay(header, channelEnum, merchantId, fundFlowEnum, amount, bankId, bizEnum);
+
+        return new RpcResponse<>(Boolean.TRUE, ResultCodeConstant.SUCCESS, ServiceResultCode.RESULT_CODE_MAPPING.get
+                (ResultCodeConstant.SUCCESS));
+    }
+}

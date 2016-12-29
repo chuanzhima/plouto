@@ -1,0 +1,120 @@
+package com.smk.pay.core.manager;
+
+import com.smk.pay.account.core.enums.AccountInvokerEnum;
+import com.smk.pay.account.core.enums.AccountTypeEnum;
+
+import java.util.Date;
+
+/**
+ * Project plouto
+ * Created by chuanzhi.macz
+ * Date 2016/10/23 19:26
+ */
+public interface IAccountMngManager {
+
+    /**
+     * free account
+     *
+     * @param value
+     * @param fromDate
+     * @param toDate
+     * @param typeEnum
+     * @param invokerEnum
+     */
+    String freeze(final String value, final Date fromDate, final Date toDate,
+                  AccountTypeEnum typeEnum, AccountInvokerEnum invokerEnum);
+
+    /**
+     * unfreeze account
+     *
+     * @param value
+     * @param typeEnum
+     * @param invokerEnum
+     * @return
+     */
+    String unfreeze(final String value, AccountTypeEnum typeEnum, AccountInvokerEnum invokerEnum);
+
+    /**
+     * prolong freeze date
+     *
+     * @param value
+     * @param toDate
+     * @param typeEnum
+     * @param invokerEnum
+     * @return
+     */
+    String freezeProlong(final String value, final Date toDate,
+                         AccountTypeEnum typeEnum, AccountInvokerEnum invokerEnum);
+
+
+    /**
+     * stop payment
+     *
+     * @param value
+     * @param fromDate
+     * @param toDate
+     * @param typeEnum
+     * @param invokerEnum
+     */
+    String stopPayment(final String value, final Date fromDate, final Date toDate,
+                  AccountTypeEnum typeEnum, AccountInvokerEnum invokerEnum);
+
+    /**
+     * close stop payment
+     *
+     * @param value
+     * @param typeEnum
+     * @param invokerEnum
+     * @return
+     */
+    String closeStopPayment(final String value, AccountTypeEnum typeEnum, AccountInvokerEnum
+            invokerEnum);
+
+    /**
+     * prolong stop payment date
+     *
+     * @param value
+     * @param toDate
+     * @param typeEnum
+     * @param invokerEnum
+     * @return
+     */
+    String stopPaymentProlong(final String value, final Date toDate,
+                         AccountTypeEnum typeEnum, AccountInvokerEnum invokerEnum);
+
+
+    /**
+     * suspend account
+     *
+     * @param value
+     * @param fromDate
+     * @param toDate
+     * @param typeEnum
+     * @param invokerEnum
+     */
+    String suspend(final String value, final Date fromDate, final Date toDate,
+                       AccountTypeEnum typeEnum, AccountInvokerEnum invokerEnum);
+
+    /**
+     * close suspend account
+     *
+     * @param value
+     * @param typeEnum
+     * @param invokerEnum
+     * @return
+     */
+    String closeSuspend(final String value, AccountTypeEnum typeEnum, AccountInvokerEnum
+            invokerEnum);
+
+    /**
+     * prolong suspend date
+     *
+     * @param value
+     * @param toDate
+     * @param typeEnum
+     * @param invokerEnum
+     * @return
+     */
+    String suspendProlong(final String value, final Date toDate,
+                              AccountTypeEnum typeEnum, AccountInvokerEnum invokerEnum);
+}

@@ -1,0 +1,111 @@
+package com.smk.pay.core.api;
+
+import com.smk.pay.account.core.constant.AccountConstant;
+import com.smk.pay.account.core.enums.AccountTypeEnum;
+import com.smk.pay.account.core.response.AccountInfo;
+import com.smk.pay.account.core.response.RpcResponse;
+import com.smk.pay.account.core.service.IAccountQueryService;
+import com.smk.pay.core.constant.ResultCodeConstant;
+import com.smk.pay.core.dto.AccountInfoDto;
+import com.smk.pay.core.dto.UserInfoDto;
+import com.smk.pay.core.manager.IAccountQueryManager;
+import com.smk.pay.core.manager.IUserInfoManager;
+import com.smk.pay.core.utils.BeanCopierCacheUtil;
+import com.smk.pay.core.utils.PropertiesUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+
+/**
+ * Project plouto
+ * Created by chuanzhi.macz
+ * Date 2016/10/24 9:57
+ */
+@Service(value = "accountQueryService")
+public class AccountQueryService implements IAccountQueryService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(AccountQueryService.class);
+    @Autowired
+    private IAccountQueryManager accountQueryManager;
+    @Autowired
+    private IUserInfoManager userInfoManager;
+
+    public RpcResponse<String> test(AccountTypeEnum typeEnum) {
+        LOGGER.info("account enum is " + typeEnum.name() + "," + typeEnum.value());
+        return new RpcResponse<String>(Boolean.TRUE, "123", "测试返回内容");
+    }
+
+    public RpcResponse<BigDecimal> queryWithdrawalAmount(String value, AccountTypeEnum typeEnum, String type) {
+        return null;
+    }
+
+    public RpcResponse<ArrayList<AccountInfo>> queryAccountByIdNo(String identityNo, AccountTypeEnum typeEnum) {
+
+        LOGGER.info("queryAccountByIdNo, typeEnum = {}, identityNo = {}", new String[]{typeEnum
+                .name(), identityNo});
+
+        if (StringUtils.isEmpty(identityNo) || typeEnum == null)
+            return new RpcResponse<ArrayList<AccountInfo>>(Boolean.FALSE, ResultCodeConstant
+                    .PARAMETER_INVALID, PropertiesUtil.LOCALE_PROPERTIES_Map.get
+                    (ResultCodeConstant.PARAMETER_INVALID));
+
+        RpcResponse<ArrayList<AccountInfo>> rpcResponse = null;
+        if (typeEnum == AccountTypeEnum.ONLINE) {
+
+            UserInfoDto userInfoDto = userInfoManager.getUserByTypeAndNo(AccountConstant
+                    .USER_INFO_STATUS_NORMAL, identityNo);
+            if (null == userInfoDto)
+                return new RpcResponse<ArrayList<AccountInfo>>(Boolean.FALSE, ResultCodeConstant
+                        .USER_INVALID, PropertiesUtil.LOCALE_PROPERTIES_Map.get
+                        (ResultCodeConstant.USER_INVALID));
+            RpcResponse<AccountInfo> response = this.queryAccount(userInfoDto.getUserId(),
+                    AccountTypeEnum.ONLINE);
+            if (!response.getIsSucc()) {
+                return new RpcResponse<ArrayList<AccountInfo>>(Boolean.FALSE, response.getResultCode
+                        (), response.getResultMsg());
+            }
+            ArrayList<AccountInfo> accountInfoList = new ArrayList<AccountInfo>();
+            accountInfoList.add(response.getT());
+            rpcResponse = new RpcResponse<ArrayList<AccountInfo>>(accountInfoList, Boolean.TRUE);
+        }
+        return rpcResponse;
+    }
+
+    public RpcResponse<AccountInfo> queryAccount(String value, AccountTypeEnum typeEnum) {
+
+        LOGGER.info("queryAccount, typeEnum = {}, value={}", new String[]{typeEnum.name(), value});
+        RpcResponse<AccountInfo> rpcResponse;
+
+        if (StringUtils.isEmpty(value) || typeEnum == null)
+            return new RpcResponse<AccountInfo>(Boolean.FALSE, ResultCodeConstant
+                    .PARAMETER_INVALID, PropertiesUtil.LOCALE_PROPERTIES_Map.get
+                    (ResultCodeConstant.PARAMETER_INVALID));
+
+        AccountInfo accountInfo = new AccountInfo();
+        if (typeEnum == AccountTypeEnum.ONLINE) {
+            AccountInfoDto accountInfoDto;
+            try {
+                accountInfoDto = accountQueryManager.getAccountByUserId(value);
+            } catch (Exception e) {
+                LOGGER.error("accountQueryManager.getAccountByUserId exception! value = " +
+                        value, e);
+                return new RpcResponse<AccountInfo>(Boolean.FALSE, ResultCodeConstant
+                        .SYSTEM_ERROR, PropertiesUtil.LOCALE_PROPERTIES_Map.get
+                        (ResultCodeConstant.SYSTEM_ERROR));
+            }
+            if (accountInfoDto == null) {
+                return new RpcResponse<AccountInfo>(Boolean.FALSE, ResultCodeConstant
+                        .ACCOUNT_NOT_EXIST, PropertiesUtil.LOCALE_PROPERTIES_Map.get
+                        (ResultCodeConstant.ACCOUNT_NOT_EXIST));
+            }
+            BeanCopierCacheUtil.copy(accountInfoDto, accountInfo, null);
+        }
+        rpcResponse = new RpcResponse<AccountInfo>(accountInfo, Boolean.TRUE);
+        return rpcResponse;
+    }
+}

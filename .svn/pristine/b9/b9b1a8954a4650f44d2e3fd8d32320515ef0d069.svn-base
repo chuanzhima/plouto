@@ -1,0 +1,92 @@
+package com.smk.pay.core.api;
+
+import com.smk.pay.account.core.constant.AccountConstant;
+import com.smk.pay.account.core.enums.AccountInvokerEnum;
+import com.smk.pay.account.core.enums.AccountTypeEnum;
+import com.smk.pay.account.core.request.OpenAccountRequest;
+import com.smk.pay.account.core.response.RpcResponse;
+import com.smk.pay.account.core.service.IAccountMngService;
+import com.smk.pay.core.base.BaseServiceTest;
+import org.junit.*;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.Calendar;
+import java.util.Date;
+
+/**
+ * AccountMngService Tester.
+ *
+ * @author <Authors name>
+ * @version 1.0
+ * @since <pre>11/08/2016</pre>
+ */
+public class AccountMngServiceTest extends BaseServiceTest {
+
+    @Autowired
+    private IAccountMngService accountMngService;
+
+    @Before
+    public void before() {
+        System.out.println("before ......");
+    }
+
+    @After
+    public void after() {
+        System.out.println("after ....");
+    }
+
+    @BeforeClass
+    public static void beforeClass() {
+        System.out.println("before class ......");
+    }
+    @AfterClass
+    public static void afterClass() {
+        System.out.println("after class ......");
+    }
+
+
+
+    @org.junit.Test
+    public void testFreeze() {
+        String userId = "100003810";
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.MONDAY, 3);
+
+//        RpcResponse<String> response = accountMngService.freeze(userId, new Date(), calendar
+//                .getTime(), AccountTypeEnum.ONLINE, AccountInvokerEnum.ANTI_FRAUD);
+//        Assert.assertTrue(response.getIsSucc());
+    }
+
+    @org.junit.Test
+    public void testUnfreeze() {
+        String userId = "100003810";
+
+//        RpcResponse<String> response = accountMngService.unfreeze(userId, AccountTypeEnum.ONLINE,
+//                AccountInvokerEnum.ANTI_FRAUD);
+//        Assert.assertTrue(response.getIsSucc());
+    }
+
+    @org.junit.Test
+    public void testFreezeProlong() {
+        String userId = "100003810";
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.MONDAY, 6);
+//        RpcResponse<String> response = accountMngService.freezeProlong(userId, calendar.getTime()
+//                , AccountTypeEnum.ONLINE, AccountInvokerEnum.ANTI_FRAUD);
+//        Assert.assertTrue(response.getIsSucc());
+    }
+
+    @org.junit.Test
+    public void testOpenAccount() {
+
+        OpenAccountRequest openAccountRequest = new OpenAccountRequest("123456", "猪刚鬣",
+                AccountConstant.CREDENTIAL_TYPE_ID, "370881199612311234");
+        RpcResponse<String> response = accountMngService.openAccount(openAccountRequest,
+                AccountTypeEnum.ONLINE);
+        Assert.assertTrue(response.getIsSucc());
+    }
+
+
+
+
+}

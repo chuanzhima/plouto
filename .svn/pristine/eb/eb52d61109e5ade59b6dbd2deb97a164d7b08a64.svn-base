@@ -1,0 +1,110 @@
+package com.smk.pay.core.manager.atom.impl;
+
+import com.smk.pay.account.core.constant.AccountConstant;
+import com.smk.pay.account.core.enums.AccountChannelEnum;
+import com.smk.pay.account.core.enums.AccountFundFlowEnum;
+import com.smk.pay.account.core.request.RequestHeader;
+import com.smk.pay.core.constant.AccountBizConstant;
+import com.smk.pay.core.constant.ResultCodeConstant;
+import com.smk.pay.core.dto.AccountInfoDto;
+import com.smk.pay.core.dto.InternalAccountDto;
+import com.smk.pay.core.dto.TransDetailDto;
+import com.smk.pay.core.entity.InternalAccountModifyDetailEntity;
+import com.smk.pay.core.entity.InvoiceInfoEntity;
+import com.smk.pay.core.enums.AccountTransTypeEnum;
+import com.smk.pay.core.exception.ServiceException;
+import com.smk.pay.core.manager.atom.IWithdraw;
+import com.smk.pay.core.manager.base.IAccountInfoManager;
+import com.smk.pay.core.manager.base.IInternalAccountManager;
+import com.smk.pay.core.manager.base.ITransDetailManager;
+import com.smk.pay.core.mapper.InternalAccountModifyDetailEntityMapper;
+import com.smk.pay.core.mapper.InvoiceInfoEntityMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import javax.annotation.Resource;
+import java.math.BigDecimal;
+import java.util.Date;
+
+/**
+ * Project plouto
+ * Created by chuanzhi.macz
+ * Date 2016/11/16 15:54
+ */
+@Component(value = "withdrawYHK")
+public class WithdrawYHK implements IWithdraw {
+
+    @Resource(name = "accountInfoManager")
+    private IAccountInfoManager accountInfoManager;
+    @Autowired
+    private IInternalAccountManager internalAccountManager;
+    @Autowired
+    private ITransDetailManager transDetailManager;
+    @Autowired
+    private InvoiceInfoEntityMapper invoiceInfoEntityMapper;
+    @Autowired
+    private InternalAccountModifyDetailEntityMapper internalAccountModifyDetailEntityMapper;
+
+    public void withdraw(String sequence, String accountId, BigDecimal amount, String bankId,
+                         String merchantId, String accDate, RequestHeader header, Date transDate,
+                         AccountChannelEnum channelEnum) {
+
+        AccountInfoDto accountInfoDto = (AccountInfoDto)accountInfoManager.queryAccountById(accountId);
+        if (accountInfoDto.getAmount1().compareTo(amount) < 0)
+            throw new ServiceException(ResultCodeConstant.NOT_ENOUGH_BALANCE);
+
+        BigDecimal amount1 = accountInfoDto.getAmount1().subtract(amount);
+        AccountInfoDto newAmount = new AccountInfoDto.Builder().amount1(amount1).build();
+        AccountInfoDto oldAmount = new AccountInfoDto.Builder().amount1(accountInfoDto.getAmount1
+                ()).build();
+        int updateCount = accountInfoManager.updateAccountAmount(accountId, oldAmount, newAmount);
+        if (updateCount != 1)
+            throw new ServiceException(ResultCodeConstant.SYSTEM_ERROR_CONCURRENT);
+
+        InternalAccountDto internalAccountDto = internalAccountManager.queryByAccountTypeIdBankId
+                (AccountBizConstant.ACCOUNT_TYPE_KEY_YHSFKZH, bankId);
+        if (internalAccountDto == null)
+            throw new ServiceException(ResultCodeConstant.INTERNAL_ACCOUNT_DATA_EXCEPTION);
+
+        String internalAccountId = internalAccountDto.getInternalAccountId();
+        InternalAccountModifyDetailEntity detailEntity = new InternalAccountModifyDetailEntity(sequence,
+                internalAccountId, amount, AccountBizConstant.FUND_DIRECTION_OUT, accDate);
+        internalAccountModifyDetailEntityMapper.insertSelective(detailEntity);
+
+        TransDetailDto transDetailDto = new TransDetailDto.Builder().serialNo(sequence)
+                .transId(AccountBizConstant.TRANS_DETAIL_TRANS_ID_1).transType
+                        (AccountTransTypeEnum.WITHDRAW.key()).sourceOfFunds
+                        (AccountFundFlowEnum.YHK.name()).accountId(accountId).accountClass
+                        (accountInfoDto.getAccountClass()).accountCl(AccountBizConstant
+                        .YHK_AMOUNT_COLUMN).reqSerialNo(header.getReqSeq()).reqTransDate
+                        (header.getTxDate()).reqTransTime(header.getTxTime()).transDate
+                        (transDate).status(AccountBizConstant.TRANS_DETAIL_STATUS_1)
+                .replacementFlag(AccountBizConstant.TRANS_DETAIL_REPLACEMENT_FLAG_0)
+                .partyMarkNo(AccountBizConstant.PARTY_MARK_NO_0001).amount1(amount).amount11
+                        (amount).amount12(accountInfoDto.getAmount2())
+                .amount13(accountInfoDto.getAmount3()).amount14(accountInfoDto.getAmount4()
+                ).amount15(accountInfoDto.getAmount5()).userDefindMark(AccountBizConstant
+                        .TRANS_DETAIL_USER_DEFIND_MARK_1).channel(channelEnum.name())
+                .merchantId(merchantId).accDate(accDate).build();
+
+        transDetailManager.addTransDetail(transDetailDto);
+
+        InvoiceInfoEntity invoiceInfoEntity = new InvoiceInfoEntity(null, AccountBizConstant
+                .INVOICE_INFO_DEBIT_ACCOUNT_TYPE_2101, AccountBizConstant
+                .INVOICE_INFO_CREDIT_ACCOUNT_TYPE_1106, AccountTransTypeEnum.WITHDRAW.key(), sequence,
+                null, internalAccountId, AccountBizConstant
+                .INVOICE_INFO_DEBIT_ORG_ID_0001, AccountBizConstant
+                .INVOICE_INFO_CREDIT_ORG_ID_0001, transDate, AccountBizConstant
+                .INVOICE_INFO_SOURCE_OF_FUNDS_2, amount, AccountBizConstant
+                .INVOICE_INFO_STATUS_1, AccountBizConstant.PARTY_MARK_NO_0001, accDate);
+        invoiceInfoEntityMapper.insertSelective(invoiceInfoEntity);
+
+    }
+
+    public static void main(String[] args) {
+        BigDecimal a = new BigDecimal(20000000);
+
+        System.out.println(String.format("a = %.0f", a));
+    }
+
+}

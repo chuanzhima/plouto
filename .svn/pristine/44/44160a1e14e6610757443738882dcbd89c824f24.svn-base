@@ -1,0 +1,1113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.smk.pay.core.mapper.LnsAcctInfoEntityMapper">
+    <resultMap id="BaseResultMap" type="com.smk.pay.core.entity.LnsAcctInfoEntity">
+        <id column="USER_ID" property="userId" jdbcType="VARCHAR"/>
+        <id column="BUSINESS_TYPE" property="businessType" jdbcType="VARCHAR"/>
+        <result column="ACCTNO" property="acctno" jdbcType="VARCHAR"/>
+        <result column="ACCTYPE" property="acctype" jdbcType="VARCHAR"/>
+        <result column="ACCTSTAT" property="acctstat" jdbcType="VARCHAR"/>
+        <result column="USER_NAME" property="userName" jdbcType="VARCHAR"/>
+        <result column="PAPERS_TYPE" property="papersType" jdbcType="VARCHAR"/>
+        <result column="PAPERS_NO" property="papersNo" jdbcType="VARCHAR"/>
+        <result column="PHONE_NO" property="phoneNo" jdbcType="VARCHAR"/>
+        <result column="PRDCODE" property="prdcode" jdbcType="VARCHAR"/>
+        <result column="CORPCODE" property="corpcode" jdbcType="VARCHAR"/>
+        <result column="GUARWAY" property="guarway" jdbcType="VARCHAR"/>
+        <result column="LOANTYPE" property="loantype" jdbcType="VARCHAR"/>
+        <result column="LOANKIND" property="loankind" jdbcType="VARCHAR"/>
+        <result column="LOANSTATUS" property="loanstatus" jdbcType="VARCHAR"/>
+        <result column="OPENBRC" property="openbrc" jdbcType="VARCHAR"/>
+        <result column="PROFITBRC" property="profitbrc" jdbcType="VARCHAR"/>
+        <result column="CRDFLAG" property="crdflag" jdbcType="VARCHAR"/>
+        <result column="CRDNO" property="crdno" jdbcType="VARCHAR"/>
+        <result column="BEGININTDATE" property="beginintdate" jdbcType="TIMESTAMP"/>
+        <result column="PERIODUNIT" property="periodunit" jdbcType="VARCHAR"/>
+        <result column="OPENTERM" property="openterm" jdbcType="VARCHAR"/>
+        <result column="LOANTERM" property="loanterm" jdbcType="VARCHAR"/>
+        <result column="GRACEDAYS" property="gracedays" jdbcType="VARCHAR"/>
+        <result column="CONTDUEDATE" property="contduedate" jdbcType="VARCHAR"/>
+        <result column="CURRDUEDATE" property="currduedate" jdbcType="VARCHAR"/>
+        <result column="INTRATEPLAN" property="intrateplan" jdbcType="VARCHAR"/>
+        <result column="DBACCT" property="dbacct" jdbcType="VARCHAR"/>
+        <result column="FUNDSOURCE" property="fundsource" jdbcType="VARCHAR"/>
+        <result column="CONTRASCTNO" property="contrasctno" jdbcType="VARCHAR"/>
+        <result column="CONTRACTAMT" property="contractamt" jdbcType="DECIMAL"/>
+        <result column="ISSUEFLAG" property="issueflag" jdbcType="VARCHAR"/>
+        <result column="TOTISSUEAMT" property="totissueamt" jdbcType="DECIMAL"/>
+        <result column="NORMALRATE" property="normalrate" jdbcType="DECIMAL"/>
+        <result column="OVERDUERATE" property="overduerate" jdbcType="DECIMAL"/>
+        <result column="OVERDUERATE1" property="overduerate1" jdbcType="DECIMAL"/>
+        <result column="BALD" property="bald" jdbcType="VARCHAR"/>
+        <result column="RATETYPE" property="ratetype" jdbcType="VARCHAR"/>
+        <result column="FEERATE" property="feerate" jdbcType="VARCHAR"/>
+        <result column="FEERATE1" property="feerate1" jdbcType="VARCHAR"/>
+        <result column="FEERATE2" property="feerate2" jdbcType="VARCHAR"/>
+        <result column="FEERATE3" property="feerate3" jdbcType="VARCHAR"/>
+        <result column="CREATE_SERIAL_NO" property="createSerialNo" jdbcType="VARCHAR"/>
+        <result column="CANCEL_SERIAL_NO" property="cancelSerialNo" jdbcType="VARCHAR"/>
+        <result column="CREATE_DATE" property="createDate" jdbcType="TIMESTAMP"/>
+        <result column="LAST_UPDATE_DATE" property="lastUpdateDate" jdbcType="TIMESTAMP"/>
+        <result column="CANCEL_DATE" property="cancelDate" jdbcType="TIMESTAMP"/>
+        <result column="IMMEDIATELY_SUM" property="immediatelySum" jdbcType="VARCHAR"/>
+        <result column="OPENDATE" property="opendate" jdbcType="TIMESTAMP"/>
+        <result column="ENDDATE" property="enddate" jdbcType="TIMESTAMP"/>
+        <result column="INTEGRAL" property="integral" jdbcType="DECIMAL"/>
+        <result column="USER_DEFIND_MARK" property="userDefindMark" jdbcType="VARCHAR"/>
+        <result column="COMPANY_ID" property="companyId" jdbcType="VARCHAR"/>
+        <result column="CURRENT_TIME" property="currentTime" jdbcType="VARCHAR"/>
+        <result column="AMOUNT1" property="amount1" jdbcType="DECIMAL"/>
+        <result column="AMOUNT2" property="amount2" jdbcType="DECIMAL"/>
+        <result column="AMOUNT3" property="amount3" jdbcType="DECIMAL"/>
+        <result column="AMOUNT4" property="amount4" jdbcType="DECIMAL"/>
+        <result column="AMOUNT5" property="amount5" jdbcType="DECIMAL"/>
+        <result column="AMOUNT6" property="amount6" jdbcType="DECIMAL"/>
+        <result column="AMOUNT7" property="amount7" jdbcType="DECIMAL"/>
+        <result column="AMOUNT8" property="amount8" jdbcType="DECIMAL"/>
+        <result column="AMOUNT9" property="amount9" jdbcType="DECIMAL"/>
+        <result column="AMOUNT10" property="amount10" jdbcType="DECIMAL"/>
+    </resultMap>
+    <sql id="Query_Where_Clause">
+        <where>
+            <foreach collection="oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" suffix=")" prefixOverrides="and">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach collection="criterion.value" item="listItem" open="(" close=")"
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+    <sql id="Update_Where_Clause">
+        <where>
+            <foreach collection="condition.oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" suffix=")" prefixOverrides="and">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach collection="criterion.value" item="listItem" open="(" close=")"
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+    <sql id="Base_Column_List">
+        USER_ID, BUSINESS_TYPE, ACCTNO, ACCTYPE, ACCTSTAT, USER_NAME, PAPERS_TYPE, PAPERS_NO,
+        PHONE_NO, PRDCODE, CORPCODE, GUARWAY, LOANTYPE, LOANKIND, LOANSTATUS, OPENBRC, PROFITBRC,
+        CRDFLAG, CRDNO, BEGININTDATE, PERIODUNIT, OPENTERM, LOANTERM, GRACEDAYS, CONTDUEDATE,
+        CURRDUEDATE, INTRATEPLAN, DBACCT, FUNDSOURCE, CONTRASCTNO, CONTRACTAMT, ISSUEFLAG,
+        TOTISSUEAMT, NORMALRATE, OVERDUERATE, OVERDUERATE1, BALD, RATETYPE, FEERATE, FEERATE1,
+        FEERATE2, FEERATE3, CREATE_SERIAL_NO, CANCEL_SERIAL_NO, CREATE_DATE, LAST_UPDATE_DATE,
+        CANCEL_DATE, IMMEDIATELY_SUM, OPENDATE, ENDDATE, INTEGRAL, USER_DEFIND_MARK, COMPANY_ID,
+        CURRENT_TIME, AMOUNT1, AMOUNT2, AMOUNT3, AMOUNT4, AMOUNT5, AMOUNT6, AMOUNT7, AMOUNT8,
+        AMOUNT9, AMOUNT10
+    </sql>
+    <select id="selectList" resultMap="BaseResultMap" parameterType="com.smk.pay.dal.condtion.EntityCondition">
+        select
+        <if test="distinct">
+            distinct
+        </if>
+        <include refid="Base_Column_List"/>
+        from LNSACCTINFO
+        <if test="_parameter != null">
+            <include refid="Query_Where_Clause"/>
+        </if>
+        <if test="orderByClause != null">
+            order by ${orderByClause}
+        </if>
+    </select>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="com.smk.pay.core.entity.LnsAcctInfoEntity">
+        select
+        <include refid="Base_Column_List"/>
+        from LNSACCTINFO
+        where USER_ID = #{userId,jdbcType=VARCHAR}
+        and BUSINESS_TYPE = #{businessType,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="com.smk.pay.core.entity.LnsAcctInfoEntity">
+        delete from LNSACCTINFO
+        where USER_ID = #{userId,jdbcType=VARCHAR}
+        and BUSINESS_TYPE = #{businessType,jdbcType=VARCHAR}
+    </delete>
+    <delete id="delete" parameterType="com.smk.pay.dal.condtion.EntityCondition">
+        delete from LNSACCTINFO
+        <if test="_parameter != null">
+            <include refid="Query_Where_Clause"/>
+        </if>
+    </delete>
+
+    <insert id="insertSelective" parameterType="com.smk.pay.core.entity.LnsAcctInfoEntity">
+
+        insert into LNSACCTINFO
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">
+                USER_ID,
+            </if>
+            <if test="businessType != null">
+                BUSINESS_TYPE,
+            </if>
+            <if test="acctno != null">
+                ACCTNO,
+            </if>
+            <if test="acctype != null">
+                ACCTYPE,
+            </if>
+            <if test="acctstat != null">
+                ACCTSTAT,
+            </if>
+            <if test="userName != null">
+                USER_NAME,
+            </if>
+            <if test="papersType != null">
+                PAPERS_TYPE,
+            </if>
+            <if test="papersNo != null">
+                PAPERS_NO,
+            </if>
+            <if test="phoneNo != null">
+                PHONE_NO,
+            </if>
+            <if test="prdcode != null">
+                PRDCODE,
+            </if>
+            <if test="corpcode != null">
+                CORPCODE,
+            </if>
+            <if test="guarway != null">
+                GUARWAY,
+            </if>
+            <if test="loantype != null">
+                LOANTYPE,
+            </if>
+            <if test="loankind != null">
+                LOANKIND,
+            </if>
+            <if test="loanstatus != null">
+                LOANSTATUS,
+            </if>
+            <if test="openbrc != null">
+                OPENBRC,
+            </if>
+            <if test="profitbrc != null">
+                PROFITBRC,
+            </if>
+            <if test="crdflag != null">
+                CRDFLAG,
+            </if>
+            <if test="crdno != null">
+                CRDNO,
+            </if>
+            <if test="beginintdate != null">
+                BEGININTDATE,
+            </if>
+            <if test="periodunit != null">
+                PERIODUNIT,
+            </if>
+            <if test="openterm != null">
+                OPENTERM,
+            </if>
+            <if test="loanterm != null">
+                LOANTERM,
+            </if>
+            <if test="gracedays != null">
+                GRACEDAYS,
+            </if>
+            <if test="contduedate != null">
+                CONTDUEDATE,
+            </if>
+            <if test="currduedate != null">
+                CURRDUEDATE,
+            </if>
+            <if test="intrateplan != null">
+                INTRATEPLAN,
+            </if>
+            <if test="dbacct != null">
+                DBACCT,
+            </if>
+            <if test="fundsource != null">
+                FUNDSOURCE,
+            </if>
+            <if test="contrasctno != null">
+                CONTRASCTNO,
+            </if>
+            <if test="contractamt != null">
+                CONTRACTAMT,
+            </if>
+            <if test="issueflag != null">
+                ISSUEFLAG,
+            </if>
+            <if test="totissueamt != null">
+                TOTISSUEAMT,
+            </if>
+            <if test="normalrate != null">
+                NORMALRATE,
+            </if>
+            <if test="overduerate != null">
+                OVERDUERATE,
+            </if>
+            <if test="overduerate1 != null">
+                OVERDUERATE1,
+            </if>
+            <if test="bald != null">
+                BALD,
+            </if>
+            <if test="ratetype != null">
+                RATETYPE,
+            </if>
+            <if test="feerate != null">
+                FEERATE,
+            </if>
+            <if test="feerate1 != null">
+                FEERATE1,
+            </if>
+            <if test="feerate2 != null">
+                FEERATE2,
+            </if>
+            <if test="feerate3 != null">
+                FEERATE3,
+            </if>
+            <if test="createSerialNo != null">
+                CREATE_SERIAL_NO,
+            </if>
+            <if test="cancelSerialNo != null">
+                CANCEL_SERIAL_NO,
+            </if>
+            <if test="createDate != null">
+                CREATE_DATE,
+            </if>
+            <if test="lastUpdateDate != null">
+                LAST_UPDATE_DATE,
+            </if>
+            <if test="cancelDate != null">
+                CANCEL_DATE,
+            </if>
+            <if test="immediatelySum != null">
+                IMMEDIATELY_SUM,
+            </if>
+            <if test="opendate != null">
+                OPENDATE,
+            </if>
+            <if test="enddate != null">
+                ENDDATE,
+            </if>
+            <if test="integral != null">
+                INTEGRAL,
+            </if>
+            <if test="userDefindMark != null">
+                USER_DEFIND_MARK,
+            </if>
+            <if test="companyId != null">
+                COMPANY_ID,
+            </if>
+            <if test="currentTime != null">
+                CURRENT_TIME,
+            </if>
+            <if test="amount1 != null">
+                AMOUNT1,
+            </if>
+            <if test="amount2 != null">
+                AMOUNT2,
+            </if>
+            <if test="amount3 != null">
+                AMOUNT3,
+            </if>
+            <if test="amount4 != null">
+                AMOUNT4,
+            </if>
+            <if test="amount5 != null">
+                AMOUNT5,
+            </if>
+            <if test="amount6 != null">
+                AMOUNT6,
+            </if>
+            <if test="amount7 != null">
+                AMOUNT7,
+            </if>
+            <if test="amount8 != null">
+                AMOUNT8,
+            </if>
+            <if test="amount9 != null">
+                AMOUNT9,
+            </if>
+            <if test="amount10 != null">
+                AMOUNT10,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">
+                #{userId,jdbcType=VARCHAR},
+            </if>
+            <if test="businessType != null">
+                #{businessType,jdbcType=VARCHAR},
+            </if>
+            <if test="acctno != null">
+                #{acctno,jdbcType=VARCHAR},
+            </if>
+            <if test="acctype != null">
+                #{acctype,jdbcType=VARCHAR},
+            </if>
+            <if test="acctstat != null">
+                #{acctstat,jdbcType=VARCHAR},
+            </if>
+            <if test="userName != null">
+                #{userName,jdbcType=VARCHAR},
+            </if>
+            <if test="papersType != null">
+                #{papersType,jdbcType=VARCHAR},
+            </if>
+            <if test="papersNo != null">
+                #{papersNo,jdbcType=VARCHAR},
+            </if>
+            <if test="phoneNo != null">
+                #{phoneNo,jdbcType=VARCHAR},
+            </if>
+            <if test="prdcode != null">
+                #{prdcode,jdbcType=VARCHAR},
+            </if>
+            <if test="corpcode != null">
+                #{corpcode,jdbcType=VARCHAR},
+            </if>
+            <if test="guarway != null">
+                #{guarway,jdbcType=VARCHAR},
+            </if>
+            <if test="loantype != null">
+                #{loantype,jdbcType=VARCHAR},
+            </if>
+            <if test="loankind != null">
+                #{loankind,jdbcType=VARCHAR},
+            </if>
+            <if test="loanstatus != null">
+                #{loanstatus,jdbcType=VARCHAR},
+            </if>
+            <if test="openbrc != null">
+                #{openbrc,jdbcType=VARCHAR},
+            </if>
+            <if test="profitbrc != null">
+                #{profitbrc,jdbcType=VARCHAR},
+            </if>
+            <if test="crdflag != null">
+                #{crdflag,jdbcType=VARCHAR},
+            </if>
+            <if test="crdno != null">
+                #{crdno,jdbcType=VARCHAR},
+            </if>
+            <if test="beginintdate != null">
+                #{beginintdate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="periodunit != null">
+                #{periodunit,jdbcType=VARCHAR},
+            </if>
+            <if test="openterm != null">
+                #{openterm,jdbcType=VARCHAR},
+            </if>
+            <if test="loanterm != null">
+                #{loanterm,jdbcType=VARCHAR},
+            </if>
+            <if test="gracedays != null">
+                #{gracedays,jdbcType=VARCHAR},
+            </if>
+            <if test="contduedate != null">
+                #{contduedate,jdbcType=VARCHAR},
+            </if>
+            <if test="currduedate != null">
+                #{currduedate,jdbcType=VARCHAR},
+            </if>
+            <if test="intrateplan != null">
+                #{intrateplan,jdbcType=VARCHAR},
+            </if>
+            <if test="dbacct != null">
+                #{dbacct,jdbcType=VARCHAR},
+            </if>
+            <if test="fundsource != null">
+                #{fundsource,jdbcType=VARCHAR},
+            </if>
+            <if test="contrasctno != null">
+                #{contrasctno,jdbcType=VARCHAR},
+            </if>
+            <if test="contractamt != null">
+                #{contractamt,jdbcType=DECIMAL},
+            </if>
+            <if test="issueflag != null">
+                #{issueflag,jdbcType=VARCHAR},
+            </if>
+            <if test="totissueamt != null">
+                #{totissueamt,jdbcType=DECIMAL},
+            </if>
+            <if test="normalrate != null">
+                #{normalrate,jdbcType=DECIMAL},
+            </if>
+            <if test="overduerate != null">
+                #{overduerate,jdbcType=DECIMAL},
+            </if>
+            <if test="overduerate1 != null">
+                #{overduerate1,jdbcType=DECIMAL},
+            </if>
+            <if test="bald != null">
+                #{bald,jdbcType=VARCHAR},
+            </if>
+            <if test="ratetype != null">
+                #{ratetype,jdbcType=VARCHAR},
+            </if>
+            <if test="feerate != null">
+                #{feerate,jdbcType=VARCHAR},
+            </if>
+            <if test="feerate1 != null">
+                #{feerate1,jdbcType=VARCHAR},
+            </if>
+            <if test="feerate2 != null">
+                #{feerate2,jdbcType=VARCHAR},
+            </if>
+            <if test="feerate3 != null">
+                #{feerate3,jdbcType=VARCHAR},
+            </if>
+            <if test="createSerialNo != null">
+                #{createSerialNo,jdbcType=VARCHAR},
+            </if>
+            <if test="cancelSerialNo != null">
+                #{cancelSerialNo,jdbcType=VARCHAR},
+            </if>
+            <if test="createDate != null">
+                #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="lastUpdateDate != null">
+                #{lastUpdateDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="cancelDate != null">
+                #{cancelDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="immediatelySum != null">
+                #{immediatelySum,jdbcType=VARCHAR},
+            </if>
+            <if test="opendate != null">
+                #{opendate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="enddate != null">
+                #{enddate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="integral != null">
+                #{integral,jdbcType=DECIMAL},
+            </if>
+            <if test="userDefindMark != null">
+                #{userDefindMark,jdbcType=VARCHAR},
+            </if>
+            <if test="companyId != null">
+                #{companyId,jdbcType=VARCHAR},
+            </if>
+            <if test="currentTime != null">
+                #{currentTime,jdbcType=VARCHAR},
+            </if>
+            <if test="amount1 != null">
+                #{amount1,jdbcType=DECIMAL},
+            </if>
+            <if test="amount2 != null">
+                #{amount2,jdbcType=DECIMAL},
+            </if>
+            <if test="amount3 != null">
+                #{amount3,jdbcType=DECIMAL},
+            </if>
+            <if test="amount4 != null">
+                #{amount4,jdbcType=DECIMAL},
+            </if>
+            <if test="amount5 != null">
+                #{amount5,jdbcType=DECIMAL},
+            </if>
+            <if test="amount6 != null">
+                #{amount6,jdbcType=DECIMAL},
+            </if>
+            <if test="amount7 != null">
+                #{amount7,jdbcType=DECIMAL},
+            </if>
+            <if test="amount8 != null">
+                #{amount8,jdbcType=DECIMAL},
+            </if>
+            <if test="amount9 != null">
+                #{amount9,jdbcType=DECIMAL},
+            </if>
+            <if test="amount10 != null">
+                #{amount10,jdbcType=DECIMAL},
+            </if>
+        </trim>
+    </insert>
+    <select id="count" parameterType="com.smk.pay.dal.condtion.EntityCondition" resultType="java.lang.Integer">
+        select count(*) from LNSACCTINFO
+        <if test="_parameter != null">
+            <include refid="Query_Where_Clause"/>
+        </if>
+    </select>
+    <update id="updateSelective" parameterType="map">
+        update LNSACCTINFO
+        <set>
+            <if test="record.userId != null">
+                USER_ID = #{record.userId,jdbcType=VARCHAR},
+            </if>
+            <if test="record.businessType != null">
+                BUSINESS_TYPE = #{record.businessType,jdbcType=VARCHAR},
+            </if>
+            <if test="record.acctno != null">
+                ACCTNO = #{record.acctno,jdbcType=VARCHAR},
+            </if>
+            <if test="record.acctype != null">
+                ACCTYPE = #{record.acctype,jdbcType=VARCHAR},
+            </if>
+            <if test="record.acctstat != null">
+                ACCTSTAT = #{record.acctstat,jdbcType=VARCHAR},
+            </if>
+            <if test="record.userName != null">
+                USER_NAME = #{record.userName,jdbcType=VARCHAR},
+            </if>
+            <if test="record.papersType != null">
+                PAPERS_TYPE = #{record.papersType,jdbcType=VARCHAR},
+            </if>
+            <if test="record.papersNo != null">
+                PAPERS_NO = #{record.papersNo,jdbcType=VARCHAR},
+            </if>
+            <if test="record.phoneNo != null">
+                PHONE_NO = #{record.phoneNo,jdbcType=VARCHAR},
+            </if>
+            <if test="record.prdcode != null">
+                PRDCODE = #{record.prdcode,jdbcType=VARCHAR},
+            </if>
+            <if test="record.corpcode != null">
+                CORPCODE = #{record.corpcode,jdbcType=VARCHAR},
+            </if>
+            <if test="record.guarway != null">
+                GUARWAY = #{record.guarway,jdbcType=VARCHAR},
+            </if>
+            <if test="record.loantype != null">
+                LOANTYPE = #{record.loantype,jdbcType=VARCHAR},
+            </if>
+            <if test="record.loankind != null">
+                LOANKIND = #{record.loankind,jdbcType=VARCHAR},
+            </if>
+            <if test="record.loanstatus != null">
+                LOANSTATUS = #{record.loanstatus,jdbcType=VARCHAR},
+            </if>
+            <if test="record.openbrc != null">
+                OPENBRC = #{record.openbrc,jdbcType=VARCHAR},
+            </if>
+            <if test="record.profitbrc != null">
+                PROFITBRC = #{record.profitbrc,jdbcType=VARCHAR},
+            </if>
+            <if test="record.crdflag != null">
+                CRDFLAG = #{record.crdflag,jdbcType=VARCHAR},
+            </if>
+            <if test="record.crdno != null">
+                CRDNO = #{record.crdno,jdbcType=VARCHAR},
+            </if>
+            <if test="record.beginintdate != null">
+                BEGININTDATE = #{record.beginintdate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="record.periodunit != null">
+                PERIODUNIT = #{record.periodunit,jdbcType=VARCHAR},
+            </if>
+            <if test="record.openterm != null">
+                OPENTERM = #{record.openterm,jdbcType=VARCHAR},
+            </if>
+            <if test="record.loanterm != null">
+                LOANTERM = #{record.loanterm,jdbcType=VARCHAR},
+            </if>
+            <if test="record.gracedays != null">
+                GRACEDAYS = #{record.gracedays,jdbcType=VARCHAR},
+            </if>
+            <if test="record.contduedate != null">
+                CONTDUEDATE = #{record.contduedate,jdbcType=VARCHAR},
+            </if>
+            <if test="record.currduedate != null">
+                CURRDUEDATE = #{record.currduedate,jdbcType=VARCHAR},
+            </if>
+            <if test="record.intrateplan != null">
+                INTRATEPLAN = #{record.intrateplan,jdbcType=VARCHAR},
+            </if>
+            <if test="record.dbacct != null">
+                DBACCT = #{record.dbacct,jdbcType=VARCHAR},
+            </if>
+            <if test="record.fundsource != null">
+                FUNDSOURCE = #{record.fundsource,jdbcType=VARCHAR},
+            </if>
+            <if test="record.contrasctno != null">
+                CONTRASCTNO = #{record.contrasctno,jdbcType=VARCHAR},
+            </if>
+            <if test="record.contractamt != null">
+                CONTRACTAMT = #{record.contractamt,jdbcType=DECIMAL},
+            </if>
+            <if test="record.issueflag != null">
+                ISSUEFLAG = #{record.issueflag,jdbcType=VARCHAR},
+            </if>
+            <if test="record.totissueamt != null">
+                TOTISSUEAMT = #{record.totissueamt,jdbcType=DECIMAL},
+            </if>
+            <if test="record.normalrate != null">
+                NORMALRATE = #{record.normalrate,jdbcType=DECIMAL},
+            </if>
+            <if test="record.overduerate != null">
+                OVERDUERATE = #{record.overduerate,jdbcType=DECIMAL},
+            </if>
+            <if test="record.overduerate1 != null">
+                OVERDUERATE1 = #{record.overduerate1,jdbcType=DECIMAL},
+            </if>
+            <if test="record.bald != null">
+                BALD = #{record.bald,jdbcType=VARCHAR},
+            </if>
+            <if test="record.ratetype != null">
+                RATETYPE = #{record.ratetype,jdbcType=VARCHAR},
+            </if>
+            <if test="record.feerate != null">
+                FEERATE = #{record.feerate,jdbcType=VARCHAR},
+            </if>
+            <if test="record.feerate1 != null">
+                FEERATE1 = #{record.feerate1,jdbcType=VARCHAR},
+            </if>
+            <if test="record.feerate2 != null">
+                FEERATE2 = #{record.feerate2,jdbcType=VARCHAR},
+            </if>
+            <if test="record.feerate3 != null">
+                FEERATE3 = #{record.feerate3,jdbcType=VARCHAR},
+            </if>
+            <if test="record.createSerialNo != null">
+                CREATE_SERIAL_NO = #{record.createSerialNo,jdbcType=VARCHAR},
+            </if>
+            <if test="record.cancelSerialNo != null">
+                CANCEL_SERIAL_NO = #{record.cancelSerialNo,jdbcType=VARCHAR},
+            </if>
+            <if test="record.createDate != null">
+                CREATE_DATE = #{record.createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="record.lastUpdateDate != null">
+                LAST_UPDATE_DATE = #{record.lastUpdateDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="record.cancelDate != null">
+                CANCEL_DATE = #{record.cancelDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="record.immediatelySum != null">
+                IMMEDIATELY_SUM = #{record.immediatelySum,jdbcType=VARCHAR},
+            </if>
+            <if test="record.opendate != null">
+                OPENDATE = #{record.opendate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="record.enddate != null">
+                ENDDATE = #{record.enddate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="record.integral != null">
+                INTEGRAL = #{record.integral,jdbcType=DECIMAL},
+            </if>
+            <if test="record.userDefindMark != null">
+                USER_DEFIND_MARK = #{record.userDefindMark,jdbcType=VARCHAR},
+            </if>
+            <if test="record.companyId != null">
+                COMPANY_ID = #{record.companyId,jdbcType=VARCHAR},
+            </if>
+            <if test="record.currentTime != null">
+                CURRENT_TIME = #{record.currentTime,jdbcType=VARCHAR},
+            </if>
+            <if test="record.amount1 != null">
+                AMOUNT1 = #{record.amount1,jdbcType=DECIMAL},
+            </if>
+            <if test="record.amount2 != null">
+                AMOUNT2 = #{record.amount2,jdbcType=DECIMAL},
+            </if>
+            <if test="record.amount3 != null">
+                AMOUNT3 = #{record.amount3,jdbcType=DECIMAL},
+            </if>
+            <if test="record.amount4 != null">
+                AMOUNT4 = #{record.amount4,jdbcType=DECIMAL},
+            </if>
+            <if test="record.amount5 != null">
+                AMOUNT5 = #{record.amount5,jdbcType=DECIMAL},
+            </if>
+            <if test="record.amount6 != null">
+                AMOUNT6 = #{record.amount6,jdbcType=DECIMAL},
+            </if>
+            <if test="record.amount7 != null">
+                AMOUNT7 = #{record.amount7,jdbcType=DECIMAL},
+            </if>
+            <if test="record.amount8 != null">
+                AMOUNT8 = #{record.amount8,jdbcType=DECIMAL},
+            </if>
+            <if test="record.amount9 != null">
+                AMOUNT9 = #{record.amount9,jdbcType=DECIMAL},
+            </if>
+            <if test="record.amount10 != null">
+                AMOUNT10 = #{record.amount10,jdbcType=DECIMAL},
+            </if>
+        </set>
+        <if test="_parameter != null">
+            <include refid="Update_Where_Clause"/>
+        </if>
+    </update>
+    <update id="update" parameterType="map">
+        update LNSACCTINFO
+        set USER_ID = #{record.userId,jdbcType=VARCHAR},
+        BUSINESS_TYPE = #{record.businessType,jdbcType=VARCHAR},
+        ACCTNO = #{record.acctno,jdbcType=VARCHAR},
+        ACCTYPE = #{record.acctype,jdbcType=VARCHAR},
+        ACCTSTAT = #{record.acctstat,jdbcType=VARCHAR},
+        USER_NAME = #{record.userName,jdbcType=VARCHAR},
+        PAPERS_TYPE = #{record.papersType,jdbcType=VARCHAR},
+        PAPERS_NO = #{record.papersNo,jdbcType=VARCHAR},
+        PHONE_NO = #{record.phoneNo,jdbcType=VARCHAR},
+        PRDCODE = #{record.prdcode,jdbcType=VARCHAR},
+        CORPCODE = #{record.corpcode,jdbcType=VARCHAR},
+        GUARWAY = #{record.guarway,jdbcType=VARCHAR},
+        LOANTYPE = #{record.loantype,jdbcType=VARCHAR},
+        LOANKIND = #{record.loankind,jdbcType=VARCHAR},
+        LOANSTATUS = #{record.loanstatus,jdbcType=VARCHAR},
+        OPENBRC = #{record.openbrc,jdbcType=VARCHAR},
+        PROFITBRC = #{record.profitbrc,jdbcType=VARCHAR},
+        CRDFLAG = #{record.crdflag,jdbcType=VARCHAR},
+        CRDNO = #{record.crdno,jdbcType=VARCHAR},
+        BEGININTDATE = #{record.beginintdate,jdbcType=TIMESTAMP},
+        PERIODUNIT = #{record.periodunit,jdbcType=VARCHAR},
+        OPENTERM = #{record.openterm,jdbcType=VARCHAR},
+        LOANTERM = #{record.loanterm,jdbcType=VARCHAR},
+        GRACEDAYS = #{record.gracedays,jdbcType=VARCHAR},
+        CONTDUEDATE = #{record.contduedate,jdbcType=VARCHAR},
+        CURRDUEDATE = #{record.currduedate,jdbcType=VARCHAR},
+        INTRATEPLAN = #{record.intrateplan,jdbcType=VARCHAR},
+        DBACCT = #{record.dbacct,jdbcType=VARCHAR},
+        FUNDSOURCE = #{record.fundsource,jdbcType=VARCHAR},
+        CONTRASCTNO = #{record.contrasctno,jdbcType=VARCHAR},
+        CONTRACTAMT = #{record.contractamt,jdbcType=DECIMAL},
+        ISSUEFLAG = #{record.issueflag,jdbcType=VARCHAR},
+        TOTISSUEAMT = #{record.totissueamt,jdbcType=DECIMAL},
+        NORMALRATE = #{record.normalrate,jdbcType=DECIMAL},
+        OVERDUERATE = #{record.overduerate,jdbcType=DECIMAL},
+        OVERDUERATE1 = #{record.overduerate1,jdbcType=DECIMAL},
+        BALD = #{record.bald,jdbcType=VARCHAR},
+        RATETYPE = #{record.ratetype,jdbcType=VARCHAR},
+        FEERATE = #{record.feerate,jdbcType=VARCHAR},
+        FEERATE1 = #{record.feerate1,jdbcType=VARCHAR},
+        FEERATE2 = #{record.feerate2,jdbcType=VARCHAR},
+        FEERATE3 = #{record.feerate3,jdbcType=VARCHAR},
+        CREATE_SERIAL_NO = #{record.createSerialNo,jdbcType=VARCHAR},
+        CANCEL_SERIAL_NO = #{record.cancelSerialNo,jdbcType=VARCHAR},
+        CREATE_DATE = #{record.createDate,jdbcType=TIMESTAMP},
+        LAST_UPDATE_DATE = #{record.lastUpdateDate,jdbcType=TIMESTAMP},
+        CANCEL_DATE = #{record.cancelDate,jdbcType=TIMESTAMP},
+        IMMEDIATELY_SUM = #{record.immediatelySum,jdbcType=VARCHAR},
+        OPENDATE = #{record.opendate,jdbcType=TIMESTAMP},
+        ENDDATE = #{record.enddate,jdbcType=TIMESTAMP},
+        INTEGRAL = #{record.integral,jdbcType=DECIMAL},
+        USER_DEFIND_MARK = #{record.userDefindMark,jdbcType=VARCHAR},
+        COMPANY_ID = #{record.companyId,jdbcType=VARCHAR},
+        CURRENT_TIME = #{record.currentTime,jdbcType=VARCHAR},
+        AMOUNT1 = #{record.amount1,jdbcType=DECIMAL},
+        AMOUNT2 = #{record.amount2,jdbcType=DECIMAL},
+        AMOUNT3 = #{record.amount3,jdbcType=DECIMAL},
+        AMOUNT4 = #{record.amount4,jdbcType=DECIMAL},
+        AMOUNT5 = #{record.amount5,jdbcType=DECIMAL},
+        AMOUNT6 = #{record.amount6,jdbcType=DECIMAL},
+        AMOUNT7 = #{record.amount7,jdbcType=DECIMAL},
+        AMOUNT8 = #{record.amount8,jdbcType=DECIMAL},
+        AMOUNT9 = #{record.amount9,jdbcType=DECIMAL},
+        AMOUNT10 = #{record.amount10,jdbcType=DECIMAL}
+        <if test="_parameter != null">
+            <include refid="Update_Where_Clause"/>
+        </if>
+    </update>
+    <update id="updateByPrimaryKeySelective" parameterType="com.smk.pay.core.entity.LnsAcctInfoEntity">
+        update LNSACCTINFO
+        <set>
+            <if test="acctno != null">
+                ACCTNO = #{acctno,jdbcType=VARCHAR},
+            </if>
+            <if test="acctype != null">
+                ACCTYPE = #{acctype,jdbcType=VARCHAR},
+            </if>
+            <if test="acctstat != null">
+                ACCTSTAT = #{acctstat,jdbcType=VARCHAR},
+            </if>
+            <if test="userName != null">
+                USER_NAME = #{userName,jdbcType=VARCHAR},
+            </if>
+            <if test="papersType != null">
+                PAPERS_TYPE = #{papersType,jdbcType=VARCHAR},
+            </if>
+            <if test="papersNo != null">
+                PAPERS_NO = #{papersNo,jdbcType=VARCHAR},
+            </if>
+            <if test="phoneNo != null">
+                PHONE_NO = #{phoneNo,jdbcType=VARCHAR},
+            </if>
+            <if test="prdcode != null">
+                PRDCODE = #{prdcode,jdbcType=VARCHAR},
+            </if>
+            <if test="corpcode != null">
+                CORPCODE = #{corpcode,jdbcType=VARCHAR},
+            </if>
+            <if test="guarway != null">
+                GUARWAY = #{guarway,jdbcType=VARCHAR},
+            </if>
+            <if test="loantype != null">
+                LOANTYPE = #{loantype,jdbcType=VARCHAR},
+            </if>
+            <if test="loankind != null">
+                LOANKIND = #{loankind,jdbcType=VARCHAR},
+            </if>
+            <if test="loanstatus != null">
+                LOANSTATUS = #{loanstatus,jdbcType=VARCHAR},
+            </if>
+            <if test="openbrc != null">
+                OPENBRC = #{openbrc,jdbcType=VARCHAR},
+            </if>
+            <if test="profitbrc != null">
+                PROFITBRC = #{profitbrc,jdbcType=VARCHAR},
+            </if>
+            <if test="crdflag != null">
+                CRDFLAG = #{crdflag,jdbcType=VARCHAR},
+            </if>
+            <if test="crdno != null">
+                CRDNO = #{crdno,jdbcType=VARCHAR},
+            </if>
+            <if test="beginintdate != null">
+                BEGININTDATE = #{beginintdate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="periodunit != null">
+                PERIODUNIT = #{periodunit,jdbcType=VARCHAR},
+            </if>
+            <if test="openterm != null">
+                OPENTERM = #{openterm,jdbcType=VARCHAR},
+            </if>
+            <if test="loanterm != null">
+                LOANTERM = #{loanterm,jdbcType=VARCHAR},
+            </if>
+            <if test="gracedays != null">
+                GRACEDAYS = #{gracedays,jdbcType=VARCHAR},
+            </if>
+            <if test="contduedate != null">
+                CONTDUEDATE = #{contduedate,jdbcType=VARCHAR},
+            </if>
+            <if test="currduedate != null">
+                CURRDUEDATE = #{currduedate,jdbcType=VARCHAR},
+            </if>
+            <if test="intrateplan != null">
+                INTRATEPLAN = #{intrateplan,jdbcType=VARCHAR},
+            </if>
+            <if test="dbacct != null">
+                DBACCT = #{dbacct,jdbcType=VARCHAR},
+            </if>
+            <if test="fundsource != null">
+                FUNDSOURCE = #{fundsource,jdbcType=VARCHAR},
+            </if>
+            <if test="contrasctno != null">
+                CONTRASCTNO = #{contrasctno,jdbcType=VARCHAR},
+            </if>
+            <if test="contractamt != null">
+                CONTRACTAMT = #{contractamt,jdbcType=DECIMAL},
+            </if>
+            <if test="issueflag != null">
+                ISSUEFLAG = #{issueflag,jdbcType=VARCHAR},
+            </if>
+            <if test="totissueamt != null">
+                TOTISSUEAMT = #{totissueamt,jdbcType=DECIMAL},
+            </if>
+            <if test="normalrate != null">
+                NORMALRATE = #{normalrate,jdbcType=DECIMAL},
+            </if>
+            <if test="overduerate != null">
+                OVERDUERATE = #{overduerate,jdbcType=DECIMAL},
+            </if>
+            <if test="overduerate1 != null">
+                OVERDUERATE1 = #{overduerate1,jdbcType=DECIMAL},
+            </if>
+            <if test="bald != null">
+                BALD = #{bald,jdbcType=VARCHAR},
+            </if>
+            <if test="ratetype != null">
+                RATETYPE = #{ratetype,jdbcType=VARCHAR},
+            </if>
+            <if test="feerate != null">
+                FEERATE = #{feerate,jdbcType=VARCHAR},
+            </if>
+            <if test="feerate1 != null">
+                FEERATE1 = #{feerate1,jdbcType=VARCHAR},
+            </if>
+            <if test="feerate2 != null">
+                FEERATE2 = #{feerate2,jdbcType=VARCHAR},
+            </if>
+            <if test="feerate3 != null">
+                FEERATE3 = #{feerate3,jdbcType=VARCHAR},
+            </if>
+            <if test="createSerialNo != null">
+                CREATE_SERIAL_NO = #{createSerialNo,jdbcType=VARCHAR},
+            </if>
+            <if test="cancelSerialNo != null">
+                CANCEL_SERIAL_NO = #{cancelSerialNo,jdbcType=VARCHAR},
+            </if>
+            <if test="createDate != null">
+                CREATE_DATE = #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="lastUpdateDate != null">
+                LAST_UPDATE_DATE = #{lastUpdateDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="cancelDate != null">
+                CANCEL_DATE = #{cancelDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="immediatelySum != null">
+                IMMEDIATELY_SUM = #{immediatelySum,jdbcType=VARCHAR},
+            </if>
+            <if test="opendate != null">
+                OPENDATE = #{opendate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="enddate != null">
+                ENDDATE = #{enddate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="integral != null">
+                INTEGRAL = #{integral,jdbcType=DECIMAL},
+            </if>
+            <if test="userDefindMark != null">
+                USER_DEFIND_MARK = #{userDefindMark,jdbcType=VARCHAR},
+            </if>
+            <if test="companyId != null">
+                COMPANY_ID = #{companyId,jdbcType=VARCHAR},
+            </if>
+            <if test="currentTime != null">
+                CURRENT_TIME = #{currentTime,jdbcType=VARCHAR},
+            </if>
+            <if test="amount1 != null">
+                AMOUNT1 = #{amount1,jdbcType=DECIMAL},
+            </if>
+            <if test="amount2 != null">
+                AMOUNT2 = #{amount2,jdbcType=DECIMAL},
+            </if>
+            <if test="amount3 != null">
+                AMOUNT3 = #{amount3,jdbcType=DECIMAL},
+            </if>
+            <if test="amount4 != null">
+                AMOUNT4 = #{amount4,jdbcType=DECIMAL},
+            </if>
+            <if test="amount5 != null">
+                AMOUNT5 = #{amount5,jdbcType=DECIMAL},
+            </if>
+            <if test="amount6 != null">
+                AMOUNT6 = #{amount6,jdbcType=DECIMAL},
+            </if>
+            <if test="amount7 != null">
+                AMOUNT7 = #{amount7,jdbcType=DECIMAL},
+            </if>
+            <if test="amount8 != null">
+                AMOUNT8 = #{amount8,jdbcType=DECIMAL},
+            </if>
+            <if test="amount9 != null">
+                AMOUNT9 = #{amount9,jdbcType=DECIMAL},
+            </if>
+            <if test="amount10 != null">
+                AMOUNT10 = #{amount10,jdbcType=DECIMAL},
+            </if>
+        </set>
+        where USER_ID = #{userId,jdbcType=VARCHAR}
+        and BUSINESS_TYPE = #{businessType,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.smk.pay.core.entity.LnsAcctInfoEntity">
+        update LNSACCTINFO
+        set ACCTNO = #{acctno,jdbcType=VARCHAR},
+        ACCTYPE = #{acctype,jdbcType=VARCHAR},
+        ACCTSTAT = #{acctstat,jdbcType=VARCHAR},
+        USER_NAME = #{userName,jdbcType=VARCHAR},
+        PAPERS_TYPE = #{papersType,jdbcType=VARCHAR},
+        PAPERS_NO = #{papersNo,jdbcType=VARCHAR},
+        PHONE_NO = #{phoneNo,jdbcType=VARCHAR},
+        PRDCODE = #{prdcode,jdbcType=VARCHAR},
+        CORPCODE = #{corpcode,jdbcType=VARCHAR},
+        GUARWAY = #{guarway,jdbcType=VARCHAR},
+        LOANTYPE = #{loantype,jdbcType=VARCHAR},
+        LOANKIND = #{loankind,jdbcType=VARCHAR},
+        LOANSTATUS = #{loanstatus,jdbcType=VARCHAR},
+        OPENBRC = #{openbrc,jdbcType=VARCHAR},
+        PROFITBRC = #{profitbrc,jdbcType=VARCHAR},
+        CRDFLAG = #{crdflag,jdbcType=VARCHAR},
+        CRDNO = #{crdno,jdbcType=VARCHAR},
+        BEGININTDATE = #{beginintdate,jdbcType=TIMESTAMP},
+        PERIODUNIT = #{periodunit,jdbcType=VARCHAR},
+        OPENTERM = #{openterm,jdbcType=VARCHAR},
+        LOANTERM = #{loanterm,jdbcType=VARCHAR},
+        GRACEDAYS = #{gracedays,jdbcType=VARCHAR},
+        CONTDUEDATE = #{contduedate,jdbcType=VARCHAR},
+        CURRDUEDATE = #{currduedate,jdbcType=VARCHAR},
+        INTRATEPLAN = #{intrateplan,jdbcType=VARCHAR},
+        DBACCT = #{dbacct,jdbcType=VARCHAR},
+        FUNDSOURCE = #{fundsource,jdbcType=VARCHAR},
+        CONTRASCTNO = #{contrasctno,jdbcType=VARCHAR},
+        CONTRACTAMT = #{contractamt,jdbcType=DECIMAL},
+        ISSUEFLAG = #{issueflag,jdbcType=VARCHAR},
+        TOTISSUEAMT = #{totissueamt,jdbcType=DECIMAL},
+        NORMALRATE = #{normalrate,jdbcType=DECIMAL},
+        OVERDUERATE = #{overduerate,jdbcType=DECIMAL},
+        OVERDUERATE1 = #{overduerate1,jdbcType=DECIMAL},
+        BALD = #{bald,jdbcType=VARCHAR},
+        RATETYPE = #{ratetype,jdbcType=VARCHAR},
+        FEERATE = #{feerate,jdbcType=VARCHAR},
+        FEERATE1 = #{feerate1,jdbcType=VARCHAR},
+        FEERATE2 = #{feerate2,jdbcType=VARCHAR},
+        FEERATE3 = #{feerate3,jdbcType=VARCHAR},
+        CREATE_SERIAL_NO = #{createSerialNo,jdbcType=VARCHAR},
+        CANCEL_SERIAL_NO = #{cancelSerialNo,jdbcType=VARCHAR},
+        CREATE_DATE = #{createDate,jdbcType=TIMESTAMP},
+        LAST_UPDATE_DATE = #{lastUpdateDate,jdbcType=TIMESTAMP},
+        CANCEL_DATE = #{cancelDate,jdbcType=TIMESTAMP},
+        IMMEDIATELY_SUM = #{immediatelySum,jdbcType=VARCHAR},
+        OPENDATE = #{opendate,jdbcType=TIMESTAMP},
+        ENDDATE = #{enddate,jdbcType=TIMESTAMP},
+        INTEGRAL = #{integral,jdbcType=DECIMAL},
+        USER_DEFIND_MARK = #{userDefindMark,jdbcType=VARCHAR},
+        COMPANY_ID = #{companyId,jdbcType=VARCHAR},
+        CURRENT_TIME = #{currentTime,jdbcType=VARCHAR},
+        AMOUNT1 = #{amount1,jdbcType=DECIMAL},
+        AMOUNT2 = #{amount2,jdbcType=DECIMAL},
+        AMOUNT3 = #{amount3,jdbcType=DECIMAL},
+        AMOUNT4 = #{amount4,jdbcType=DECIMAL},
+        AMOUNT5 = #{amount5,jdbcType=DECIMAL},
+        AMOUNT6 = #{amount6,jdbcType=DECIMAL},
+        AMOUNT7 = #{amount7,jdbcType=DECIMAL},
+        AMOUNT8 = #{amount8,jdbcType=DECIMAL},
+        AMOUNT9 = #{amount9,jdbcType=DECIMAL},
+        AMOUNT10 = #{amount10,jdbcType=DECIMAL}
+        where USER_ID = #{userId,jdbcType=VARCHAR}
+        and BUSINESS_TYPE = #{businessType,jdbcType=VARCHAR}
+    </update>
+
+    <select id="selectAcctNoSequence" resultType="long">
+        SELECT LNSACC_ID_SEQ.NEXTVAL FROM DUAL
+    </select>
+    
+    <select id="selectByUserIdAndType" resultMap="BaseResultMap">
+        SELECT
+        USER_ID, BUSINESS_TYPE, ACCTNO, ACCTYPE, ACCTSTAT, USER_NAME, PAPERS_TYPE, PAPERS_NO,
+        PHONE_NO, CRDNO, AMOUNT1, AMOUNT2, AMOUNT3, AMOUNT4 FROM LNSACCTINFO WHERE USER_ID = #{0} AND BUSINESS_TYPE =
+        #{1} AND ACCTSTAT ='1'
+    </select>
+</mapper>

@@ -1,0 +1,239 @@
+package com.smk.pay.core.manager.impl;
+
+import com.smk.pay.account.core.enums.AccountInvokerEnum;
+import com.smk.pay.account.core.enums.AccountTypeEnum;
+import com.smk.pay.core.constant.ResultCodeConstant;
+import com.smk.pay.core.entity.AccountInfoEntity;
+import com.smk.pay.core.entity.AccountTaskInfoEntity;
+import com.smk.pay.core.enums.AccountInfoStatusEnum;
+import com.smk.pay.core.enums.AccountTaskStatusEnum;
+import com.smk.pay.core.enums.AccountTaskTypeEnum;
+import com.smk.pay.core.manager.IAccountMngManager;
+import com.smk.pay.core.mapper.AccountInfoEntityMapper;
+import com.smk.pay.core.mapper.AccountTaskInfoEntityMapper;
+import com.smk.pay.core.utils.DateUtil;
+import com.smk.pay.dal.condtion.Criteria;
+import com.smk.pay.dal.condtion.EntityCondition;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
+
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Project plouto
+ * Created by chuanzhi.macz
+ * Date 2016/10/31 9:44
+ */
+public abstract class AbstractAccountMngManager implements IAccountMngManager {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractAccountMngManager.class);
+    @Autowired
+    private AccountInfoEntityMapper accountInfoEntityMapper;
+    @Autowired
+    private AccountTaskInfoEntityMapper accountTaskInfoEntityMapper;
+
+    public final String freeze(final String value, final Date fromDate, final Date toDate,
+                               AccountTypeEnum typeEnum, AccountInvokerEnum invokerEnum) {
+        // 业务校验
+        Map<Boolean, String> chkResult = check(value, Arrays.asList(AccountInfoStatusEnum
+                .UNACTIVATED.value(), AccountInfoStatusEnum.FROZEN.value(), AccountInfoStatusEnum
+                .CANCEL.value()), null);
+        if (chkResult.containsKey(Boolean.FALSE))
+            return chkResult.get(Boolean.FALSE);
+        // 更新账户状态为冻结
+        return stop("freeze account", chkResult.get(Boolean.TRUE), AccountInfoStatusEnum.FROZEN,
+                AccountTaskTypeEnum.FREEZE, fromDate, toDate, invokerEnum);
+    }
+
+    public final String unfreeze(String value, AccountTypeEnum typeEnum, AccountInvokerEnum
+            invokerEnum) {
+        // 业务校验
+        Map<Boolean, String> chkResult = check(value, null, Arrays.asList
+                (AccountInfoStatusEnum.FROZEN.value()));
+        if (chkResult.containsKey(Boolean.FALSE))
+            return chkResult.get(Boolean.FALSE);
+        // 更新账户状态为正常
+        return this.recover("unfreeze account", chkResult.get(Boolean.TRUE), invokerEnum,
+                AccountTaskTypeEnum.FREEZE);
+    }
+
+    public final String freezeProlong(String value, Date toDate, AccountTypeEnum typeEnum,
+                                      AccountInvokerEnum invokerEnum) {
+
+        // 业务校验
+        Map<Boolean, String> chkResult = check(value, null, Arrays.asList
+                (AccountInfoStatusEnum.FROZEN.value()));
+        if (chkResult.containsKey(Boolean.FALSE))
+            return chkResult.get(Boolean.FALSE);
+
+        return this.prolong("freeze prolong", chkResult.get(Boolean.TRUE), toDate,
+                AccountTaskTypeEnum.FREEZE, invokerEnum);
+    }
+
+
+    public final String stopPayment(String value, Date fromDate, Date toDate, AccountTypeEnum
+            typeEnum, AccountInvokerEnum invokerEnum) {
+        // 业务校验
+        Map<Boolean, String> chkResult = check(value, Arrays.asList(AccountInfoStatusEnum
+                .UNACTIVATED.value(), AccountInfoStatusEnum.FROZEN.value(), AccountInfoStatusEnum
+                .STOP_PAYMENT.value(), AccountInfoStatusEnum.CANCEL.value()), null);
+        if (chkResult.containsKey(Boolean.FALSE))
+            return chkResult.get(Boolean.FALSE);
+        // 更新账户状态为止付
+        return stop("stop payment", chkResult.get(Boolean.TRUE), AccountInfoStatusEnum.STOP_PAYMENT,
+                AccountTaskTypeEnum.STOP_PAYMENT, fromDate, toDate, invokerEnum);
+    }
+
+    public final String closeStopPayment(String value, AccountTypeEnum typeEnum, AccountInvokerEnum
+            invokerEnum) {
+        // 业务校验
+        Map<Boolean, String> chkResult = check(value, null, Arrays.asList
+                (AccountInfoStatusEnum.STOP_PAYMENT.value()));
+        if (chkResult.containsKey(Boolean.FALSE))
+            return chkResult.get(Boolean.FALSE);
+        // 更新账户状态为正常
+        return this.recover("close stop payment", chkResult.get(Boolean.TRUE), invokerEnum,
+                AccountTaskTypeEnum.STOP_PAYMENT);
+    }
+
+    public final String stopPaymentProlong(String value, Date toDate, AccountTypeEnum typeEnum,
+                                      AccountInvokerEnum invokerEnum) {
+        // 业务校验
+        Map<Boolean, String> chkResult = check(value, null, Arrays.asList
+                (AccountInfoStatusEnum.STOP_PAYMENT.value()));
+        if (chkResult.containsKey(Boolean.FALSE))
+            return chkResult.get(Boolean.FALSE);
+
+        return this.prolong("stop payment prolong",chkResult.get(Boolean.TRUE),
+                toDate, AccountTaskTypeEnum.STOP_PAYMENT, invokerEnum);
+    }
+
+    public String suspend(String value, Date fromDate, Date toDate, AccountTypeEnum typeEnum, AccountInvokerEnum invokerEnum) {
+        // 业务校验
+        Map<Boolean, String> chkResult = check(value, Arrays.asList(AccountInfoStatusEnum
+                .UNACTIVATED.value(), AccountInfoStatusEnum.FROZEN.value(),AccountInfoStatusEnum
+                .SUSPEND.value(), AccountInfoStatusEnum.CANCEL.value()), null);
+        if (chkResult.containsKey(Boolean.FALSE))
+            return chkResult.get(Boolean.FALSE);
+        // 更新账户状态为止付
+        return stop("suspend account", chkResult.get(Boolean.TRUE), AccountInfoStatusEnum.SUSPEND,
+                AccountTaskTypeEnum.SUSPEND, fromDate, toDate, invokerEnum);
+    }
+
+    public String closeSuspend(String value, AccountTypeEnum typeEnum, AccountInvokerEnum invokerEnum) {
+        // 业务校验
+        Map<Boolean, String> chkResult = check(value, null, Arrays.asList
+                (AccountInfoStatusEnum.SUSPEND.value()));
+        if (chkResult.containsKey(Boolean.FALSE))
+            return chkResult.get(Boolean.FALSE);
+        // 更新账户状态为正常
+        return this.recover("close suspend", chkResult.get(Boolean.TRUE), invokerEnum,
+                AccountTaskTypeEnum.SUSPEND);
+    }
+
+    public String suspendProlong(String value, Date toDate, AccountTypeEnum typeEnum, AccountInvokerEnum invokerEnum) {
+        // 业务校验
+        Map<Boolean, String> chkResult = check(value, null, Arrays.asList
+                (AccountInfoStatusEnum.SUSPEND.value()));
+        if (chkResult.containsKey(Boolean.FALSE))
+            return chkResult.get(Boolean.FALSE);
+        return this.prolong("suspend prolong", chkResult.get(Boolean.TRUE), toDate,
+                AccountTaskTypeEnum.SUSPEND, invokerEnum);
+    }
+
+    private String stop(String methodName, String accountId, AccountInfoStatusEnum statusEnum,
+                        AccountTaskTypeEnum taskTypeEnum, Date fromDate, Date toDate,
+                        AccountInvokerEnum invokerEnum) {
+
+        String fromD = DateUtil.formatDate(fromDate, DateUtil.DATE_TIME);
+        String toD = DateUtil.formatDate(toDate, DateUtil.DATE_TIME);
+        LOGGER.info("{}! accountId={},fromDate={},toDate={},type={},operator={}", new
+                String[]{methodName, accountId, fromD, toD, taskTypeEnum.name(), invokerEnum.name()});
+
+        AccountInfoEntity entity = new AccountInfoEntity();
+        entity.setAccountId(accountId);
+        entity.setStatus(statusEnum.value());
+        entity.setLastUpdateDate(new Date());
+        accountInfoEntityMapper.updateByPrimaryKeySelective(entity);
+        // 记录任务，有则更新状态为init, 无则新增冻结任务
+        Criteria criteria = new Criteria();
+        criteria.addCriterion("ACCOUNT_ID = ", accountId, "ACCOUNT_ID")
+                .addCriterion("TYPE = ", taskTypeEnum.name().toLowerCase(), "TYPE");
+        List<AccountTaskInfoEntity> accountTaskInfoEntityList = accountTaskInfoEntityMapper
+                .selectList(new EntityCondition().addCriteria(criteria));
+        String property = fromD + "-" + toD;
+        String initStatus = AccountTaskStatusEnum.INIT.name().toLowerCase();
+        if (!CollectionUtils.isEmpty(accountTaskInfoEntityList)) {
+            AccountTaskInfoEntity updateEntity = new AccountTaskInfoEntity(null, null,
+                    invokerEnum.name(), new Date(), "n", initStatus, null, null, property,
+                    accountTaskInfoEntityList.get(0).getId());
+            accountTaskInfoEntityMapper.updateByPrimaryKeySelective(updateEntity);
+        } else {
+            AccountTaskInfoEntity insertEntity = new AccountTaskInfoEntity(invokerEnum.name(), new Date(),
+                    invokerEnum.name(), new Date(), "n", initStatus, taskTypeEnum.name().toLowerCase(), accountId,
+                    property, null);
+            accountTaskInfoEntityMapper.insert(insertEntity);
+        }
+        return ResultCodeConstant.SUCCESS;
+    }
+
+    private String recover(String methodName, String accountId, AccountInvokerEnum invokerEnum,
+                           AccountTaskTypeEnum taskTypeEnum) {
+
+        LOGGER.info("{}! accountId={},taskType={}, invoker={}", new String[]{methodName,
+                accountId,taskTypeEnum.name(), invokerEnum.name()});
+
+        AccountInfoEntity accountInfoEntity = new AccountInfoEntity();
+        accountInfoEntity.setAccountId(accountId);
+        accountInfoEntity.setLastUpdateDate(new Date());
+        accountInfoEntity.setStatus(AccountInfoStatusEnum.NORMAL.value());
+        accountInfoEntityMapper.updateByPrimaryKeySelective(accountInfoEntity);
+        // 更新冻结任务为已关闭
+        AccountTaskInfoEntity updateEntity = new AccountTaskInfoEntity(null, null, invokerEnum
+                .name(), new Date(), null, AccountTaskStatusEnum.CLOSED.name().toLowerCase(),
+                null, null, null, null);
+        accountTaskInfoEntityMapper.updateSelective(updateEntity, new EntityCondition()
+                .addCriteria(new Criteria().addCriterion("ACCOUNT_ID = ", accountId,
+                        "ACCOUNT_ID").addCriterion("TYPE = ", taskTypeEnum.name().toLowerCase(), "TYPE")));
+        return ResultCodeConstant.SUCCESS;
+    }
+
+    private String prolong(String methodName, String accountId, Date toDate, AccountTaskTypeEnum
+            taskTypeEnum, AccountInvokerEnum invokerEnum) {
+
+        String toD = DateUtil.formatDate(toDate, DateUtil.DATE_TIME);
+        LOGGER.info("{}! accountId={},toDate={},type={},operate={}", new
+                String[]{methodName, accountId, toD, taskTypeEnum.name(), invokerEnum.name()});
+        // 更新冻结结束时间
+        Criteria criteria = new Criteria();
+        criteria.addCriterion("ACCOUNT_ID = ", accountId, "ACCOUNT_ID")
+                .addCriterion("TYPE = ", taskTypeEnum.name().toLowerCase(), "TYPE");
+        List<AccountTaskInfoEntity> accountTaskInfoEntityList = accountTaskInfoEntityMapper
+                .selectList(new EntityCondition().addCriteria(criteria));
+
+        if (CollectionUtils.isEmpty(accountTaskInfoEntityList)) {
+            LOGGER.warn("prolong date, but no task,accountId =" + accountId);
+            return ResultCodeConstant.ACCOUNT_STATUS_INVALID;
+        }
+        AccountTaskInfoEntity updateEntity = accountTaskInfoEntityList.get(0);
+        String property = updateEntity.getProperty();
+        if (StringUtils.isEmpty(property) || property.split("-").length < 2) {
+            LOGGER.warn("prolong freeze date,property error,accountId =" + accountId);
+            return ResultCodeConstant.ACCOUNT_TASK_PROPERTY_ERROR;
+        }
+        String prop = property.split("-")[0] + "-" + toDate;
+        AccountTaskInfoEntity taskInfoEntity = new AccountTaskInfoEntity(invokerEnum.name(), new
+                Date(), null, prop, updateEntity.getId());
+        accountTaskInfoEntityMapper.updateByPrimaryKeySelective(taskInfoEntity);
+        return ResultCodeConstant.SUCCESS;
+    }
+
+    protected abstract Map<Boolean, String> check(String value, List<String> invalidStatus,
+                                                 List<String> e);
+}
